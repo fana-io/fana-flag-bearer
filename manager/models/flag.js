@@ -3,12 +3,11 @@ const Schema = mongoose.Schema;
 const { ObjectId } = Schema.Types;
 
 const FlagSchema = new Schema({
-  id: Number,
   key: {
     type: String,
     required: [true, 'The Flag key is required'],
   },
-  SDKkey: [Number],
+  sdkKey: String,
   audiences: [{ type: ObjectId, ref: 'Audience' }],
   combine: {
     type: Boolean,

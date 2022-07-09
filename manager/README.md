@@ -1,4 +1,29 @@
-MVP Ruleset Object
+MVP Ruleset Object:
+```js
+[
+  {
+    sdkKey: str,
+    flags: [ 
+      {
+        name: str,
+        status: bool, 
+        combination: str
+        audiences: [audienceId]
+      }
+    ],
+    audiences: [
+      {
+        audienceId: id,
+        conditions: {
+          attribute: ${attributeId},
+          operator: String,
+          value: String
+        }
+      }
+    ]
+  }
+]
+```
 
 Possible Ruleset Object:
 ```js
