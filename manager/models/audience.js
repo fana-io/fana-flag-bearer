@@ -2,11 +2,30 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const { ObjectId } = Schema.Types;
 
+/*
+Audience Object:
+{
+  name: str,
+  combine: str,  // "ANY" | "ALL"  // conditions in audience
+  conditions: [
+    {
+      attribute: attribute._id
+      operator: String,
+      value: String
+    }
+  ]
+}
+*/
+
 const AudienceSchema = new Schema({
-  name: String,
+  name: {
+    type: String,
+    unique: true
+  },
   combine: {
-    type: Boolean,
-    default: false
+    type: String,
+    enum: ['ANY', 'ALL'],
+    default: 'ANY'
   },
   conditions: [
     {
@@ -15,7 +34,7 @@ const AudienceSchema = new Schema({
       value: String /*depends, but it's JSON*/
     }
   ]
-});
+}, { timestamps: true });
 
 const Audience = mongoose.model('Audience', AudienceSchema);
 

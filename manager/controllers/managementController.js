@@ -1,7 +1,3 @@
-// create flag
-// add audiences to flag
-// create an audience based on attributes
-
 const Flag = require('../models/flag');
 const Audience = require('../models/audience');
 const Attribute = require('../models/attribute');
@@ -12,7 +8,7 @@ const createFlag = async (req, res, next) => {
   const errors = validationResult(req);
   try {
     if (errors.isEmpty()) {
-      let flag = await Flag.create(req.body.flag);
+      let flag = await Flag.create(req.body);
       res.json({
         key: flag.key,
         sdkKey: flag.sdkKey,
@@ -34,7 +30,7 @@ const createAttribute = async (req, res, next) => {
   const errors = validationResult(req);
   try {
     if (errors.isEmpty()) {
-      let attribute = await Attribute.create(req.body.attribute);
+      let attribute = await Attribute.create(req.body);
       res.json({
         name: attribute.name,
         attrType: attribute.attrType,
@@ -53,7 +49,7 @@ const createAudience = async (req, res, next) => {
   const errors = validationResult(req);
   try {
     if (errors.isEmpty()) {
-      let audience = await Audience.create(req.body.audience);
+      let audience = await Audience.create(req.body);
       res.json({
         name: audience.name,
         combine: audience.combine,
