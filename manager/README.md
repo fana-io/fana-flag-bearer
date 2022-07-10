@@ -16,6 +16,7 @@ It's cumbersome as is. I wouldn't recommend it. But you can successfully curl//p
 
 And for the above reason, errors for violating the respective Schemas when you try to create an object are not specific, so it can be confusing to try to identify the issue.
 Eg., if you POST a request to make a flag with a key that already exists, or a field with the value of the inappropriate type, you'll recieve only: `'Creating flag failed, please try again'`
+
 ---
 
 # General Structure
@@ -36,6 +37,7 @@ When a request is recieved, `routes/api.js` specifies how it will be handled acc
 The request moves along this flow: the appropriate `validators/validators.js` handler and then `controllers/<specificController>.js` handler.
 
 As noted above, the validator is not particularly useful right now.
+
 ---
 
 ## 1.1 Requests to the Management API:
@@ -149,6 +151,7 @@ Response:
 - Potentially, alter the API payload expectations to recieve more intuitive unique keys (attribute/audience `name`) over `ObjectId` for the embedded Mongo document cross-references.
 
 - Better error on creating duplicate unique keys (generic error ATM)
+
 ---
 
 # 2.1 Flag Bearer API
