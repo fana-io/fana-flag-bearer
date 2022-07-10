@@ -16,7 +16,7 @@ app.use((req, res, next) => {
 
 app.use(express.json());
 
-app.use("/api", routes);
+app.use("/", routes);
 /*
 1. FLAGs from flag manager
 - create a route to receive webhooks
