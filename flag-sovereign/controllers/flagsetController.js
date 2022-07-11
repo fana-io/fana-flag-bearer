@@ -1,14 +1,6 @@
 const { validationResult } = require("express-validator");
 const { getSdkInstance, evaluateFlags } = require('./parseFlagData');
 const { populateCacheForUser } = require('./cache');
-/*
-1. FLAGs from flag manager
-- create a route to receive webhooks
-  - POST   
-  - Store full flag set from Manager
-  - Transform full flag set in a way that is easily searchable for when client sdks make requests
-  - store transformed flag evals in cache object
-*/
 
 // Saving flagset as local array for now;
 const allFlags = [
@@ -91,15 +83,21 @@ const createFlagset = (req, res) => {
   }
 }
 
-const initializeClientSDK = (req, res, next) => {
-  const SDKKEY = req.body.sdkKey
-  const { userId, ...remainingUserContext } = req.body.userContext
+const initializeClientSDK = (req, res) => {
+  const errors = validationResult(req)
+  if (errors.isEmpty()) {
 
-  const sdkInstance = getSdkInstance(SDKKEY, allFlags);
-  const userFlagEvals = evaluateFlags(sdkInstance, userId);
-  populateCacheForUser(SDKKEY, userId, userFlagEvals);  
-  
-  res.json(userFlagEvals)
+    const SDKKEY = req.body.sdkKey
+    const { userId, ...remainingUserContext } = req.body.userContext
+    
+    const sdkInstance = getSdkInstance(SDKKEY, allFlags);
+    const userFlagEvals = evaluateFlags(sdkInstance, userId);
+    populateCacheForUser(SDKKEY, userId, userFlagEvals);  
+    
+    res.json(userFlagEvals)
+  } else {
+    res.status(400).send("SDK key and userId required")
+  }
 }
 
 module.exports = { createFlagset, initializeClientSDK }

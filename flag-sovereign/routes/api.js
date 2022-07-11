@@ -5,6 +5,6 @@ const { createFlagset, initializeClientSDK } = require("../controllers/flagsetCo
 
 // route to receive webhook from flag manager 
 router.post('/flagset', validateFlagset, createFlagset);
-router.post(`/connect/clientInit`, initializeClientSDK)
+router.post(`/connect/clientInit`, validateClientInit, initializeClientSDK)
 
 module.exports = router;

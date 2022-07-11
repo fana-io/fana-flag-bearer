@@ -47,23 +47,12 @@
 ```
 
 # Example response object from flag bearer to client SDK upon initialization with user context
-- `flagEvaluations` is required and is an array of flag objects
-- only toggled on flags (`status` is `true`) are included to limit data sent over network
-- `value` represents whether user should be served feature (defaults to false if flag isn't active)
+  - 
 ```js
 {
-  flagEvaluations: [
-      {
-        name: "new-button",
-      status: true, 
-      value: bool 
-    },
-    {
-      name: "new-navbar",
-      status: true, 
-      value: bool
-    }
-  ]
+  flagName1: Boolean,
+  flagName2: Boolean,
+  // ... more flags
 } 
 ```
 # Example payload from flag bearer to client-sdk when a flag is toggled off
@@ -110,5 +99,19 @@ const userFlagValues = cache[sdkKey][userId]
   flagName1: true,
   flageName2: false,
   ...
+}
+```
+# POST `/connect/clientInit`
+Client SDK initialization request route:
+- expects `sdkKey` and a `userContext` object
+  - `userContext` must provide a `userId` 
+
+```js
+{
+  sdkKey: String,
+  userContext: {
+    userId: String,
+    // ... optional attributes
+  },
 }
 ```
