@@ -10,8 +10,7 @@ input: test for userId as only attribute passed in from userContext object
 
 // finds sdkInstance object from full flag data set
 function getSdkInstance(sdkKey, allFlagData) {
-  const sdkInstance = allFlagData.find((sdk) => sdk.sdkKey === sdkKey);
-  return sdkInstance ? sdkInstance : new Error('sdk data not found');
+  return allFlagData.find(sdk => sdk.sdkKey === sdkKey);
 }
 
 // evaluate audience conditions & whether they satsify userId as target attribute for MVP

@@ -1,6 +1,6 @@
 const express = require ('express');
 const router = express.Router();
-const { validateFlagset } = require('../validators/validators');
+const { validateFlagset, validateClientInit } = require('../validators/validators');
 const { createFlagset, initializeClientSDK } = require("../controllers/flagsetController");
 
 // route to receive webhook from flag manager 

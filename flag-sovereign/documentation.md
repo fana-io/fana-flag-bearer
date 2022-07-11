@@ -46,15 +46,6 @@
 }
 ```
 
-# Example response object from flag bearer to client SDK upon initialization with user context
-  - 
-```js
-{
-  flagName1: Boolean,
-  flagName2: Boolean,
-  // ... more flags
-} 
-```
 # Example payload from flag bearer to client-sdk when a flag is toggled off
 - Note that SDKs must be subscribed and listening for events with a `type` that equals it's own SDK, and can ignore all other messages
 - SSE events are sent only when flags are toggled OFF
@@ -102,7 +93,9 @@ const userFlagValues = cache[sdkKey][userId]
 }
 ```
 # POST `/connect/clientInit`
-Client SDK initialization request route:
+Client SDK initialization request route. Returns an object of flag names and the flag evaluation for a specific user context.
+
+## Expected Payload
 - expects `sdkKey` and a `userContext` object
   - `userContext` must provide a `userId` 
 
@@ -115,3 +108,15 @@ Client SDK initialization request route:
   },
 }
 ```
+## Example Successful Response
+- returns object of key/value pairs, where `flagKey` is the key, and evaluation `value` is a boolean. 
+  - 
+```js
+{
+  flagName1: Boolean,
+  flagName2: Boolean,
+  // ... more flags
+} 
+```
+### Error Response
+- `400` status code will be returned if SDK key or userId is not provided or invalid. 

@@ -86,17 +86,18 @@ const createFlagset = (req, res) => {
 const initializeClientSDK = (req, res) => {
   const errors = validationResult(req)
   if (errors.isEmpty()) {
-
-    const SDKKEY = req.body.sdkKey
     const { userId, ...remainingUserContext } = req.body.userContext
     
-    const sdkInstance = getSdkInstance(SDKKEY, allFlags);
+    const sdkInstance = getSdkInstance(req.body.sdkKey, allFlags);
+    if (!sdkInstance) {
+      return res.status(400).send({ error: "Invalid SDK key."})
+    }
     const userFlagEvals = evaluateFlags(sdkInstance, userId);
-    populateCacheForUser(SDKKEY, userId, userFlagEvals);  
+    populateCacheForUser(req.body.sdkKey, userId, userFlagEvals);  
     
     res.json(userFlagEvals)
   } else {
-    res.status(400).send("SDK key and userId required")
+    res.status(400).send({ error: "SDK key and userId are required."})
   }
 }
 

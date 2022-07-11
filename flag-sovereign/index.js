@@ -17,6 +17,10 @@ app.use(express.urlencoded({ extended: false }));
   // populated on initial SDK request for a given user context
   // when Manager sends new data, is the cache emptied out completely? 
 const cache = {}; 
+/*
+3. Send SSE event to Client SDK on flag value change: rolling back
+- need to know which SDK new flag values pertain to (through SDK Key)
+*/
 
 app.use((req, res, next) => {
   res.header("Access-Control-Allow-Origin", "*");
@@ -30,12 +34,15 @@ app.use((req, res, next) => {
 app.use(express.json());
 
 app.use("/", routes);
-/*
 
-3. Send SSE event to Client SDK on flag value change: rolling back
-- need to know which SDK new flag values pertain to (through SDK Key)
+app.use((err, req, res, next) => {
+  if (res.headerSent) {
+    return next(err);
+  }
+  res.status(err.code || 500);
+  res.json({ error: err.message || 'An unknown error occured' });
+});
 
-*/
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
