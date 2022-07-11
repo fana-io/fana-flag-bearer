@@ -76,3 +76,35 @@
   }
 }
 ```
+# Parsing the complete flag data from Flag Manager
+- When receiving a client SDK initialization request, Flag Provider will parse through full flag dataset to identify flags pertaining to specific instance (`sdkKey`).
+- Flag Provider will:
+  - filter flag data based on `sdkKey`
+  - loop through all audiences and evaluate each set of conditions if they match `userId`
+  - loop through all flags and for each `audienceId`, return flag evaluation based on combination of audience logic
+  - memoize in `cache` the flag evaluation for future client SDK requests for same userId
+
+## Data modeling: Flag provider cache data structure
+- memoized flag evaluation values organized by SDK key, then userId, then unique flag name
+```js
+// Shape of cache object
+const cache = {
+  sdkKey1: {
+    userId1: {
+      flageName1: VALUE_OF_FLAG (bool),
+      flageName2: VALUE_OF_FLAG (bool),
+    } ,
+    userId2 : { ... }
+  },
+  sdkKey2 : { ... }
+}
+
+// Example cache lookup for a user -- allows O(1) lookup
+const userFlagValues = cache[sdkKey][userId]
+
+{
+  flagName1: true,
+  flageName2: false,
+  ...
+}
+```
