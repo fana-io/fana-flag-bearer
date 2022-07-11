@@ -1,11 +1,14 @@
 require("dotenv").config();
 const express = require("express");
+const cors = require("cors");
 const morgan = require("morgan");
 const routes = require("./routes/api");
+const { initializeClientSDK } = require("./controllers/flagsetController");
 
 const app = express();
 const PORT = process.env.PORT || 5001;
 
+app.use(cors());
 app.use(morgan("tiny"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -28,40 +31,11 @@ app.use(express.json());
 
 app.use("/", routes);
 /*
-1. FLAGs from flag manager
-- create a route to receive webhooks
-- POST
-- for updated flags, will we receive FULL flag ruleset, or just incremental updates? what does this look like?
-- update cache, or populate cache if cache is empty
-- TODO: forward updated flag rules to server-side SDK
-
-
-
-2. Receive Client SDK initialization request
-- POST
-  - user context obj, SDK key, flag id --> or will we only be getting flag name as unique identifier? 
-  - evaluate flag value 
-  - respond with flag value
-  - what does response object look like?
 
 3. Send SSE event to Client SDK on flag value change: rolling back
 - need to know which SDK new flag values pertain to (through SDK Key)
 
 */
-app.post(`/connect/clientInit/`, (req, res, next) => {
-  const sdkKey = req.body.sdkKey
-  const userContext = req.body.userContext
-
-  // TODO: replace hard coded response object with dynamic
-  res.json({
-    'new-button': true,
-    'new-nav-bar': false,
-    'flag-without-audience': false
-  })
-
-})
-
-
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
