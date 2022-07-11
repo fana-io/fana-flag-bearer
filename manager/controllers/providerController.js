@@ -74,9 +74,11 @@ function appendToExistingSDK(resultArr, sdkInd, flag) {
 
   // if audience _doesn't_ already exist, push audience to result
   // else, do nothing
-  flag.audiences.forEach(audience => {
-    let exists = resultArr.audiences.find(({audienceId}) => {
-      return audienceId === audience._id
+  flag.audiences.forEach(flagAud => {
+    let exists = resultArr.find(({audiences}) => {
+      return audiences.find(({audienceId}) => {
+        return audienceId === flagAud._id.toString()
+      })
     })
 
     if (!exists) resultArr.audiences.push(buildFlattenedAudience(audience))
@@ -89,7 +91,7 @@ function buildFlattenedFlag(rawFlagObj) {
     name: rawFlagObj.key,
     status: rawFlagObj.status,
     combination: rawFlagObj.combine,
-    audiences: rawFlagObj.audiences.map(({_id}) => _id)
+    audiences: rawFlagObj.audiences.map(({_id}) => _id.toString())
   }
 }
 
@@ -97,7 +99,7 @@ function buildFlattenedAudience(rawAudienceObj) {
   let {_id, conditions} = rawAudienceObj
 
   return {
-    audienceId: _id,
+    audienceId: _id.toString(),
     conditions: conditions.map(({attribute, operator, value}) => {
       return {
         attribute: attribute.name,
