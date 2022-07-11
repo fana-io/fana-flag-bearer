@@ -12,7 +12,7 @@
       {
         name: str,
         status: bool, 
-        combination: str
+        combination: str,
         audiences: [audienceId]
       }
     ],
