@@ -18,6 +18,9 @@ Audience Object:
 */
 
 const AudienceSchema = new Schema({
+  // expects {name}
+  // returns {displayName, key} (key = parseName(displayName))
+  // name = "California Students"; key = "california_students"
   name: {
     type: String,
     unique: true

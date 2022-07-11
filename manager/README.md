@@ -1,5 +1,10 @@
 ## Preliminary Day 2 Database Model
 
+# TODO Today:
+Remove flag combination; add Audience combination
+Translate keys and display name from {name}
+
+
 # Changes since Day 1:
 
 This is still incomplete and lowly documented. Included more context and explanation of general structure in this readme. In-file comments are still unfinished, but there should be some better sense of the flow of data in this document.
@@ -177,20 +182,21 @@ This expects no payload and returns a [Ruleset Object](#mvp-ruleset-object)
     sdkKey: str,
     flags: [ 
       {
-        name: str,    // I call this key in DB, arbitarily. was looking at another product maybe
-        status: bool, 
-        combination: str,
-        audiences: [audienceId]
+        flagKey: str,
+        status: bool,
+        audiences: [audience.key]
       }
     ],
     audiences: [
       {
-        audienceId: id,
-        conditions: [         // THIS IS NOW AN ARRAY (oops before)
+        audienceKey: str,
+        combination: str,  // MOVED FROM FLAG LEVEL
+        conditions: [
           {
-            attribute: ${attribute.name},  // THIS IS NOW NAME (not _id)
+            attribute: attribute.name,
             operator: String,
             value: String
+            type: attribute.attrType
           }
         ]
       }
