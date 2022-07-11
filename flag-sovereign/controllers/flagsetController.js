@@ -24,37 +24,5 @@ const createFlagset = (req, res) => {
     return res.status(404).send("Input field error.");
   }
 }
-// user has attribute "attribute"
-// evaluate value for flag "flagName";
-
-// cache object would look something like this?
-  // queryCache[] = {
-  //   sdkKey1: {
-  //       flageName1: {
-  //          attribute1: (bool),
-  //          attribute2: (bool),
-  //        },
-  //       flageName2: {
-  //          attribute1: (bool),
-  //          attribute2: (bool),
-  //        },
-  //    }
-
-// const storeFlagset = (flagsetFromManager) => {
-//   flagsetFromManager.forEach(set => {
-//     let sdkKeyObj = {};    
-//     set.flags.forEach(flag => {
-//       let flagObject = {};
-//       set.flags.audiences.forEach(audience => {
-//        // if combination.toLowerCase() === "any"
-//           // for each audience, add a field for attribute
-//       // if combination.toLowerCase() === "all"
-//           // need to check all attribute exist
-//       })
-
-//     })  
-//     queryCache[set.sdkKey] = sdkKeyObj;
-//   })
-// }
 
 module.exports = { createFlagset }
