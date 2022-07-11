@@ -51,11 +51,16 @@ app.use("/", routes);
 
 // axios.post(`${this.config.sovAddress}/clientInit/${this.config.sdkKey}`, this.config.userContext);
 // assuming we need to send back all rules for this userId 
-app.post(`/connect/clientInit/:sdkKey`, (req, res, next) => {
-  const sdkKey = req.sdkKey
+app.post(`/connect/clientInit/`, (req, res, next) => {
+  const sdkKey = req.body.sdkKey
   const userContext = req.body.userContext
 
-  // given a userContext.userId, find all flags 
+  // TODO: replace hard coded response object with dynamic
+  res.json({
+    'new-button': true,
+    'new-nav-bar': false,
+    'flag-without-audience': false
+  })
 
 })
 
