@@ -1,35 +1,38 @@
-# Example payload from flag manager to flag provider:
+# Example payload from flag manager to flag bearer:
 - expects to receive entire set of flags and audiences for all SDK keys
 - each SDK ruleset requires `sdkKey` and `flags`
 - `flags` is empty array if no flags created yet
 - `status` represents if flag is on (`true`) or off (`false`)
-- `combination` represents "any" or "all" audience combination
+- evaluation of flags will default to whether ANY audience logic is met for a user
 ```js
 [
   {
     sdkKey: str,
     flags: [ 
       {
-        name: str,
+        flagKey: String,
         status: bool, 
-        combination: str,
-        audiences: [audienceId]
+        audiences: [audienceKey]
       }
     ],
     audiences: [
       {
-        audienceId: id,
-        conditions: {
-          attribute: ${attributeId},
+        audienceKey: String,
+        combination: String, // "ANY" or "ALL"
+        conditions: [
+          {
+          attribute: String, // name of attribute
+          type: String, // type of attribute, defined in data model
           operator: String,
           value: String
-        }
+          },
+        ],
       }
     ]
   }
 ]
 ```
-# Example payload from flag manager to flag provider when one flag is updated
+# Example payload from flag manager to flag bearer when one flag is updated
 - `sdkKey` and `flag` object with `name` is required
 - `status` and `audiences` are optional (if updated) 
 ```js
@@ -43,7 +46,7 @@
 }
 ```
 
-# Example response object from flag sovereign to client SDK upon initialization with user context
+# Example response object from flag bearer to client SDK upon initialization with user context
 - `flagEvaluations` is required and is an array of flag objects
 - only toggled on flags (`status` is `true`) are included to limit data sent over network
 - `value` represents whether user should be served feature (defaults to false if flag isn't active)
@@ -63,7 +66,7 @@
   ]
 } 
 ```
-# Example payload from flag provider to client-sdk when a flag is toggled off
+# Example payload from flag bearer to client-sdk when a flag is toggled off
 - Note that SDKs must be subscribed and listening for events with a `type` that equals it's own SDK, and can ignore all other messages
 - SSE events are sent only when flags are toggled OFF
 - `message` property contains a flag object with an updated `status` value (aka `false`)
@@ -72,19 +75,20 @@
   type: CLIENT_SDK_KEY, 
   message: {
     name: "new-button",
-    status: false
+    status: false,
+    value: false,
   }
 }
 ```
 # Parsing the complete flag data from Flag Manager
-- When receiving a client SDK initialization request, Flag Provider will parse through full flag dataset to identify flags pertaining to specific instance (`sdkKey`).
-- Flag Provider will:
+- When receiving a client SDK initialization request, Flag bearer will parse through full flag dataset to identify flags pertaining to specific instance (`sdkKey`).
+- Flag bearer will:
   - filter flag data based on `sdkKey`
   - loop through all audiences and evaluate each set of conditions if they match `userId`
-  - loop through all flags and for each `audienceId`, return flag evaluation based on combination of audience logic
-  - memoize in `cache` the flag evaluation for future client SDK requests for same userId
+  - loop through all flags and for each `audienceId`, return flag evaluation based on whether ANY of the audiences evaluate to `true`
+  - memoize the flag evaluation object for future client SDK requests for same `userId` in `cache` object
 
-## Data modeling: Flag provider cache data structure
+## Data modeling: Flag bearer cache data structure
 - memoized flag evaluation values organized by SDK key, then userId, then unique flag name
 ```js
 // Shape of cache object

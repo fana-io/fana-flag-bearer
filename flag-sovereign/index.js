@@ -48,9 +48,6 @@ app.use("/", routes);
 - need to know which SDK new flag values pertain to (through SDK Key)
 
 */
-
-// axios.post(`${this.config.sovAddress}/clientInit/${this.config.sdkKey}`, this.config.userContext);
-// assuming we need to send back all rules for this userId 
 app.post(`/connect/clientInit/`, (req, res, next) => {
   const sdkKey = req.body.sdkKey
   const userContext = req.body.userContext
@@ -63,7 +60,6 @@ app.post(`/connect/clientInit/`, (req, res, next) => {
   })
 
 })
-
 
 
 app.listen(PORT, () => {
