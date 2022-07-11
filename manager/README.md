@@ -32,9 +32,9 @@ Manager has two general purposes:
 2. Serve the [Flag Bearer API](#21-flag-bearer-api) that provides the ruleset to the Flag Bearer server instances
 
 **General Flow**
-As always, `index.js` initializes the application to listen on the specified PORT
-When a request is recieved, `routes/api.js` specifies how it will be handled according to the request's `METHOD` and `PATH`
-The request moves along this flow: the appropriate `validators/validators.js` handler and then `controllers/<specificController>.js` handler.
+- As always, `index.js` initializes the application to listen on the specified PORT
+- When a request is recieved, `routes/api.js` specifies how it will be handled according to the request's `METHOD` and `PATH`
+- The request moves along this flow: the appropriate `validators/validators.js` handler and then `controllers/<specificController>.js` handler.
 
 As noted above, the validator is not particularly useful right now.
 

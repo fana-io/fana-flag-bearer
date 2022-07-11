@@ -4,14 +4,10 @@ const { validationResult } = require('express-validator');
 
 const getRuleset = async(req, res, next) => {
   try {
-    const fullFlags = await fetchFlags()
-    // to see the raw flag object, uncomment this
-    // console.log(fullFlags[0])
-
+    const fullFlags = await fetchFlags() // console.log this to see the raw data
     const processedFlags = flattenFlags(fullFlags)
 
     res.json(processedFlags)
-
   } catch (err) {
     next(new HttpError('Query failed, please try again', 500));
   }
@@ -20,7 +16,7 @@ const getRuleset = async(req, res, next) => {
 async function fetchFlags() {
   let flags = [] // initialize return array
 
-  // streams query one result at a time
+  // streams query one result at a time (see .cursor method)
   for await (const flag of Flag.find()) {
     try {
       // `flag` is a Mongoose query object, so it has method `populate`
@@ -37,13 +33,12 @@ async function fetchFlags() {
   return flags
 }
 
-function flattenFlags(rawFlags){
+function flattenFlags(rawFlagsArr){
   // flattens the raw object returned from the Mongo query
   // into the object expected by the Flag Bearer
-
-  
   let result = []
-  for (let rawFlag of rawFlags) {
+
+  for (let rawFlag of rawFlagsArr) {
     let sdkEntryInd = result.findIndex(({sdkKey}) => {
       return rawFlag.sdkKey == sdkKey
     })
