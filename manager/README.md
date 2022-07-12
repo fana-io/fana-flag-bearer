@@ -4,6 +4,8 @@
 ~~Remove flag combination; add Audience combination~~
 ~~Translate keys and display name from {name}~~
 ~~Create Toggle Endpoint~~
+~~Add Clarity to Mongo Errors~~
+
 ### Notes:
 Toggle specifies the actual status in the body of the PATCH request
 Cons:
@@ -15,10 +17,6 @@ Pros:
 - i.e., Find flag, THEN update flag with toggled status
 - However, maybe can do the update async, awaiting only the Find
 
-# Changes since Day 1:
-
-This is still incomplete and lowly documented. Included more context and explanation of general structure in this readme. In-file comments are still unfinished, but there should be some better sense of the flow of data in this document.
-
 # Disclaimer:
 This is incomplete in every way; just thought it would be helpful to maintain transparency regarding the current data model and how the DB is taking shape.
 
@@ -29,8 +27,8 @@ It's cumbersome as is. I wouldn't recommend it. But you can successfully curl//p
 
 *The validators are not particularly useful; they are much moreso just placeholders I borrowed from the React project*
 
-And for the above reason, errors for violating the respective Schemas when you try to create an object are not specific, so it can be confusing to try to identify the issue.
-Eg., if you POST a request to make a flag with a key that already exists, or a field with the value of the inappropriate type, you'll recieve only: `'Creating flag failed, please try again'`
+~~And for the above reason, errors for violating the respective Schemas when you try to create an object are not specific, so it can be confusing to try to identify the issue.~~
+Schema violations are more clear now (Day 3)
 
 ---
 
@@ -42,6 +40,7 @@ Manager has two general purposes:
   - [Create Attribute](#post-attributes--create-attribute)
   - [Create Audience](#post-audiences--create-audience)
   - [Create Flag](#post-flags--create-flag)
+  - [Toggle Flag Status](#patch-flagskeytoggle--toggle-flag)
   - [WIP](#management-wip)
 
 2. Serve the [Flag Bearer API](#21-flag-bearer-api) that provides the ruleset to the Flag Bearer server instances
@@ -159,14 +158,39 @@ Response:
 }
 ```
 
+# PATCH /flags/:key/toggle | Toggle Flag
+
+Expected Payload:
+```json
+{
+    "status": "true"
+}
+```
+
+Response:
+(Updated Flag object)
+```json
+{
+  "_id": "62cd06641aebed201a595582",
+  "key": "fake_flag_1",
+  "displayName": "Fake Flag 1",
+  "sdkKey": "beta_sdk_0",
+  "status": true,
+  "audiences": [
+    "62cd00204e7eb5837e40731b",
+    "62cd00eecbd72828c3c83e1e"
+  ],
+  "createdAt": "2022-07-12T05:28:04.320Z",
+  "updatedAt": "2022-07-12T15:52:24.534Z",
+  "__v": 0
+}
+```
+
+
 # Management WIP
 - Update Flags, Audiences
   - Insert conditions into audiences
   - Insert audiences into flags
-
-- Potentially, alter the API payload expectations to recieve more intuitive unique keys (attribute/audience `name`) over `ObjectId` for the embedded Mongo document cross-references.
-
-- Better error on creating duplicate unique keys (generic error ATM)
 
 ---
 
