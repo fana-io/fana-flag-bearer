@@ -123,3 +123,12 @@ content-type: application/json
     "sdkKey": "beta_sdk_0",
     "audiences": ["california_students", "beta_testers"]
 }
+
+###
+
+PATCH http://localhost:8080/api/flags/fake_flag_1/toggle HTTP/1.1
+content-type: application/json
+
+{
+    "status": "true"
+}
