@@ -1,0 +1,125 @@
+POST http://localhost:8080/api/attributes HTTP/1.1
+content-type: application/json
+
+{
+    "name": "state",
+    "attrType": "STR"
+}
+
+###
+
+POST http://localhost:8080/api/attributes HTTP/1.1
+content-type: application/json
+
+{
+    "name": "student",
+    "attrType": "BOOL"
+}
+
+###
+
+POST http://localhost:8080/api/attributes HTTP/1.1
+content-type: application/json
+
+{
+    "name": "beta",
+    "attrType": "BOOL"
+}
+
+###
+
+POST http://localhost:8080/api/attributes HTTP/1.1
+content-type: application/json
+
+{
+    "name": "age",
+    "attrType": "NUM"
+}
+
+###
+
+POST http://localhost:8080/api/audiences HTTP/1.1
+content-type: application/json
+
+{
+    "name": "california_students",
+    "combine": "ALL",
+    "conditions": [
+        {
+        "attribute": "state",
+        "operator": "EQ",
+        "value": "california"
+        },
+        {
+        "attribute": "student",
+        "operator": "EQ",
+        "value": "true"
+        }        
+    ]
+}
+
+###
+
+POST http://localhost:8080/api/audiences HTTP/1.1
+content-type: application/json
+
+{
+    "name": "Beta Testers",
+    "combine": "ANY",
+    "conditions": [
+        {
+        "attribute": "state",
+        "operator": "EQ",
+        "value": "california"
+        },
+        {
+        "attribute": "beta",
+        "operator": "EQ",
+        "value": "true"
+        }        
+    ]
+}
+
+###
+
+POST http://localhost:8080/api/audiences HTTP/1.1
+content-type: application/json
+
+{
+    "name": "california_students",
+    "combine": "ALL",
+    "conditions": [
+        {
+        "attribute": "state",
+        "operator": "EQ",
+        "value": "california"
+        },
+        {
+        "attribute": "student",
+        "operator": "EQ",
+        "value": "true"
+        }        
+    ]
+}
+
+###
+
+POST http://localhost:8080/api/flags HTTP/1.1
+content-type: application/json
+
+{
+    "name": "Fake Flag 1",
+    "sdkKey": "beta_sdk_0",
+    "audiences": ["california_students", "beta_testers"]
+}
+
+###
+
+POST http://localhost:8080/api/flags HTTP/1.1
+content-type: application/json
+
+{
+    "name": "Inauthentic Flag 2",
+    "sdkKey": "beta_sdk_0",
+    "audiences": ["california_students", "beta_testers"]
+}

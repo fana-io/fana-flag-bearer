@@ -1,7 +1,7 @@
 const { check, oneOf } = require('express-validator');
 
 exports.validateFlag = [
-  check('key').not().isEmpty(),
+  check('name').not().isEmpty(),
   check('sdkKey').not().isEmpty()
 ];
 

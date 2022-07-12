@@ -3,17 +3,24 @@ const Audience = require('../models/audience');
 const Attribute = require('../models/attribute');
 const HttpError = require('../models/httpError');
 const { validationResult } = require('express-validator');
+const {
+  processAPIFlag,
+  processAPIAudience,
+  processAPIAttribute
+} = require('./helpers/managementHelpers')
 
 const createFlag = async (req, res, next) => {
   const errors = validationResult(req);
   try {
     if (errors.isEmpty()) {
-      let flag = await Flag.create(req.body);
+      let createFlag = await processAPIFlag(req.body)
+      let flag = await Flag.create(createFlag);
+
       res.json({
         key: flag.key,
+        displayName: flag.displayName,
         sdkKey: flag.sdkKey,
         audiences: flag.audiences,
-        combine: flag.combine,
         status: flag.status,
         createdAt: flag.createdAt,
         updatedAt: flag.updatedAt,
@@ -22,7 +29,7 @@ const createFlag = async (req, res, next) => {
       return next(new HttpError('The input field is empty.', 404));
     }
   } catch (err) {
-    next(new HttpError('Creating flag failed, please try again', 500));
+    next(new HttpError(err, 500));
   }
 };
 
@@ -30,9 +37,11 @@ const createAttribute = async (req, res, next) => {
   const errors = validationResult(req);
   try {
     if (errors.isEmpty()) {
-      let attribute = await Attribute.create(req.body);
+      const createAttribute = await processAPIAttribute(req.body)
+      const attribute = await Attribute.create(createAttribute);
       res.json({
-        name: attribute.name,
+        key: attribute.key,
+        displayName: attribute.displayName,
         attrType: attribute.attrType,
         createdAt: attribute.createdAt,
         updatedAt: attribute.updatedAt,
@@ -41,7 +50,7 @@ const createAttribute = async (req, res, next) => {
       return next(new HttpError('The input field is empty.', 404));
     }
   } catch (err) {
-    next(new HttpError('Creating flag failed, please try again', 500));
+    next(new HttpError(err, 500));
   }
 };
 
@@ -49,9 +58,11 @@ const createAudience = async (req, res, next) => {
   const errors = validationResult(req);
   try {
     if (errors.isEmpty()) {
-      let audience = await Audience.create(req.body);
+      const createAudience = await processAPIAudience(req.body)
+      const audience = await Audience.create(createAudience);
       res.json({
-        name: audience.name,
+        key: audience.key,
+        name: audience.displayName,
         combine: audience.combine,
         conditions: audience.conditions,
         createdAt: audience.createdAt,
@@ -61,11 +72,9 @@ const createAudience = async (req, res, next) => {
       return next(new HttpError('The input field is empty.', 404));
     }
   } catch (err) {
-    next(new HttpError('Creating flag failed, please try again', 500));
+    next(new HttpError(err, 500));
   }
 };
-
-
 
 exports.createFlag = createFlag;
 exports.createAudience = createAudience;
