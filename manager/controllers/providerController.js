@@ -93,11 +93,11 @@ function buildFlattenedAudience(rawAudienceObj) {
   let {name, conditions} = rawAudienceObj
 
   return {
-    audienceKey: name,
+    audienceKey: key,
     combination: rawAudienceObj.combine,
     conditions: conditions.map(({attribute, operator, value}) => {
       return {
-        attribute: attribute.name,
+        attribute: attribute.key,
         type: attribute.attrType,
         operator,
         value,

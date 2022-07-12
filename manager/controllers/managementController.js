@@ -8,9 +8,12 @@ const createFlag = async (req, res, next) => {
   const errors = validationResult(req);
   try {
     if (errors.isEmpty()) {
+      let flagDocObj = processAPIFlag(req.body)
       let flag = await Flag.create(req.body);
+      const [displayName, key] = processNameInput(flag.name)
       res.json({
-        key: flag.key,
+        key,
+        name: displayName,
         sdkKey: flag.sdkKey,
         audiences: flag.audiences,
         combine: flag.combine,
@@ -22,7 +25,8 @@ const createFlag = async (req, res, next) => {
       return next(new HttpError('The input field is empty.', 404));
     }
   } catch (err) {
-    next(new HttpError('Creating flag failed, please try again', 500));
+    // next(new HttpError('Creating flag failed, please try again', 500));
+    next(new HttpError(err, 500));
   }
 };
 
@@ -31,6 +35,7 @@ const createAttribute = async (req, res, next) => {
   try {
     if (errors.isEmpty()) {
       let attribute = await Attribute.create(req.body);
+      const [displayName, key] = processNameInput(attribute.name)
       res.json({
         name: attribute.name,
         attrType: attribute.attrType,
@@ -50,8 +55,10 @@ const createAudience = async (req, res, next) => {
   try {
     if (errors.isEmpty()) {
       let audience = await Audience.create(req.body);
+      const [displayName, key] = processNameInput(audience.name)
       res.json({
-        name: audience.name,
+        key,
+        name: displayName,
         combine: audience.combine,
         conditions: audience.conditions,
         createdAt: audience.createdAt,
@@ -64,6 +71,15 @@ const createAudience = async (req, res, next) => {
     next(new HttpError('Creating flag failed, please try again', 500));
   }
 };
+
+function processNameInput(input) {
+  const key = input.replace(/\s/, "_").toLowerCase()
+  return [input, key]
+}
+
+function processAPIFlag(rawReqFlag) {
+  console.log("raw request flag", rawReqFlag)
+}
 
 
 
