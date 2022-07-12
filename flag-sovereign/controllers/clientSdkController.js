@@ -1,135 +1,7 @@
 const { validationResult } = require('express-validator');
+const { flagData } = require('../utilities/flagData');
 const { getSdkInstance, evaluateFlags, findDisabledFlags } = require('../utilities/parseFlagData');
 const { populateCacheForUser } = require('./cache');
-
-let allFlags = [
-  {
-    sdkKey: 'beta_sdk_0',
-    flags: [
-      {
-        flagKey: 'flag-evals-true',
-        status: true,
-        audiences: ['beta-testers', 'california_students'],
-      },
-      {
-        flagKey: 'flag-evals-false',
-        status: true,
-        audiences: ['california_students'],
-      },
-      {
-        flagKey: 'no-audiences-flag',
-        status: true,
-        audiences: [],
-      },
-      {
-        flagKey: 'toggled-off-flag',
-        status: false,
-        audiences: ['beta-testers'],
-      },
-    ],
-    audiences: [
-      {
-        audienceKey: 'beta-testers',
-        combination: 'ANY',
-        conditions: [
-          {
-            attribute: 'userId',
-            type: 'STR',
-            operator: 'EQ',
-            value: 'jjuy',
-          },
-          {
-            attribute: 'beta',
-            type: 'BOOL',
-            operator: 'EQ',
-            value: true,
-          },
-        ],
-      },
-      {
-        audienceKey: 'california_students',
-        combination: 'ALL',
-        conditions: [
-          {
-            attribute: 'state',
-            type: 'STR',
-            operator: 'EQ',
-            value: 'california',
-          },
-          {
-            attribute: 'userId',
-            type: 'STR',
-            operator: 'EQ',
-            value: 'jjuy',
-          },
-        ],
-      },
-    ],
-  },
-  {
-    sdkKey: 'beta_sdk_1',
-    flags: [
-      {
-        flagKey: 'flag-evals-true',
-        status: true,
-        audiences: ['beta-testers', 'california_students'],
-      },
-      {
-        flagKey: 'flag-evals-false',
-        status: true,
-        audiences: ['california_students'],
-      },
-      {
-        flagKey: 'no-audiences-flag',
-        status: true,
-        audiences: [],
-      },
-      {
-        flagKey: 'toggled-off-flag',
-        status: false,
-        audiences: ['beta-testers'],
-      },
-    ],
-    audiences: [
-      {
-        audienceKey: 'beta-testers',
-        combination: 'ANY',
-        conditions: [
-          {
-            attribute: 'userId',
-            type: 'STR',
-            operator: 'EQ',
-            value: 'jjuy',
-          },
-          {
-            attribute: 'beta',
-            type: 'BOOL',
-            operator: 'EQ',
-            value: true,
-          },
-        ],
-      },
-      {
-        audienceKey: 'california_students',
-        combination: 'ALL',
-        conditions: [
-          {
-            attribute: 'state',
-            type: 'STR',
-            operator: 'EQ',
-            value: 'california',
-          },
-          {
-            attribute: 'userId',
-            type: 'STR',
-            operator: 'EQ',
-            value: 'jjuy',
-          },
-        ],
-      },
-    ],
-  },
-];
 
 const client = { stream: null }; // stores response object to stream SSE
 
@@ -141,14 +13,14 @@ const initializeClientSDK = (req, res) => {
   const errors = validationResult(req);
   if (errors.isEmpty()) {
     const { userId, ...remainingUserContext } = req.body.userContext;
-
+    const allFlags = flagData.getFlagData();
     const sdkInstance = getSdkInstance(req.body.sdkKey, allFlags);
     if (!sdkInstance) {
       return res.status(400).send({ error: 'Invalid SDK key.' });
     }
     const userFlagEvals = evaluateFlags(sdkInstance, userId);
     populateCacheForUser(req.body.sdkKey, userId, userFlagEvals);
-
+    console.log('not from cache')
     res.json(userFlagEvals);
   } else {
     res.status(400).send({ error: 'SDK key and userId are required.' });
@@ -173,8 +45,8 @@ const subscribeToUpdates = (req, res) => {
 const pushDisabledFlagsEvent = (req, res, next) => {
   // todo: check if any open connections, if not, go next()
 
-  const flagData = req.body;
-  const flagUpdates = findDisabledFlags(flagData);
+  const newFlagData = req.body;
+  const flagUpdates = findDisabledFlags(newFlagData);
   /*
   FLAG UPDATES [
   { sdkKey: 'beta_sdk_0', flags: [ [Object], [Object], [Object] ] },

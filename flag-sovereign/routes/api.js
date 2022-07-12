@@ -1,9 +1,10 @@
 const express = require ('express');
 const router = express.Router();
-const { validateFlagset, validateClientInit } = require('../validators/validators');
+const { validateFlagset, validateClientInit, validateServerInit } = require('../validators/validators');
 const { checkCache } = require('../controllers/cache');
-const { createFlagset, initializeClientSDK, pushDisabledFlagsEvent, subscribeToUpdates } = require("../controllers/flagsetController");
+const { createFlagset } = require("../controllers/flagsetController");
 const { initializeServerSDK } = require("../controllers/serverSdkController")
+const { pushDisabledFlagsEvent, initializeClientSDK, subscribeToUpdates } = require("../controllers/clientSdkController")
 
 // route to receive webhook from flag manager
 // also sends push event of disabled flags 

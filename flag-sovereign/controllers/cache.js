@@ -3,8 +3,9 @@
 // - add to cache
 // - look up user flags from cache
 const NodeCache = require("node-cache");
-const cache = new NodeCache( { stdTTL: 60, checkperiod: 65 } ); // what is the difference between stdTTL and checkperiod?
-
+const cache = new NodeCache( { stdTTL: 60 } );
+// TODO: what to do when user attribute changes 
+// hashing attribute?
 // populate cache for userId
 function populateCacheForUser(sdkKey, userId, flagEvaluations) {
   const userEvals = {};
@@ -15,15 +16,17 @@ function populateCacheForUser(sdkKey, userId, flagEvaluations) {
 // cache middleWare
 const checkCache = (req, res, next) => {
   let sdkKey = req.body.sdkKey
-  let userId = sdkKey.userId
+  let userId = req.body.userContext.userId
+  // need to fix  
   try {
-    if (cache.has(sdkKey[userId])) {
-      console.log("from cache", cache)
+    if (cache.has(sdkKey)) { //just flag eval
+      console.log('from cache');
       return res.status(200).send(cache.get(sdkKey[userId]))
+    } else {
+      console.log('not found in cache', cache.get(sdkKey));
+      return next();  
     }
-    return next();
   } catch (err) {
-    console.log("error from cache")
     throw new Error(err);
   }
 }
