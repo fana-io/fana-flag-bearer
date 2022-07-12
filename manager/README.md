@@ -3,7 +3,17 @@
 # TODO Today:
 ~~Remove flag combination; add Audience combination~~
 ~~Translate keys and display name from {name}~~
-Create Toggle Endpoint
+~~Create Toggle Endpoint~~
+### Notes:
+Toggle specifies the actual status in the body of the PATCH request
+Cons:
+- Unintuitive from the perspective of a manual request
+- Actually, might be bad from CLI req too
+Pros:
+- Totally fine from React Dashboard
+- Saves an additional query to Mongo to find the status and then negate it
+- i.e., Find flag, THEN update flag with toggled status
+- However, maybe can do the update async, awaiting only the Find
 
 # Changes since Day 1:
 
@@ -136,7 +146,7 @@ Expected Payload:
 Response:
 ```json
 {
-  "key": "fake_flag 1",
+  "key": "fake_flag_1",
   "displayName": "Fake Flag 1",
   "sdkKey": "beta_sdk_0",
   "audiences": [

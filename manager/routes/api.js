@@ -12,6 +12,8 @@ router.get('/ruleset', getRuleset)
 
 router.post('/flags', validateFlag, managementController.createFlag);
 
+router.patch('/flags/:key/toggle', managementController.toggleFlag);
+
 router.post('/audiences', validateAudience, managementController.createAudience);
 
 router.post('/attributes', validateAttribute, managementController.createAttribute);
