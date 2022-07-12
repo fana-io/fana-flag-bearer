@@ -1,5 +1,7 @@
-# Example payload from flag manager to flag bearer:
-- expects to receive entire set of flags and audiences for all SDK keys
+# POST `/flagset` | Receve Updated Flag Data (Full Ruleset)
+- expects to receive entire set of flags and audiences for all SDK keys from Flag Manager
+
+## Expected Payload
 - each SDK ruleset requires `sdkKey` and `flags`
 - `flags` is empty array if no flags created yet
 - `status` represents if flag is on (`true`) or off (`false`)
@@ -32,7 +34,7 @@
   }
 ]
 ```
-# Example payload from flag manager to flag bearer when one flag is updated
+## Example payload from flag manager to flag bearer when one flag is updated
 - `sdkKey` and `flag` object with `name` is required
 - `status` and `audiences` are optional (if updated) 
 ```js
@@ -46,54 +48,38 @@
 }
 ```
 
-# Example payload from flag bearer to client-sdk when a flag is toggled off
-- Note that SDKs must be subscribed and listening for events with a `type` that equals it's own SDK, and can ignore all other messages
-- SSE events are sent only when flags are toggled OFF
-- `message` property contains a flag object with an updated `status` value (aka `false`)
+# GET `/subscribe/client` | Event Subscription to Flag Updates  
+## Example Event Message
+- Note that SDKs should listen for events with a `sdkKey` that match the client SDK key, and can ignore all other messages
+- SSE events are sent when Flag Bearer receives updated flag data from Flag Manager
+- Push event only sends flags that are toggled off
+- `flags` property contains an array of flag objects with an updated `status` value (will always be `false`) and `value`
 ```js
-{
-  type: CLIENT_SDK_KEY, 
-  message: {
-    name: "new-button",
-    status: false,
-    value: false,
-  }
-}
-```
-# Parsing the complete flag data from Flag Manager
-- When receiving a client SDK initialization request, Flag bearer will parse through full flag dataset to identify flags pertaining to specific instance (`sdkKey`).
-- Flag bearer will:
-  - filter flag data based on `sdkKey`
-  - loop through all audiences and evaluate each set of conditions if they match `userId`
-  - loop through all flags and for each `audienceId`, return flag evaluation based on whether ANY of the audiences evaluate to `true`
-  - memoize the flag evaluation object for future client SDK requests for same `userId` in `cache` object
-
-## Data modeling: Flag bearer cache data structure
-- memoized flag evaluation values organized by SDK key, then userId, then unique flag name
-```js
-// Shape of cache object
-const cache = {
-  sdkKey1: {
-    userId1: {
-      flageName1: VALUE_OF_FLAG (bool),
-      flageName2: VALUE_OF_FLAG (bool),
-    } ,
-    userId2 : { ... }
+[
+  { sdkKey: 'beta_sdk_0',
+    flags: [
+      {
+        flagKey: 'new-button',
+        status: false,
+        value: false,
+      },
+    ]
   },
-  sdkKey2 : { ... }
-}
-
-// Example cache lookup for a user -- allows O(1) lookup
-const userFlagValues = cache[sdkKey][userId]
-
-{
-  flagName1: true,
-  flageName2: false,
-  ...
-}
+  { sdkKey: 'beta_sdk_1',
+    flags: [
+      {
+        flagKey: 'new-nav-bar',
+          status: false,
+          value: false,
+      },
+    ]
+  }
+]
 ```
-# POST `/connect/clientInit`
+# POST `/connect/clientInit` | Initialize Client SDK
 Client SDK initialization request route. Returns an object of flag names and the flag evaluation for a specific user context.
+- When receiving a client SDK initialization request, Flag bearer will parse through full flag dataset to identify flags pertaining to specific instance (`sdkKey`).
+- Memoizes evaluated flags in-memory 
 
 ## Expected Payload
 - expects `sdkKey` and a `userContext` object
@@ -120,3 +106,29 @@ Client SDK initialization request route. Returns an object of flag names and the
 ```
 ### Error Response
 - `400` status code will be returned if SDK key or userId is not provided or invalid. 
+
+
+## Flag Bearer Cache: Cache data structure
+- memoized flag evaluation values organized by SDK key, then userId, then unique flag name
+```js
+// Shape of cache object
+const cache = {
+  sdkKey1: {
+    userId1: {
+      flageName1: VALUE_OF_FLAG (bool),
+      flageName2: VALUE_OF_FLAG (bool),
+    } ,
+    userId2 : { ... }
+  },
+  sdkKey2 : { ... }
+}
+
+// Example cache lookup for a user -- allows O(1) lookup
+const userFlagValues = cache[sdkKey][userId]
+
+{
+  flagName1: true,
+  flageName2: false,
+  ...
+}
+```
