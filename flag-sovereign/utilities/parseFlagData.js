@@ -82,4 +82,29 @@ function evaluateFlags(sdkInstance, userId) {
   return flagEvals;
 }
 
-module.exports = { getSdkInstance, evaluateFlags }
+
+  // returns an array of 'update' objects organized by SDK instance, which holds array of flags that have been toggled off
+function findDisabledFlags(flagData) {
+  const flagUpdates = flagData.map(sdkInstance => {
+    let flagUpdate = {};
+    flagUpdate['sdk'] = sdkInstance.sdkKey;
+
+    const disabledFlags = sdkInstance.flags.reduce((accum, flag) => {
+      let { status, flagKey } = flag;
+      if (!status) {
+        accum.push({
+          flagKey,
+          status,
+          value: false,
+        });
+      }
+      return accum;
+    }, []);
+
+    flagUpdate['flags'] = disabledFlags;
+    return flagUpdate;
+  });
+  return flagUpdates;
+}
+
+module.exports = { getSdkInstance, evaluateFlags, findDisabledFlags }
