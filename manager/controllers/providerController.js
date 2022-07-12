@@ -5,8 +5,6 @@ const { validationResult } = require('express-validator');
 const getRuleset = async(req, res, next) => {
   try {
     const fullFlags = await fetchFlags() // console.log this to see the raw data
-    console.log(fullFlags[0].audiences)
-    console.log(fullFlags[0].audiences[0].conditions)
     const processedFlags = flattenFlags(fullFlags)
 
     res.json(processedFlags)
