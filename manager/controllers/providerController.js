@@ -5,6 +5,8 @@ const { validationResult } = require('express-validator');
 const getRuleset = async(req, res, next) => {
   try {
     const fullFlags = await fetchFlags() // console.log this to see the raw data
+    console.log(fullFlags[0].audiences)
+    console.log(fullFlags[0].audiences[0].conditions)
     const processedFlags = flattenFlags(fullFlags)
 
     res.json(processedFlags)
@@ -72,7 +74,7 @@ function appendToExistingSDK(resultArr, sdkInd, flag) {
   flag.audiences.forEach(flagAud => {
     let exists = resultArr.find(({audiences}) => {
       return audiences.find(({audienceKey}) => {
-        return audienceKey === flagAud.name // change this after translation
+        return audienceKey === flagAud.key
       })
     })
 
@@ -85,20 +87,19 @@ function buildFlattenedFlag(rawFlagObj) {
   return {
     flagKey: rawFlagObj.key,
     status: rawFlagObj.status,
-    audiences: rawFlagObj.audiences.map(({name}) => name)
+    audiences: rawFlagObj.audiences.map(({key}) => key)
   }
 }
 
 function buildFlattenedAudience(rawAudienceObj) {
-  let {name, conditions} = rawAudienceObj
+  let {key, combine, conditions} = rawAudienceObj
 
   return {
     audienceKey: key,
-    combination: rawAudienceObj.combine,
+    combination: combine,
     conditions: conditions.map(({attribute, operator, value}) => {
       return {
         attribute: attribute.key,
-        type: attribute.attrType,
         operator,
         value,
       }

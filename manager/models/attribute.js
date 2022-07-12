@@ -15,7 +15,7 @@ const AttributeSchema = new Schema({
     type: String,
     unique: true
   },
-  name: String,
+  displayName: String,
   attrType: {
     type: String,
     enum: ["BOOL", "STR", "NUM", "DATETIME"],

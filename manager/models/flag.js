@@ -22,21 +22,18 @@ const FlagSchema = new Schema({
     unique: true,
     required: [true, 'The Flag key is required'],
   },
+  displayName: String,
   sdkKey: String,
   status: {
     type: Boolean,
     default: false
   },
   audiences: [{ type: ObjectId, ref: 'Audience' }],
-  combine: {
-    type: Boolean,
-    default: false
-  },
-  combine: {
-    type: String,
-    enum: ['ANY', 'ALL'],
-    default: 'ANY'
-  },
+  // combine: {
+  //   type: String,
+  //   enum: ['ANY', 'ALL'],
+  //   default: 'ANY'
+  // },
 }, { timestamps: true });
 
 const Flag = mongoose.model('Flag', FlagSchema);

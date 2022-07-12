@@ -25,7 +25,7 @@ const AudienceSchema = new Schema({
     type: String,
     unique: true
   },
-  name: String,
+  displayName: String,
   combine: {
     type: String,
     enum: ['ANY', 'ALL'],
