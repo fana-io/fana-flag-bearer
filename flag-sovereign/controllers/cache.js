@@ -20,12 +20,12 @@ const checkCache = (req, res, next) => {
   // need to fix  
   try {
     if (cache.has(sdkKey)) { //just flag eval
-      console.log('from cache');
-      return res.status(200).send(cache.get(sdkKey[userId]))
-    } else {
-      console.log('not found in cache', cache.get(sdkKey));
-      return next();  
+      const sdkInstance = cache.get(sdkKey);
+      if (sdkInstance[userId]) {
+        return res.status(200).send(sdkInstance[userId])
+      } 
     }
+    return next();  
   } catch (err) {
     throw new Error(err);
   }

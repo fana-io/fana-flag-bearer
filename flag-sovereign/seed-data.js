@@ -1,4 +1,4 @@
-export const allFlags = [
+const allFlags = [
   {
     sdkKey: 'beta_sdk_0',
     flags: [
@@ -127,7 +127,7 @@ export const allFlags = [
   },
 ];
 
-export const testUser = {
+const testUser = {
   userId: 'JJUY',
   beta: false,
   age: 24,
