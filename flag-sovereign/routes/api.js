@@ -15,7 +15,7 @@ router.post(`/connect/clientInit`, validateClientInit, checkCache, initializeCli
 // endpoint for client SDKs to establish SSE connections
 router.get('/subscribe/client', subscribeToUpdates)
 
-// receives client SDK initialization requests
+// receives server SDK initialization requests
 router.post(`/connect/serverInit`, validateServerInit, initializeServerSDK)
 
 module.exports = router;
