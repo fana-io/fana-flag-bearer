@@ -139,10 +139,6 @@ const userFlagValues = cache[sdkKey][userId]
 ```js
 {
   sdkKey: String,
-  userContext: {
-    userId: String,
-    // ... optional attributes
-  },
 }
 ```
 ## Example Successful Response
