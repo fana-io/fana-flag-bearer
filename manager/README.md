@@ -1,9 +1,9 @@
 ## Preliminary Day 2 Database Model
 
 # TODO Today:
-Remove flag combination; add Audience combination
-Translate keys and display name from {name}
-
+~~Remove flag combination; add Audience combination~~
+~~Translate keys and display name from {name}~~
+Create Toggle Endpoint
 
 # Changes since Day 1:
 
@@ -58,19 +58,20 @@ Since this is a public repo, I'll post the URI in discord
 
 Expected Payload:
 ```json
-'{
-    "name": "student",
-    "attrType": "BOOL"
-}'
+{
+    "name": "age",
+    "attrType": "NUM"
+}
 ```
 
 Response:
 ```json
 {
-    "name": "student",
-    "attrType": "BOOL",
-    "createdAt": "2022-07-09T18:20:52.338Z",
-    "updatedAt": "2022-07-09T18:20:52.338Z"
+  "key": "age",
+  "displayName": "age",
+  "attrType": "NUM",
+  "createdAt": "2022-07-12T05:12:11.971Z",
+  "updatedAt": "2022-07-12T05:12:11.971Z"
 }
 ```
 
@@ -79,16 +80,16 @@ Response:
 Expected Payload:
 ```json
 {
-    "name": "california_students",
-    "combine": "ALL",
+    "name": "Beta Testers",
+    "combine": "ANY",
     "conditions": [
         {
-        "attribute": "62c9c35e12c5e0ceaac10eec", // possible name instead, WIP see below
+        "attribute": "state",
         "operator": "EQ",
         "value": "california"
         },
         {
-        "attribute": "62c9c70412c5e0ceaac10ef4",
+        "attribute": "beta",
         "operator": "EQ",
         "value": "true"
         }        
@@ -99,24 +100,25 @@ Expected Payload:
 Response:
 ```json
 {
-    "name": "california_students",
-    "combine": "ALL",
-    "conditions": [
-        {
-            "attribute": "62c9c35e12c5e0ceaac10eec",
-            "operator": "EQ",
-            "value": "california",
-            "_id": "62c9cda554b51c71f940103f"  // probably prune this WIP
-        },
-        {
-            "attribute": "62c9c70412c5e0ceaac10ef4",
-            "operator": "EQ",
-            "value": "true",
-            "_id": "62c9cda554b51c71f9401040"
-        }
-    ],
-    "createdAt": "2022-07-09T18:49:09.296Z",
-    "updatedAt": "2022-07-09T18:49:09.296Z"
+  "key": "beta_testers",
+  "name": "Beta Testers",
+  "combine": "ANY",
+  "conditions": [
+    {
+      "attribute": "62cd00064e7eb5837e407314",
+      "operator": "EQ",
+      "value": "california",
+      "_id": "62cd00eecbd72828c3c83e1f"
+    },
+    {
+      "attribute": "62cd000a4e7eb5837e407318",
+      "operator": "EQ",
+      "value": "true",
+      "_id": "62cd00eecbd72828c3c83e20"
+    }
+  ],
+  "createdAt": "2022-07-12T05:04:46.980Z",
+  "updatedAt": "2022-07-12T05:04:46.980Z"
 }
 ```
 
@@ -125,26 +127,25 @@ Response:
 Expected Payload:
 ```json
 {
-    "key": "fake_flag_1",
+    "name": "Fake Flag 1",
     "sdkKey": "beta_sdk_0",
-    "combine": "ALL",
-    "audiences": ["62c9cc2f54b51c71f940103b", "62c9cda554b51c71f940103e"]
+    "audiences": ["california_students", "beta_testers"]
 }
 ```
 
 Response:
 ```json
 {
-    "key": "fake_flag_1",
-    "sdkKey": "beta_sdk_0",
-    "audiences": [
-        "62c9cc2f54b51c71f940103b",  // maybe unique name later
-        "62c9cda554b51c71f940103e"
-    ],
-    "combine": "ALL",
-    "status": false,    // this is not a string
-    "createdAt": "2022-07-09T19:13:36.696Z",
-    "updatedAt": "2022-07-09T19:13:36.696Z"
+  "key": "fake_flag 1",
+  "displayName": "Fake Flag 1",
+  "sdkKey": "beta_sdk_0",
+  "audiences": [
+    "62cd00204e7eb5837e40731b",
+    "62cd00eecbd72828c3c83e1e"
+  ],
+  "status": false,
+  "createdAt": "2022-07-12T05:16:33.728Z",
+  "updatedAt": "2022-07-12T05:16:33.728Z"
 }
 ```
 
