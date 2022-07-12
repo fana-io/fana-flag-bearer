@@ -24,7 +24,6 @@ function evaluateAudiences(sdkInstance, targetAttribute, targetAttrValue) {
 
     for (const condition of audience.conditions) {
       // countConditionsLeftToEvaluate--;
-      console.log('looking at condition:', condition.attribute);
 
       if (
         condition.attribute === targetAttribute &&
@@ -51,7 +50,7 @@ function evaluateAudiences(sdkInstance, targetAttribute, targetAttrValue) {
     }
     audienceEvals[audienceKey] = eval;
   });
-  console.log('audience key evaluations', audienceEvals);
+  // console.log('audience key evaluations', audienceEvals);
   return audienceEvals;
 }
 
@@ -59,7 +58,6 @@ function evaluateAudiences(sdkInstance, targetAttribute, targetAttrValue) {
 // TODO: update hard coding for `targetAttribute`
 function evaluateFlags(sdkInstance, userId) {
   const flagEvals = {};
-  console.log('sdk instance', sdkInstance);
   const userAudienceEvals = evaluateAudiences(sdkInstance, "userId", userId);
   // Evaluate each flag in sdkInstance
   sdkInstance.flags.forEach((flag) => {
@@ -80,7 +78,7 @@ function evaluateFlags(sdkInstance, userId) {
 
     flagEvals[flag.flagKey] = eval; 
   });
-  console.log('flag evals for user:', flagEvals);
+  // console.log('flag evals for user:', flagEvals);
   return flagEvals;
 }
 

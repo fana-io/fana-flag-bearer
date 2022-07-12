@@ -4,14 +4,16 @@ const cors = require("cors");
 const morgan = require("morgan");
 const routes = require("./routes/api");
 const { initializeClientSDK } = require("./controllers/flagsetController");
+const ngrok = require('ngrok')
 
 const app = express();
-const PORT = process.env.PORT || 5001;
+const PORT = process.env.PORT || 8080;
 
 app.use(cors());
 app.use(morgan("tiny"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+
 
 // TODO: cache rules
   // populated on initial SDK request for a given user context

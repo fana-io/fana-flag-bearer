@@ -10,7 +10,6 @@ function populateCacheForUser(sdkKey, userId, flagEvaluations) {
   const userEvals = {};
   userEvals[userId] = { ...flagEvaluations };
   cache[sdkKey] = userEvals;
-  console.log('Cache updated for jjuy:', cache);
 }
 
 module.exports = { populateCacheForUser }
