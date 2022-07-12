@@ -132,3 +132,90 @@ const userFlagValues = cache[sdkKey][userId]
   ...
 }
 ```
+# POST `/connect/serverInit'` | Initialize Server-side SDK
+- returns unevaluated flags and audience conditions
+## Expected Payload
+- expects `sdkKey`
+```js
+{
+  sdkKey: String,
+  userContext: {
+    userId: String,
+    // ... optional attributes
+  },
+}
+```
+## Example Successful Response
+- sends the flag data for server-side sdk instance
+```js
+ {
+    sdkKey: 'beta_sdk_0',
+    flags: [
+      {
+        flagKey: 'flag-evals-true',
+        status: true,
+        audiences: ['beta-testers', 'california_students'],
+      },
+      {
+        flagKey: 'flag-evals-false',
+        status: true,
+        audiences: ['california_students'],
+      },
+      {
+        flagKey: 'no-audiences-flag',
+        status: true,
+        audiences: [],
+      },
+      {
+        flagKey: 'toggled-off-flag',
+        status: false,
+        audiences: ['beta-testers'],
+      },
+    ],
+    audiences: [
+      {
+        audienceKey: 'beta-testers',
+        combination: 'ANY',
+        conditions: [
+          {
+            attribute: 'userId',
+            type: 'STR',
+            operator: 'EQ',
+            value: 'jjuy',
+          },
+          {
+            attribute: 'beta',
+            type: 'BOOL',
+            operator: 'EQ',
+            value: true,
+          },
+        ],
+      },
+      {
+        audienceKey: 'california_students',
+        combination: 'ALL',
+        conditions: [
+          {
+            attribute: 'state',
+            type: 'STR',
+            operator: 'EQ',
+            value: 'california',
+          },
+          {
+            attribute: 'userId',
+            type: 'STR',
+            operator: 'EQ',
+            value: 'jjuy',
+          },
+        ],
+      },
+    ],
+  }
+  ```
+  ### Error Response
+- `400` status code will be returned if SDK key is not provided or invalid. 
+```js
+{
+  error: 'SDK key is required.'
+}
+```

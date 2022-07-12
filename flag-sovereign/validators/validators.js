@@ -11,3 +11,6 @@ exports.validateClientInit = [
   body('sdkKey').notEmpty(),
   body('userContext.userId').notEmpty(),
 ];
+exports.validateServerInit = [
+  body('sdkKey').notEmpty(),
+];
