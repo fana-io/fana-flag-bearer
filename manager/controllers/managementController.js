@@ -7,7 +7,8 @@ const {
   processAPIFlag,
   processAPIAudience,
   processAPIAttribute
-} = require('./helpers/managementHelpers')
+} = require('./helpers/managementHelpers');
+const { request } = require('express');
 
 const createFlag = async (req, res, next) => {
   const errors = validationResult(req);
@@ -76,6 +77,20 @@ const createAudience = async (req, res, next) => {
   }
 };
 
+const toggleFlag = async (req, res, next) => {
+  try {
+    const keyToToggle = req.params.key;
+    const updatedFlag = await Flag.findOneAndUpdate(
+      {key: keyToToggle},
+      {status: req.body.status},
+      {new: true}
+    )
+
+    res.json(updatedFlag)
+  } catch (err) { next(new HttpError(err, 500)) }
+}
+
 exports.createFlag = createFlag;
+exports.toggleFlag = toggleFlag;
 exports.createAudience = createAudience;
 exports.createAttribute = createAttribute;

@@ -5,9 +5,6 @@ const { populateCacheForUser } = require('./cache');
 
 const client = { stream: null }; // stores response object to stream SSE
 
-// TODO: refactor to handle other attributes besides userId
-// TODO: move populate cache
-
 // initializes sdk and returns evaluated flags
 const initializeClientSDK = (req, res) => {
   const errors = validationResult(req);
@@ -15,12 +12,13 @@ const initializeClientSDK = (req, res) => {
     const { userId, ...remainingUserContext } = req.body.userContext;
     const allFlags = flagData.getFlagData();
     const sdkInstance = getSdkInstance(req.body.sdkKey, allFlags);
+
     if (!sdkInstance) {
       return res.status(400).send({ error: 'Invalid SDK key.' });
     }
     const userFlagEvals = evaluateFlags(sdkInstance, userId);
     populateCacheForUser(req.body.sdkKey, userId, userFlagEvals);
-    console.log('not from cache')
+
     res.json(userFlagEvals);
   } else {
     res.status(400).send({ error: 'SDK key and userId are required.' });
@@ -43,7 +41,8 @@ const subscribeToUpdates = (req, res) => {
 };
 
 const pushDisabledFlagsEvent = (req, res, next) => {
-  // todo: check if any open connections, if not, go next()
+  // if no open connections, move onto next
+  if (!client.stream) next();
 
   const newFlagData = req.body;
   const flagUpdates = findDisabledFlags(newFlagData);
