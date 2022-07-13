@@ -11,6 +11,7 @@ const initializeClientSDK = (req, res) => {
   if (errors.isEmpty()) {
     const { userId, ...remainingUserContext } = req.body.userContext;
     const allFlags = flagData.getFlagData();
+    // rename sdkInstance
     const sdkInstance = getSdkInstance(req.body.sdkKey, allFlags);
 
     if (!sdkInstance) {
@@ -18,9 +19,9 @@ const initializeClientSDK = (req, res) => {
     }
     const userFlagEvals = evaluateFlags(sdkInstance, userId);
     populateCacheForUser(req.body.sdkKey, userId, userFlagEvals);
-    res.json(userFlagEvals);
+    return res.json(userFlagEvals);
   } else {
-    res.status(400).send({ error: 'SDK key and userId are required.' });
+    return res.status(400).send({ error: 'SDK key and userId are required.' });
   }
 };
 
@@ -40,7 +41,7 @@ const subscribeToUpdates = (req, res) => {
   client.stream = res; // store response obj to be written to later
 };
 
-const pushDisabledFlagsEvent = (req, res, next) => {
+const pushDisabledFlagsEvent = (newFlagData) => {
   // if no open connections, move onto return
   if (!client.stream) {
     next()
@@ -56,7 +57,7 @@ const pushDisabledFlagsEvent = (req, res, next) => {
     client.stream.write(`data: ${JSON.stringify(sdkUpdate)}\n`);
     client.stream.write('\n\n');
   });
-  next();
+  // next();
 };
 
 module.exports = {

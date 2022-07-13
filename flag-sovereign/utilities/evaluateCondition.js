@@ -1,4 +1,6 @@
 // for both strings and booleans
+// targetVal is from flag rules
+// candidateVal is from userContext
 const isEq = (targetVal, candidateVal) => {
   if (typeof candidateVal === 'string') {
     candidateVal = candidateVal.toLowerCase();
@@ -33,7 +35,7 @@ let operandMapper = {
   LT_EQ: isLessEqThan,
   GT_EQ: isGreaterEqThan,
 };
-
+// for one attribute
 const evaluateCondition = (userContext, condition) => {
   const op = condition.operator;
   const attribute = condition.attribute;

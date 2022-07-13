@@ -8,7 +8,7 @@ const { pushDisabledFlagsEvent, initializeClientSDK, subscribeToUpdates } = requ
 
 // route to receive webhook from flag manager
 // also sends push event of disabled flags 
-router.post('/flagset', validateFlagset, pushDisabledFlagsEvent, createFlagset);
+router.post('/flagset', validateFlagset, createFlagset);
 
 // receives client SDK initialization requests
 router.post(`/connect/clientInit`, validateClientInit, checkCache, initializeClientSDK)
