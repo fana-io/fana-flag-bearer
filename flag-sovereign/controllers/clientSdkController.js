@@ -45,12 +45,7 @@ const pushDisabledFlagsEvent = (req, res, next) => {
 
   const newFlagData = req.body;
   const flagUpdates = findDisabledFlags(newFlagData);
-  /*
-  FLAG UPDATES [
-  { sdkKey: 'beta_sdk_0', flags: [ [Object], [Object], [Object] ] },
-  { sdkKey: 'beta_sdk_1', flags: [ [Object] ] }
-]
-  */
+
   flagUpdates.forEach(sdkUpdate => {
     client.stream.write(`data: ${JSON.stringify(sdkUpdate)}`);
     client.stream.write('\n\n');
