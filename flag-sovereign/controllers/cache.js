@@ -17,10 +17,10 @@ function populateCacheForUser(sdkKey, userId, flagEvaluations) {
 const checkCache = (req, res, next) => {
   let sdkKey = req.body.sdkKey
   let userId = req.body.userContext.userId
-  // need to fix  
+
   try {
     if (cache.has(sdkKey)) { //just flag eval
-      const sdkInstance = cache.get(sdkKey);
+      const sdkInstance = cache.get(sdkKey); // can you chain get? // mget?
       if (sdkInstance[userId]) {
         return res.status(200).send(sdkInstance[userId])
       } 
@@ -31,4 +31,4 @@ const checkCache = (req, res, next) => {
   }
 }
 
-module.exports = { populateCacheForUser, checkCache }
+module.exports = { populateCacheForUser, checkCache, cache }

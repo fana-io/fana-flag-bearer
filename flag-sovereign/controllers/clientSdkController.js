@@ -11,6 +11,7 @@ const initializeClientSDK = (req, res) => {
   if (errors.isEmpty()) {
     const { userId, ...remainingUserContext } = req.body.userContext;
     const allFlags = flagData.getFlagData();
+    // rename sdkInstance
     const sdkInstance = getSdkInstance(req.body.sdkKey, allFlags);
 
     if (!sdkInstance) {
