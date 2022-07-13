@@ -59,11 +59,13 @@ export const attributes = [
   {
     _id: "1",
     name: "beta",
+    attrType: "BOOL",
     type: "boolean"
   },
   {
     _id: "2",
     name: "state",
+    attrType: "STR",
     type: "string"
   }
 ]
