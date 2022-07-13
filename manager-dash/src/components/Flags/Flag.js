@@ -1,22 +1,22 @@
-import { useParams } from "react-router"
+import { useSelector } from "react-redux";
+import { useParams } from "react-router-dom"
 import { FlagAudience } from "./FlagAudience"
-import { flags } from "../../lib/data";
 
 export const Flag = () => {
   const flagKey = useParams().key;
-
+  const flags = useSelector(state => state.flags);
   const flagDetails = flags.find(flag => flag.key === flagKey);
-  // since audience specifics don't live in the flag, we'll probably need to pull audience data and map it appropriately
-  // this probably means we'll have to use redux since passing audience information everywhere doesn't seem great
   return (
     <div>
       <h1>Flag Details</h1>
       <h2>Name: {flagDetails.displayName}</h2>
       <h3>Key: {flagDetails.key}</h3>
+      <p>Enabled: {String(flagDetails.status)}</p>
       <h2>Targeted Audiences:</h2>
       <ul>
         {flagDetails.audiences.map(audience => {
-          return (<li><FlagAudience audience={audience} /></li>)
+          // keeps giving me a warning about not using a key here?
+          return (<FlagAudience key={audience.key} audience={audience} />)
         })}
       </ul>
     </div>

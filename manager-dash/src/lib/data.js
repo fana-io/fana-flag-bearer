@@ -1,3 +1,5 @@
+import moment from "moment"
+
 export const flags = [
   {
     _id: '123',
@@ -6,8 +8,8 @@ export const flags = [
     status: false,
     audiences: [{ name: "Beta testers" }, { name: "California Students" }],
     combine: "ALL",
-    createdAt: new Date(),
-    updatedAt: new Date()
+    createdAt: moment().format("MMM Do YY"),
+    updatedAt: moment().format("MMM Do YY")
   },
   {
     _id: '124',
@@ -16,8 +18,8 @@ export const flags = [
     status: true,
     audiences: [{ name: "Beta testers" }],
     combine: "ANY",
-    createdAt: new Date(),
-    updatedAt: new Date()
+    createdAt: moment().format("MMM Do YY"),
+    updatedAt: moment().format("MMM Do YY")
   }
 ]
 
@@ -30,8 +32,8 @@ export const audiences = [
         operator: 'EQ',
         value: 'true'
       }],
-    createdAt: new Date(),
-    updatedAt: new Date(),
+    createdAt: moment().format("MMM Do YY"),
+    updatedAt: moment().format("MMM Do YY"),
     _id: 'abc',
     key: "beta_testers",
     displayName: "Beta Testers"
@@ -45,8 +47,8 @@ export const audiences = [
         value: 'california'
       }
     ],
-    createdAt: new Date(),
-    updatedAt: new Date(),
+    createdAt: moment().format("MMM Do YY"),
+    updatedAt: moment().format("MMM Do YY"),
     _id: 'abd',
     key: "california_students",
     displayName: "California Students"

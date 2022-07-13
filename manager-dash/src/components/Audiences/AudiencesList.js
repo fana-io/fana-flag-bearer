@@ -8,9 +8,14 @@ export const AudiencesList = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
+    return (
+      console.log('audiences unmounting')
+    )
+  }, [])
+  useEffect(() => {
     dispatch(fetchAudiences());
   }, [dispatch])
-  
+
   return (
     <div className="list">
       {audiences.map(audience => {

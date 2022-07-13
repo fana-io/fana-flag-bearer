@@ -1,5 +1,7 @@
 export const FlagAudience = ({ audience }) => {
   return (
-    <h4>{audience.name}</h4>
+    <li>
+      <h4>{audience.name}</h4>
+    </li>
   )
 }

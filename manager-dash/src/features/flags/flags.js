@@ -13,8 +13,12 @@ export const createFlag = createAsyncThunk("flags/createFlag", async () => {
   return null;
 })
 
-export const editFlag = createAsyncThunk("flags/editFlag", async () => {
-  return null;
+export const editFlag = createAsyncThunk("flags/editFlag", async (updatedObj) => {
+  // make a patch request for the current flag and updated fields
+  console.log('edit thunk called')
+  return {
+    ...updatedObj
+  }
 })
 
 export const deleteFlag = createAsyncThunk("flags/deleteFlag", async () => {
@@ -35,9 +39,18 @@ const flagSlice = createSlice({
     });
 
     builder.addCase(editFlag.fulfilled, (state, action) => {
+      console.log('flag is being edited!')
       return state.map(flag => {
         if (flag.key === action.payload.key) {
-          return action.payload;
+          // we're expecting the api to return us the entire patched object, so for now 
+          // we need to do this workaround
+          // return action.payload;
+          console.log(action.payload);
+          const object = { ...flag }
+          for (let prop in action.payload) {
+            object[prop] = action.payload[prop];
+          }
+          return object;
         }
 
         return flag;

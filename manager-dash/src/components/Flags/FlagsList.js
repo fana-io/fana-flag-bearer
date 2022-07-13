@@ -6,8 +6,14 @@ import { FlagListing } from './FlagListing';
 export const FlagsList = () => {
   const flags = useSelector(state => state.flags);
   const dispatch = useDispatch();
-
+  
   useEffect(() => {
+    return (
+      console.log("unmounting?")
+    )
+  }, [])
+  useEffect(() => {
+    console.log('fetching flags')
     dispatch(fetchFlags());
   }, [dispatch])
 

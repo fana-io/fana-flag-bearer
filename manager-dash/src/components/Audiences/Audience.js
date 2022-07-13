@@ -1,4 +1,4 @@
-import { useParams } from "react-router"
+import { useParams } from "react-router-dom"
 import { audiences } from "../../lib/data";
 import { AudienceCondition } from "./AudienceCondition";
 
