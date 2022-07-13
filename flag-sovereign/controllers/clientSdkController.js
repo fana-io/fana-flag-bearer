@@ -40,8 +40,9 @@ const subscribeToUpdates = (req, res) => {
 };
 
 const pushDisabledFlagsEvent = (req, res, next) => {
-  // if no open connections, move onto next
-  if (!client.stream) next();
+  // if no open connections, move onto return
+  if (!client.stream) next()
+  console.log("If no stream, shouldn't be in here, right?")
 
   const newFlagData = req.body;
   const flagUpdates = findDisabledFlags(newFlagData);

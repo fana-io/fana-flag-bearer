@@ -17,13 +17,13 @@ async function processAPIFlag(rawReqFlag) {
 async function processAPIAudience(rawReqAud) {
   const { name, combine, conditions } = rawReqAud
   const [displayName, key] = processNameInput(name)
-  const curratedConds = await translateConditionAttrKeysToIds(conditions)
+  const curatedConds = await translateConditionAttrKeysToIds(conditions)
 
   return {
     key,
     displayName,
     combine,
-    conditions: curratedConds
+    conditions: curatedConds
   }
 }
 
@@ -43,15 +43,20 @@ function processNameInput(input) {
   return [input, key]
 }
 
+function processCondVals(vals) {
+  if (Array.isArray(vals)) return vals.map(val => processNameInput(val)[1])
+  return processNameInput(vals)[1]
+}
+
 async function translateKeysToIds(mongooseModel, keysArr) {
   // this is a shim to translate API requests that use `key` values
   // in their requests to create flags with audiences, etc
   // this function translates the key values recieved by API into Mongo ObjectIds
-  const curratedKeys = keysArr.map(inputKey => processNameInput(inputKey)[1])
+  const curatedKeys = keysArr.map(inputKey => processNameInput(inputKey)[1])
   let collection = await mongooseModel.find().exec()
 
   try {
-    return curratedKeys.map(key => {
+    return curatedKeys.map(key => {
       let doc = collection.find(document => document.key === key)
       if (!doc) throw `Invalid audience key ${key} in request data`
       return doc._id
@@ -68,7 +73,11 @@ async function translateConditionAttrKeysToIds(condsArr) {
     const attrIds = await translateKeysToIds(Attribute, attrKeys)
 
     const processedConds = condsArr.map((condition, ind) => {
-      return {...condition, attribute: attrIds[ind]}
+      return {
+        ...condition,
+        attribute: attrIds[ind],
+        value: processCondVals(condition.value)
+      }
     })
 
     return processedConds

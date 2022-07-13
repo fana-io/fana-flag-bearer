@@ -7,6 +7,7 @@ const createFlagset = (req, res, next) => {
   if (errors.isEmpty()) {
     // assuming Manager always sends full set of flags
     flagData.setFlagData(req.body);
+    console.log(req.body)
     res.status(201).send('201: Flagset created');
   } else {
     return res.status(404).send('Input field error.');

@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const managementController = require('../controllers/managementController');
-const { getRuleset } = require('../controllers/providerController')
+const { getRuleset, pushUpdatesWH } = require('../controllers/providerController')
 const {
   validateFlag,
   validateAudience,
@@ -10,12 +10,12 @@ const {
 
 router.get('/ruleset', getRuleset)
 
-router.post('/flags', validateFlag, managementController.createFlag);
+router.post('/flags', validateFlag, managementController.createFlag, pushUpdatesWH);
 
-router.patch('/flags/:key/toggle', managementController.toggleFlag);
+router.patch('/flags/:key/toggle', managementController.toggleFlag, pushUpdatesWH);
 
-router.post('/audiences', validateAudience, managementController.createAudience);
+router.post('/audiences', validateAudience, managementController.createAudience, pushUpdatesWH);
 
-router.post('/attributes', validateAttribute, managementController.createAttribute);
+router.post('/attributes', validateAttribute, managementController.createAttribute, pushUpdatesWH);
 
 module.exports = router;

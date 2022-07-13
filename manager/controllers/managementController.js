@@ -8,7 +8,6 @@ const {
   processAPIAudience,
   processAPIAttribute
 } = require('./helpers/managementHelpers');
-const { request } = require('express');
 
 const createFlag = async (req, res, next) => {
   const errors = validationResult(req);
@@ -82,9 +81,10 @@ const toggleFlag = async (req, res, next) => {
     const keyToToggle = req.params.key;
     const updatedFlag = await Flag.findOneAndUpdate(
       {key: keyToToggle},
-      {status: req.body.status},
+      {status: req.body.status}, // can you reference found doc?
       {new: true}
     )
+    next()
 
     res.json(updatedFlag)
   } catch (err) { next(new HttpError(err, 500)) }
