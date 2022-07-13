@@ -1,6 +1,12 @@
 const Flag = require('../models/flag');
 const HttpError = require('../models/httpError');
+const axios = require('axios')
+require('dotenv').config();
 const { validationResult } = require('express-validator');
+
+axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
+axios.defaults.headers.common['Accept'] = 'application/json';
+const webhookEndpoint = process.env.WH_URI
 
 const getRuleset = async(req, res, next) => {
   try {
@@ -13,7 +19,16 @@ const getRuleset = async(req, res, next) => {
   }
 }
 
-async function fetchFlags() {
+const pushUpdatesWH = async(req, res, next) => {
+  const rawFlags = await fetchFlags()
+  const processedFlags = flattenFlags(rawFlags)
+
+  try {
+    await axios.post(webhookEndpoint, processedFlags)
+  } catch (err) {console.log(err)}
+}
+
+const fetchFlags = async () => {
   let flags = [] // initialize return array
 
   // streams query one result at a time (see .cursor method)
@@ -106,3 +121,5 @@ function buildFlattenedAudience(rawAudienceObj) {
 }
 
 exports.getRuleset = getRuleset;
+exports.pushUpdatesWH = pushUpdatesWH;
+exports.fetchFlags = fetchFlags;

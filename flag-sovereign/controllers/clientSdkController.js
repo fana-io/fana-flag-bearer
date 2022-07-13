@@ -41,17 +41,15 @@ const subscribeToUpdates = (req, res) => {
 };
 
 const pushDisabledFlagsEvent = (req, res, next) => {
-  // if no open connections, move onto next
-  if (!client.stream) next();
+  // if no open connections, move onto return
+  if (!client.stream) {
+    next()
+    return
+  }
 
   const newFlagData = req.body;
   const flagUpdates = findDisabledFlags(newFlagData);
-  /*
-  FLAG UPDATES [
-  { sdkKey: 'beta_sdk_0', flags: [ [Object], [Object], [Object] ] },
-  { sdkKey: 'beta_sdk_1', flags: [ [Object] ] }
-]
-  */
+
   flagUpdates.forEach(sdkUpdate => {
     client.stream.write(`data: ${JSON.stringify(sdkUpdate)}`);
     client.stream.write('\n\n');
