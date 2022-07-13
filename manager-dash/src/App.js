@@ -1,9 +1,9 @@
 import './App.css';
 import { Navigation } from './components/Navigation';
-import { FlagsList } from './components/FlagsList';
+import { FlagsList } from './components/Flags/FlagsList';
 import { AudiencesList } from './components/Audiences/AudiencesList';
 import { AttributesList } from './components/Attributes/AttributesList';
-import { Flag } from './components/Flag';
+import { Flag } from './components/Flags/Flag';
 import { Audience } from './components/Audiences/Audience';
 import { Route, Routes } from "react-router-dom";
 import { CreateFlagForm } from './components/Flags/CreateFlagForm';

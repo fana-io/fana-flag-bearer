@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { fetchFlags } from '../features/flags/flags';
+import { fetchFlags } from '../../features/flags/flags';
 import { FlagListing } from './FlagListing';
 
 export const FlagsList = () => {

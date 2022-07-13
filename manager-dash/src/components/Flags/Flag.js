@@ -1,6 +1,6 @@
 import { useParams } from "react-router"
 import { FlagAudience } from "./FlagAudience"
-import { flags } from "../lib/data";
+import { flags } from "../../lib/data";
 
 export const Flag = () => {
   const flagKey = useParams().key;
