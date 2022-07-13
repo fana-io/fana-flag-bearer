@@ -5,7 +5,7 @@ const seedData = [
       {
         flagKey: 'flag-evals-true',
         status: true,
-        audiences: ['beta-testers', 'california_students'],
+        audiences: [],
       },
       {
         flagKey: 'flag-evals-false',

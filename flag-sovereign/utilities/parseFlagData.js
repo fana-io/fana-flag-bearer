@@ -90,6 +90,7 @@ function findDisabledFlags(flagData) {
     flagUpdate['flags'] = disabledFlags;
     return flagUpdate;
   });
+
   return flagUpdates;
 }
 

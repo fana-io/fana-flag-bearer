@@ -31,6 +31,7 @@ const subscribeToUpdates = (req, res) => {
     Connection: 'keep-alive',
     'Cache-Control': 'no-cache',
   };
+  console.log('subscriber hit me');
   res.writeHead(200, headers);
   res.write(
     `data: Success: subscribed to messages for disabled flags.`
@@ -45,12 +46,14 @@ const pushDisabledFlagsEvent = (req, res, next) => {
     next()
     return
   }
-
+  
   const newFlagData = req.body;
   const flagUpdates = findDisabledFlags(newFlagData);
 
   flagUpdates.forEach(sdkUpdate => {
-    client.stream.write(`data: ${JSON.stringify(sdkUpdate)}`);
+    // custom event type -- client SDKs must listen for custom event
+    client.stream.write(`event: ${sdkUpdate.sdk}\n`);
+    client.stream.write(`data: ${JSON.stringify(sdkUpdate)}\n`);
     client.stream.write('\n\n');
   });
   next();
