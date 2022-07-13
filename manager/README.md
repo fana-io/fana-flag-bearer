@@ -1,10 +1,7 @@
 ## Preliminary Day 2 Database Model
 
-# TODO Today:
-~~Remove flag combination; add Audience combination~~
-~~Translate keys and display name from {name}~~
-~~Create Toggle Endpoint~~
-~~Add Clarity to Mongo Errors~~
+# Update:
+Fixed Toggle (a la Mongo Aggregation Pipeline)
 
 ### Notes:
 Toggle specifies the actual status in the body of the PATCH request
@@ -16,19 +13,6 @@ Pros:
 - Saves an additional query to Mongo to find the status and then negate it
 - i.e., Find flag, THEN update flag with toggled status
 - However, maybe can do the update async, awaiting only the Find
-
-# Disclaimer:
-This is incomplete in every way; just thought it would be helpful to maintain transparency regarding the current data model and how the DB is taking shape.
-
-Still needs some commenting, but this document is better.
-
-The API is incomplete and only has routes to create *Flags*, *Audiences*, and *Attributes*
-It's cumbersome as is. I wouldn't recommend it. But you can successfully curl//postman requests if you launch the App.
-
-*The validators are not particularly useful; they are much moreso just placeholders I borrowed from the React project*
-
-~~And for the above reason, errors for violating the respective Schemas when you try to create an object are not specific, so it can be confusing to try to identify the issue.~~
-Schema violations are more clear now (Day 3)
 
 ---
 

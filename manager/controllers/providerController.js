@@ -28,7 +28,7 @@ const pushUpdatesWH = async(req, res, next) => {
   } catch (err) {console.log(err)}
 }
 
-async function fetchFlags() {
+const fetchFlags = async () => {
   let flags = [] // initialize return array
 
   // streams query one result at a time (see .cursor method)
@@ -122,3 +122,4 @@ function buildFlattenedAudience(rawAudienceObj) {
 
 exports.getRuleset = getRuleset;
 exports.pushUpdatesWH = pushUpdatesWH;
+exports.fetchFlags = fetchFlags;

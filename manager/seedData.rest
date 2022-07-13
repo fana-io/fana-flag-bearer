@@ -1,4 +1,4 @@
-POST http://localhost:8080/api/attributes HTTP/1.1
+POST http://localhost:6000/api/attributes HTTP/1.1
 content-type: application/json
 
 {
@@ -8,7 +8,7 @@ content-type: application/json
 
 ###
 
-POST http://localhost:8080/api/attributes HTTP/1.1
+POST http://localhost:6000/api/attributes HTTP/1.1
 content-type: application/json
 
 {
@@ -18,7 +18,7 @@ content-type: application/json
 
 ###
 
-POST http://localhost:8080/api/attributes HTTP/1.1
+POST http://localhost:6000/api/attributes HTTP/1.1
 content-type: application/json
 
 {
@@ -28,7 +28,7 @@ content-type: application/json
 
 ###
 
-POST http://localhost:8080/api/attributes HTTP/1.1
+POST http://localhost:6000/api/attributes HTTP/1.1
 content-type: application/json
 
 {
@@ -38,7 +38,7 @@ content-type: application/json
 
 ###
 
-POST http://localhost:8080/api/audiences HTTP/1.1
+POST http://localhost:6000/api/audiences HTTP/1.1
 content-type: application/json
 
 {
@@ -60,7 +60,7 @@ content-type: application/json
 
 ###
 
-POST http://localhost:8080/api/audiences HTTP/1.1
+POST http://localhost:6000/api/audiences HTTP/1.1
 content-type: application/json
 
 {
@@ -82,7 +82,7 @@ content-type: application/json
 
 ###
 
-POST http://localhost:8080/api/audiences HTTP/1.1
+POST http://localhost:6000/api/audiences HTTP/1.1
 content-type: application/json
 
 {
@@ -104,7 +104,7 @@ content-type: application/json
 
 ###
 
-POST http://localhost:8080/api/flags HTTP/1.1
+POST http://localhost:6000/api/flags HTTP/1.1
 content-type: application/json
 
 {
@@ -115,7 +115,7 @@ content-type: application/json
 
 ###
 
-POST http://localhost:8080/api/flags HTTP/1.1
+POST http://localhost:6000/api/flags HTTP/1.1
 content-type: application/json
 
 {
@@ -127,8 +127,24 @@ content-type: application/json
 ###
 
 PATCH http://localhost:6000/api/flags/fake_flag_1/toggle HTTP/1.1
+
+###
+
+PATCH http://localhost:6000/api/flags/fake_flag_1 HTTP/1.1
 content-type: application/json
 
 {
     "status": "true"
 }
+
+###
+
+GET http://localhost:6000/api/flags/ HTTP/1.1
+
+###
+
+GET http://localhost:6000/api/attributes/ HTTP/1.1
+
+###
+
+GET http://localhost:6000/api/audiences/ HTTP/1.1
