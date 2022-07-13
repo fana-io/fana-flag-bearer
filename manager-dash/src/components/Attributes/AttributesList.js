@@ -1,4 +1,4 @@
-import { attributes } from '../lib/data';
+import { attributes } from '../../lib/data';
 import { AttributeListing } from './AttributeListing';
 
 export const AttributesList = () => {

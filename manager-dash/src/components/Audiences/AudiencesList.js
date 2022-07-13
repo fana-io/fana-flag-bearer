@@ -1,4 +1,4 @@
-import { audiences } from '../lib/data';
+import { audiences } from '../../lib/data';
 import { AudienceListing } from './AudienceListing';
 
 export const AudiencesList = () => {

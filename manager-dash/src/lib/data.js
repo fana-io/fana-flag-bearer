@@ -4,7 +4,7 @@ export const flags = [
     key: "flag_1",
     displayName: "Flag 1",
     status: false,
-    audiences: [],
+    audiences: [{ name: "Beta testers" }, { name: "California Students" }],
     combine: "ALL",
     createdAt: new Date(),
     updatedAt: new Date()
@@ -14,7 +14,7 @@ export const flags = [
     key: "flag_2",
     displayName: "Flag 2",
     status: true,
-    audiences: [],
+    audiences: [{ name: "Beta testers" }],
     combine: "ANY",
     createdAt: new Date(),
     updatedAt: new Date()
@@ -24,7 +24,12 @@ export const flags = [
 export const audiences = [
   {
     combine: "ANY",
-    conditions: [],
+    conditions: [
+      {
+        attribute: 'beta',
+        operator: 'EQ',
+        value: 'true'
+      }],
     createdAt: new Date(),
     updatedAt: new Date(),
     _id: 'abc',
@@ -33,7 +38,13 @@ export const audiences = [
   },
   {
     combine: "ALL",
-    conditions: [],
+    conditions: [
+      {
+        attribute: 'state',
+        operator: 'EQ',
+        value: 'california'
+      }
+    ],
     createdAt: new Date(),
     updatedAt: new Date(),
     _id: 'abd',
