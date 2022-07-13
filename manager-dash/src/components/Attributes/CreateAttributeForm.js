@@ -45,7 +45,7 @@ export const CreateAttributeForm = () => {
             }
           </select>
         </label>
-        <input type="submit" value="submit" />
+        <input type="submit" value="submit" disabled/>
       </form>
     </div>
   )

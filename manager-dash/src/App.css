@@ -10,6 +10,7 @@ main {
   display: flex;
 }
 
+
 #nav {
   list-style-type: none;
   width: 10vw;
@@ -82,4 +83,15 @@ input:checked + .slider:before {
 
 .slider.round:before {
   border-radius: 50%;
+}
+
+/* Form Styles */
+form {
+  padding: 2px 10px 2px 10 px;
+  margin: 5px;
+}
+
+label {
+  display: flex;
+  padding: 4px;
 }
