@@ -67,5 +67,11 @@ export const attributes = [
     name: "state",
     attrType: "STR",
     type: "string"
+  },
+  {
+    _id: "3",
+    name: "userId",
+    attrType: "STR",
+    type: "string"
   }
 ]
