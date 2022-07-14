@@ -64,12 +64,11 @@ function evaluateFlags(sdkInstance, userContext) {
 
     flagEvals[flag.flagKey] = eval; 
   });
-  // console.log('flag evals for user:', flagEvals);
   return flagEvals;
 }
 
 
-  // returns an array of 'update' objects organized by SDK instance, which holds array of flags that have been toggled off
+// returns an array of 'update' objects organized by SDK instance, which holds array of flags that have been toggled off
 function findDisabledFlags(flagData) {
   const flagUpdates = flagData.map(sdkInstance => {
     let flagUpdate = {};
@@ -90,6 +89,7 @@ function findDisabledFlags(flagData) {
     flagUpdate['flags'] = disabledFlags;
     return flagUpdate;
   });
+
   return flagUpdates;
 }
 
