@@ -117,6 +117,9 @@ const getFlags = async (req, res, next) => {
 const getAudiences = async (req, res, next) => {
   try {
     const audiences = await Audience.find({})
+      .populate({
+        path: 'conditions.attribute',
+      })
     res.json(audiences)
   } catch (err) { next( new HttpError(err, 500) ) }
 }

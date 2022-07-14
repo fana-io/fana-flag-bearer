@@ -48,7 +48,7 @@ content-type: application/json
         {
         "attribute": "state",
         "operator": "EQ",
-        "value": "california"
+        "value": "california" // value varchar(240)
         },
         {
         "attribute": "student",
