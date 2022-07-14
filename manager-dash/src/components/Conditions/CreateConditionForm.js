@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { attributes } from '../../lib/data';
 
-// Seeded Form Options
+// ============= Seeded Form Options =============
 function createAttrOptions(attributesArr) {
   return attributesArr.map((attr) => ({ value: attr._id, text: attr.name }));
 }
@@ -21,37 +21,32 @@ const operatorOptions = [
   { value: 'GT_EQ', text: '>=' },
   { value: 'LT_EQ', text: '<=' },
 ];
-
-
-// Reusable form component that passes the parent Create Audience Form an object that represents a condition (attribute id, operator, and target value) 
-export const ConditionForm = ({ passData, id, removeCondition }) => {
-  const [attribute, setAttribute] = useState(attributeOptions[0].value);
+// ========================== =============
+/*
+todo's
+- if operator is IS IN, then value will be an array of comma separated values, clean whitespace
+- form error handling: require fields, attribute/op validator
+*/
+// Reusable form component that passes the parent Create Audience Form an object that represents a condition (attribute id, operator, and target value)
+export const ConditionForm = ({ passData, id }) => {
+  const [attributeId, setAttributeId] = useState(attributeOptions[0].value);
   const [operator, setOperator] = useState('');
-  const [targetValue, setTargetValue] = useState('');
-
-  console.log(`condition #${id}: `, attribute, operator, targetValue);
+  const [value, setValue] = useState('');
 
   const handleSave = (e) => {
-    // sends a saved condition to parent Create Audience Form
-    e.preventDefault()
-    passData({
-      attribute,
-      operator,
-      value: targetValue,
-      id: id
-    })
-  }
-  // send Condition Form index back to parent to remove
-  const handleRemoveCondition = (e) => {
-    e.preventDefault()
-    removeCondition(id)
-  }
+    e.preventDefault();
+    passData({ attributeId, operator, value, id: id });
+  };
 
   return (
     <div>
       <label>
         Attribute
-        <select onChange={(e) => setAttribute(e.target.value)}>
+        <select
+          onChange={(e) => {
+            setAttributeId(e.target.value);
+          }}
+        >
           {attributeOptions.map((option) => {
             return <option value={option.value}>{option.text}</option>;
           })}
@@ -70,11 +65,12 @@ export const ConditionForm = ({ passData, id, removeCondition }) => {
         <input
           name="value"
           type="text"
-          onChange={(e) => setTargetValue(e.target.value)}
+          onChange={(e) => setValue(e.target.value)}
         />
       </label>
-      <button type="button" onClick={ handleSave }>Save Condition</button>
-      <button type="button" onClick={ handleRemoveCondition }>Remove Condition</button>
+      <button type="button" onClick={handleSave}>
+        Save Condition
+      </button>
     </div>
   );
-}
+};
