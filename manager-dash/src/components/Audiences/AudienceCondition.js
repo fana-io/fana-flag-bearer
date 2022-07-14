@@ -22,7 +22,6 @@ const operators = {
 }
 
 export const AudienceCondition = ({ condition }) => {
-  console.log(condition);
   return (
     <li>
       {condition.attribute.key} {operators[condition.operator]} {condition.value}

@@ -3,13 +3,22 @@
 }
 
 .list {
-  width: 30vw;
+  width: 80vw;
 }
 
 main {
   display: flex;
 }
 
+thead {
+  border-bottom: 1px solid black;
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+  text-align: center;
+}
 
 #nav {
   list-style-type: none;

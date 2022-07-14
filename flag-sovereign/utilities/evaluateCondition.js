@@ -5,6 +5,11 @@ const isEq = (targetVal, candidateVal) => {
   if (typeof candidateVal === 'string') {
     candidateVal = candidateVal.toLowerCase();
   }
+
+  if (targetVal === 'true' || targetVal === 'false') {
+    // this needs to be redone, this hacky af
+    return Boolean(targetVal) === candidateVal;
+  }
   return candidateVal === targetVal;
 };
 const isIn = (targetVals, candidateVal) =>
@@ -39,6 +44,7 @@ let operandMapper = {
 const evaluateCondition = (userContext, condition) => {
   const op = condition.operator;
   const attribute = condition.attribute;
+  // targetValue needs to be cast to whatever condition.type is
   const targetValue = condition.value;
   const candidateValue = userContext[attribute];
   if (!candidateValue) return false;
