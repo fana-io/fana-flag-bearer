@@ -120,7 +120,6 @@ const getAudiences = async (req, res, next) => {
       .populate({
         path: 'conditions.attribute',
       })
-      console.log(audiences);
     res.json(audiences)
   } catch (err) { next( new HttpError(err, 500) ) }
 }
