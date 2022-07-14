@@ -40,21 +40,20 @@ const subscribeToUpdates = (req, res) => {
   client.stream = res; // store response obj to be written to later
 };
 
-const pushDisabledFlagsEvent = (newFlagData) => {
+const pushDisabledFlagsEvent = (req, res, next) => {
   // if no open connections, move onto return
   if (!client.stream) {
     next()
     return
   }
 
-  // const newFlagData = req.body;
+  const newFlagData = req.body;
   const flagUpdates = findDisabledFlags(newFlagData);
-
+  
   flagUpdates.forEach(sdkUpdate => {
     client.stream.write(`data: ${JSON.stringify(sdkUpdate)}`);
     client.stream.write('\n\n');
   });
-  // next();
 };
 
 module.exports = {
