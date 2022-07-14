@@ -17,6 +17,7 @@ export const ConditionListing = ({ conditions, removeCondition }) => {
 
   return (
     <>
+    { conditions.length ? (
       <ul>
         {conditionsWithName.map((condition) => (
           <li>
@@ -25,12 +26,15 @@ export const ConditionListing = ({ conditions, removeCondition }) => {
               type="button"
               onClick={handleRemoveCondition}
               data-id={condition.id}
-            >
+              >
               Remove Condition
             </button>
           </li>
         ))}
       </ul>
+        )
+      : <p>No conditions created yet.</p>
+    }
     </>
   );
 };
