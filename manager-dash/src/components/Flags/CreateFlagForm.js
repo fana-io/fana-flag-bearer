@@ -1,22 +1,28 @@
 import { useState } from 'react';
-import { audiences } from '../../lib/data';
+import { AddAudienceForm } from './AddAudienceForm';
+import { AudiencesSelectedList } from './AudiencesSelectedList';
+import { useDispatch } from 'react-redux';
 
-console.log(audiences);
+/*
+todo:
+- validate: don't allow duplicate audiences
+*/
 
 export const CreateFlagForm = () => {
   const [displayName, setDisplayName] = useState('');
   const [status, setStatus] = useState(false);
-  // const [audience, setAudience] = useState([]);
+  const [audiences, setAudiences] = useState([]);
+  const dispatch = useDispatch()
+
+  console.log('flag form audiences saved:', audiences);
 
   const handleSubmit = (e) => {
     e.preventDefault();
     // TODO: submit to manager backend
   };
-  const addAudienceDropDown = (e) => {
-    e.preventDefault()
-    // TODO: add another dropdown for audience
-    // should take into account previously selected audiences
-    console.log('clicked');
+  const addAudience = (audienceSelected) => {
+    console.log('audience received', audienceSelected);
+    setAudiences([...audiences, audienceSelected ])
   }
 
   return (
@@ -38,27 +44,16 @@ export const CreateFlagForm = () => {
             <option value="true">on</option>
           </select>
         </label>
+        <h4>Audiences</h4>
+          <AudiencesSelectedList audiences={audiences} />
         <h4>Add Audiences</h4>
-        <AudienceDropdown />
+        <AddAudienceForm addAudience={addAudience}/>
         <div>
 
-        <button onClick={ addAudienceDropDown }>Add Another Audience</button>
+
         </div>
         <input type="submit" value="Create Flag" disabled />
       </form>
     </div>
   );
-
-  function AudienceDropdown() {
-    const [audience, setAudience] = useState([]);
-    return (
-      <label>
-        <select onChange={(e) => setAudience(audience.concat(e.target.value))}>
-          {audiences.map((a) => (
-            <option value={a._id}>{a.displayName}</option>
-          ))}
-        </select>
-      </label>
-    );
-  }
-};
+}
