@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { ConditionListing } from '../Conditions/ConditionListing';
 import { ConditionForm } from '../Conditions/CreateConditionForm';
+import { useDispatch } from 'react-redux';
 /*
 todo's
 - form error handling: require fields, attribute/op validator
@@ -17,7 +18,7 @@ export const CreateAudienceForm = () => {
   const [combination, setCombination] = useState('');
   const [conditionCount, setConditionCount] = useState(1);
   const [conditions, setConditions] = useState([]);
-
+  const dispatch = useDispatch()
   console.log('saved conditions:', conditions);
 
   const handleSubmit = (e) => {
@@ -27,8 +28,7 @@ export const CreateAudienceForm = () => {
       conditions,
       combine: combination,
     };
-    // setConditions(...conditions, ...savedConditions)
-    // TODO: submit to manager backend
+    // dispatch(newAudience)
   };
   
   // receives saved condition from child component ConditionForm

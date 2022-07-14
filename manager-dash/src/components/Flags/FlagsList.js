@@ -14,7 +14,7 @@ export const FlagsList = () => {
 
   return (
     <div className="list">
-      <CreateFlagForm></CreateFlagForm>
+      <CreateFlagForm/>
       {flags.map(flag => {
         return (<FlagListing key={flag._id} flagDetails={flag} />)
       })}

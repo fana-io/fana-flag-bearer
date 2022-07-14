@@ -1,8 +1,9 @@
 import { Condition } from './Condition';
-import { attributes } from '../../lib/data';
+import { useSelector } from 'react-redux';
 
 // List of conditions saved to Create Audience Form
 export const ConditionListing = ({ conditions, removeCondition }) => {
+  const attributes = useSelector(state => state.attributes)
   // map attr name to attr, since they only have attribute id
   const conditionsWithName = conditions.map((c) => {
     const attribute = attributes.find((a) => a._id === c.attributeId);
