@@ -15,11 +15,13 @@ export const FlagListing = ({ flagDetails }) => {
   return (
     <div className="listing">
       <h2><Link to={link}>{flagDetails.displayName}</Link></h2>
-      <h3>{flagDetails.key}</h3>
-      <label className="switch">
-        <input type="checkbox" checked={flagDetails.status} onChange={toggleFlagStatus} />
-        <span className="slider round"></span>
-      </label>
+      <div className="key-and-switch">
+        <h3>{flagDetails.key}</h3>
+        <label className="switch">
+          <input type="checkbox" checked={flagDetails.status} onChange={toggleFlagStatus} />
+          <span className="slider round"></span>
+        </label>
+      </div>
       <ul>
         <li>Enabled: {String(flagDetails.status)}</li>
         <li>Created: {flagDetails.createdAt}</li>

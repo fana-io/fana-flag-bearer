@@ -3,7 +3,7 @@
 }
 
 .list {
-  width: 80vw;
+  width: 30vw;
 }
 
 main {
@@ -94,4 +94,9 @@ form {
 form label {
   display: flex;
   padding: 4px;
+}
+
+.key-and-switch {
+  display: flex;
+  justify-content: space-between;
 }
