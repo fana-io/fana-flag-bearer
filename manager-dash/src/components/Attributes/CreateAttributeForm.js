@@ -40,7 +40,7 @@ export const CreateAttributeForm = () => {
             onChange={ (e) => setAttrType(e.target.value) }
           >
             { attrTypeOptions.map(option => {
-              return <option value={option.value}>{option.text}</option>
+              return <option key={option.value} value={option.value}>{option.text}</option>
             })
             }
           </select>

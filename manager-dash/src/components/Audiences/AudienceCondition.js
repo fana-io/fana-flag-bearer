@@ -22,9 +22,10 @@ const operators = {
 }
 
 export const AudienceCondition = ({ condition }) => {
+  console.log(condition);
   return (
-    <>
-      {condition.attribute} {operators[condition.operator]} {condition.value}
-    </>
+    <li>
+      {condition.attribute.key} {operators[condition.operator]} {condition.value}
+    </li>
   )
 }

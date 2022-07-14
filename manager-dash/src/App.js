@@ -20,7 +20,7 @@ function App() {
         <Route path="/flags/:key" component={Flag} />
         <Route path="/audiences/:key" component={Audience} />
         <Route path="/flags" exact component={FlagsList} />
-        <Route path="/audiences" component={AudiencesList} />
+        <Route path="/audiences" exact component={AudiencesList} />
         <Route path="/attributes" component={AttributesList} />
         <Route path="/flags/create" component={CreateFlagForm} />
         <Route path="/audiences/create" component={CreateAudienceForm} />

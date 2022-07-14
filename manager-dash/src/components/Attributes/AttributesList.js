@@ -13,20 +13,16 @@ export const AttributesList = () => {
   }, [dispatch])
 
   return (
-    <>
-      <div>
-        <CreateAttributeForm></CreateAttributeForm>
-      </div>
-      <div className="list">
-        {attributes.map((attribute) => {
-          return (
-            <AttributeListing
-              key={attribute.name}
-              attributeDetails={attribute}
-            />
-          );
-        })}
-      </div>
-    </>
+    <div className="list">
+      <CreateAttributeForm></CreateAttributeForm>
+      {attributes.map((attribute) => {
+        return (
+          <AttributeListing
+            key={attribute.key}
+            attributeDetails={attribute}
+          />
+        );
+      })}
+    </div>
   );
 };

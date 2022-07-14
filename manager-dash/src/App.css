@@ -91,7 +91,7 @@ form {
   margin: 5px;
 }
 
-label {
+form label {
   display: flex;
   padding: 4px;
 }

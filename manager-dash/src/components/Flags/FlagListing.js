@@ -9,7 +9,7 @@ export const FlagListing = ({ flagDetails }) => {
   const toggleFlagStatus = () => {
     console.log('toggled')
     // using key for now, but may need to use a more unique identifier since key can possibly change??
-    dispatch(editFlag({ key: flagDetails.key, status: !flagDetails.status }))
+    dispatch(editFlag({ key: flagDetails.key, updatedFields: { status: !flagDetails.status }}))
   }
 
   return (

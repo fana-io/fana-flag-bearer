@@ -2,8 +2,8 @@ export const AttributeListing = ({ attributeDetails }) => {
   return (
     <>
     <div className="listing">
-      <h3>{attributeDetails.name}</h3>
-      <p>Data Type: {attributeDetails.type}</p>
+      <h4>{attributeDetails.key}</h4>
+      <p>Data Type: {attributeDetails.attrType}</p>
     </div>
     </>
   )

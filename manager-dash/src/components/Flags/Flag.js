@@ -1,11 +1,19 @@
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom"
+import { fetchFlags } from "../../features/flags/flags";
 import { FlagAudience } from "./FlagAudience"
 
 export const Flag = () => {
   const flagKey = useParams().key;
   const flags = useSelector(state => state.flags);
   const flagDetails = flags.find(flag => flag.key === flagKey);
+  const dispatch = useDispatch();
+
+  if (!flags.length) {
+    dispatch(fetchFlags());
+    return null;
+  }
+  
   return (
     <div>
       <h1>Flag Details</h1>

@@ -1,11 +1,12 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import apiClient from "../../lib/ApiClient";
-import { audiences } from "../../lib/data";
 
 const initialState = [];
 
 export const fetchAudiences = createAsyncThunk("audiences/fetchAudiences", async () => {
-  return audiences;
+  const data = await apiClient.getAudiences();
+  console.log(data);
+  return data;
 })
 
 export const createAudience = createAsyncThunk("audiences/createAudience", async () => {

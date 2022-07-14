@@ -7,25 +7,17 @@ import { FlagListing } from './FlagListing';
 export const FlagsList = () => {
   const flags = useSelector(state => state.flags);
   const dispatch = useDispatch();
-  
+
   useEffect(() => {
-    return (
-      console.log("unmounting?")
-    )
-  }, [])
-  useEffect(() => {
-    console.log('fetching flags')
     dispatch(fetchFlags());
   }, [dispatch])
 
   return (
-    <>
-    <CreateFlagForm></CreateFlagForm>
     <div className="list">
+      <CreateFlagForm></CreateFlagForm>
       {flags.map(flag => {
         return (<FlagListing key={flag._id} flagDetails={flag} />)
       })}
     </div>
-      </>
   )
 }

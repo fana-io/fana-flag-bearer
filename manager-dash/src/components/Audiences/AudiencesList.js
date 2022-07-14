@@ -18,13 +18,11 @@ export const AudiencesList = () => {
   }, [dispatch])
 
   return (
-    <>
-    <CreateAudienceForm></CreateAudienceForm>
     <div className="list">
+      <CreateAudienceForm></CreateAudienceForm>
       {audiences.map(audience => {
         return (<AudienceListing key={audience._id} audienceDetails={audience} />)
       })}
     </div>
-      </>
   )
 }

@@ -1,11 +1,11 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import apiClient from "../../lib/ApiClient";
-import { attributes } from "../../lib/data";
 
 const initialState = [];
 
 export const fetchAttributes = createAsyncThunk("audiences/fetchAttributes", async () => {
-  return attributes;
+  const data = await apiClient.getAttributes();
+  return data;
 })
 
 export const createAttribute = createAsyncThunk("audiences/createAttribute", async () => {

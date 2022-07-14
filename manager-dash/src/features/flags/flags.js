@@ -1,12 +1,12 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import apiClient from "../../lib/ApiClient";
-import { flags } from "../../lib/data";
 
 const initialState = [];
 
 export const fetchFlags = createAsyncThunk("flags/fetchFlags", async () => {
-  // make request to backend for flag data
-  return flags;
+  const data = await apiClient.getFlags();
+  console.log(data);
+  return data;
 })
 
 export const createFlag = createAsyncThunk("flags/createFlag", async () => {
@@ -15,10 +15,9 @@ export const createFlag = createAsyncThunk("flags/createFlag", async () => {
 
 export const editFlag = createAsyncThunk("flags/editFlag", async (updatedObj) => {
   // make a patch request for the current flag and updated fields
-  console.log('edit thunk called')
-  return {
-    ...updatedObj
-  }
+  let { key, updatedFields } = updatedObj;
+  const data = await apiClient.editFlag(key, updatedFields);
+  return data;
 })
 
 export const deleteFlag = createAsyncThunk("flags/deleteFlag", async () => {
