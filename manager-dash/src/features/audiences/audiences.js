@@ -3,9 +3,11 @@ import apiClient from "../../lib/ApiClient";
 
 const initialState = [];
 
-export const fetchAudiences = createAsyncThunk("audiences/fetchAudiences", async () => {
+export const fetchAudiences = createAsyncThunk("audiences/fetchAudiences", async (callback) => {
   const data = await apiClient.getAudiences();
-  console.log(data);
+  if (callback) {
+    callback();
+  }
   return data;
 })
 

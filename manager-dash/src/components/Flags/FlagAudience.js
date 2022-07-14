@@ -3,6 +3,7 @@ import { AudienceCondition } from "../Audiences/AudienceCondition";
 
 export const FlagAudience = ({ audience }) => {
   const link = "/audiences/" + audience.key;
+  console.log('audience', audience)
   return (
     <li>
       <Link to={link}><h4>{audience.displayName}</h4></Link>

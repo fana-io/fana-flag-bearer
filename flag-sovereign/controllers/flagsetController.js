@@ -8,6 +8,7 @@ const createFlagset = (req, res, next) => {
   if (errors.isEmpty()) {
     // assuming Manager always sends full set of flags
     flagData.setFlagData(req.body);
+
     // sends push event of disabled flags to clientSDK
     pushDisabledFlagsEvent(req.body);
     res.status(201).send('201: Flagset created');

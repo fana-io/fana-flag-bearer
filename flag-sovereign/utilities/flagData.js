@@ -22,18 +22,17 @@ const seedData = [
         status: false,
         audiences: ['beta-testers'],
       },
+      {
+        flagKey: 'beta-header',
+        status: true,
+        audiences: ['beta-testers'],
+      },
     ],
     audiences: [
       {
         audienceKey: 'beta-testers',
         combination: 'ANY',
         conditions: [
-          {
-            attribute: 'userId',
-            type: 'STR',
-            operator: 'EQ',
-            value: 'jjuy',
-          },
           {
             attribute: 'beta',
             type: 'BOOL',
