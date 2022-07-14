@@ -3,9 +3,11 @@ import apiClient from "../../lib/ApiClient";
 
 const initialState = [];
 
-export const fetchFlags = createAsyncThunk("flags/fetchFlags", async () => {
+export const fetchFlags = createAsyncThunk("flags/fetchFlags", async (callback) => {
   const data = await apiClient.getFlags();
-  console.log(data);
+  if (callback) {
+    callback();
+  }
   return data;
 })
 
@@ -15,8 +17,13 @@ export const createFlag = createAsyncThunk("flags/createFlag", async () => {
 
 export const editFlag = createAsyncThunk("flags/editFlag", async (updatedObj) => {
   // make a patch request for the current flag and updated fields
-  let { key, updatedFields } = updatedObj;
+  let { key, updatedFields, callback } = updatedObj;
   const data = await apiClient.editFlag(key, updatedFields);
+
+  if (callback) {
+    callback();
+  }
+  console.log('patched data', data)
   return data;
 })
 

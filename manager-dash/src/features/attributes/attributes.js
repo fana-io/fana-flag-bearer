@@ -3,8 +3,11 @@ import apiClient from "../../lib/ApiClient";
 
 const initialState = [];
 
-export const fetchAttributes = createAsyncThunk("audiences/fetchAttributes", async () => {
+export const fetchAttributes = createAsyncThunk("audiences/fetchAttributes", async (callback) => {
   const data = await apiClient.getAttributes();
+  if (callback) {
+    callback();
+  }
   return data;
 })
 

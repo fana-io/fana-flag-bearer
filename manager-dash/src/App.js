@@ -9,6 +9,7 @@ import { Route } from "react-router-dom";
 import { CreateFlagForm } from './components/Flags/CreateFlagForm';
 import { CreateAudienceForm } from './components/Audiences/CreateAudienceForm';
 import { CreateAttributeForm } from './components/Attributes/CreateAttributeForm';
+import { Settings } from './components/Settings';
 
 function App() {
   return (
@@ -25,6 +26,7 @@ function App() {
         <Route path="/flags/create" component={CreateFlagForm} />
         <Route path="/audiences/create" component={CreateAudienceForm} />
         <Route path="/attributes/create" component={CreateAttributeForm} />
+        <Route path="/settings" component={Settings} />
       </main>
     </div>
   );

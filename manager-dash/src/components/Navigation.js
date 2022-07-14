@@ -6,6 +6,7 @@ export const Navigation = () => {
       <li><Link to="/flags">Flags</Link></li>
       <li><Link to="/audiences">Audiences</Link></li>
       <li><Link to="/attributes">Attributes</Link></li>
+      <li><Link to="/settings">Settings</Link></li>
     </ul>
   )
 }

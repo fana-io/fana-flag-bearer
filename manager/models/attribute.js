@@ -11,10 +11,11 @@ Attribute Object:
 */
 
 const AttributeSchema = new Schema({
-  name: {
+  key: {
     type: String,
     unique: true
   },
+  displayName: String,
   attrType: {
     type: String,
     enum: ["BOOL", "STR", "NUM", "DATETIME"],

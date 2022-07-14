@@ -1,35 +1,22 @@
-/*Test cases:
-input: test for userId as only attribute passed in from userContext object
-- audience exists and targets specific userId, flag toggled on
-  - userID isn't target user
-  - userID is target user
-  - ANY combo
-  - ALL combo
-  - audience exists and targets userId
-  */
+const { evaluateCondition } = require('./evaluateCondition')
+const { allFlagData, testUser } = require('../seed-data')
+
 
 // finds sdkInstance object from full flag data set
 function getSdkInstance(sdkKey, allFlagData) {
   return allFlagData.find(sdk => sdk.sdkKey === sdkKey);
 }
 
-// evaluate audience conditions & whether they satsify userId as target attribute for MVP
-// TODO: this needs to be generalized to work with any attribute, not just userId
-function evaluateAudiences(sdkInstance, targetAttribute, targetAttrValue) {
+// evaluate audience conditions based on user attributes 
+function evaluateAudiences(sdkInstance, userContext) {
   const audienceEvals = {};
   sdkInstance.audiences.forEach((audience) => {
     const audienceKey = audience.audienceKey;
     let eval = false; // default to false
-    // let countConditionsLeftToEvaluate = audience.conditions.length;
 
     for (const condition of audience.conditions) {
-      // countConditionsLeftToEvaluate--;
 
-      if (
-        condition.attribute === targetAttribute &&
-        condition.operator === 'EQ' &&
-        condition.value === targetAttrValue
-      ) {
+      if (evaluateCondition(userContext, condition)) {
         eval = true;
         if (audience.combination === 'ANY') {
           // if 'ANY' set, then return as soon as one condition is satisfied
@@ -55,10 +42,9 @@ function evaluateAudiences(sdkInstance, targetAttribute, targetAttrValue) {
 }
 
 // Returns overall flag evaluation based on set of audience logic evaluations for a given user
-// TODO: update hard coding for `targetAttribute`
-function evaluateFlags(sdkInstance, userId) {
+function evaluateFlags(sdkInstance, userContext) {
   const flagEvals = {};
-  const userAudienceEvals = evaluateAudiences(sdkInstance, "userId", userId);
+  const userAudienceEvals = evaluateAudiences(sdkInstance, userContext);
   // Evaluate each flag in sdkInstance
   sdkInstance.flags.forEach((flag) => {
     let eval = false;
@@ -78,8 +64,33 @@ function evaluateFlags(sdkInstance, userId) {
 
     flagEvals[flag.flagKey] = eval; 
   });
-  // console.log('flag evals for user:', flagEvals);
   return flagEvals;
 }
 
-module.exports = { getSdkInstance, evaluateFlags }
+
+// returns an array of 'update' objects organized by SDK instance, which holds array of flags that have been toggled off
+function findDisabledFlags(flagData) {
+  const flagUpdates = flagData.map(sdkInstance => {
+    let flagUpdate = {};
+    flagUpdate['sdk'] = sdkInstance.sdkKey;
+
+    const disabledFlags = sdkInstance.flags.reduce((accum, flag) => {
+      let { status, flagKey } = flag;
+      if (!status) {
+        accum.push({
+          flagKey,
+          status,
+          value: false,
+        });
+      }
+      return accum;
+    }, []);
+
+    flagUpdate['flags'] = disabledFlags;
+    return flagUpdate;
+  });
+
+  return flagUpdates;
+}
+
+module.exports = { getSdkInstance, evaluateFlags, findDisabledFlags }

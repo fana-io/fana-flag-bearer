@@ -1,6 +1,12 @@
 const Flag = require('../models/flag');
 const HttpError = require('../models/httpError');
+const axios = require('axios')
+require('dotenv').config();
 const { validationResult } = require('express-validator');
+
+axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
+axios.defaults.headers.common['Accept'] = 'application/json';
+const webhookEndpoint = process.env.WH_URI
 
 const getRuleset = async(req, res, next) => {
   try {
@@ -13,7 +19,16 @@ const getRuleset = async(req, res, next) => {
   }
 }
 
-async function fetchFlags() {
+const pushUpdatesWH = async(req, res, next) => {
+  const rawFlags = await fetchFlags()
+  const processedFlags = flattenFlags(rawFlags)
+
+  try {
+    await axios.post(webhookEndpoint, processedFlags)
+  } catch (err) {console.log(err)}
+}
+
+const fetchFlags = async () => {
   let flags = [] // initialize return array
 
   // streams query one result at a time (see .cursor method)
@@ -72,7 +87,7 @@ function appendToExistingSDK(resultArr, sdkInd, flag) {
   flag.audiences.forEach(flagAud => {
     let exists = resultArr.find(({audiences}) => {
       return audiences.find(({audienceKey}) => {
-        return audienceKey === flagAud.name // change this after translation
+        return audienceKey === flagAud.key
       })
     })
 
@@ -85,20 +100,19 @@ function buildFlattenedFlag(rawFlagObj) {
   return {
     flagKey: rawFlagObj.key,
     status: rawFlagObj.status,
-    audiences: rawFlagObj.audiences.map(({name}) => name)
+    audiences: rawFlagObj.audiences.map(({key}) => key)
   }
 }
 
 function buildFlattenedAudience(rawAudienceObj) {
-  let {name, conditions} = rawAudienceObj
+  let {key, combine, conditions} = rawAudienceObj
 
   return {
-    audienceKey: name,
-    combination: rawAudienceObj.combine,
+    audienceKey: key,
+    combination: combine,
     conditions: conditions.map(({attribute, operator, value}) => {
       return {
-        attribute: attribute.name,
-        type: attribute.attrType,
+        attribute: attribute.key,
         operator,
         value,
       }
@@ -107,3 +121,5 @@ function buildFlattenedAudience(rawAudienceObj) {
 }
 
 exports.getRuleset = getRuleset;
+exports.pushUpdatesWH = pushUpdatesWH;
+exports.fetchFlags = fetchFlags;

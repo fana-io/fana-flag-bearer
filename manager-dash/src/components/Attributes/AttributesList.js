@@ -1,28 +1,26 @@
-import { AttributeListing } from './AttributeListing';
 import { useSelector, useDispatch } from 'react-redux';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { fetchAttributes } from '../../features/attributes/attributes';
 import { CreateAttributeForm } from "./CreateAttributeForm"
+import { AttributeTable } from './AttributeTable';
 
 export const AttributesList = () => {
   const attributes = useSelector(state => state.attributes);
   const dispatch = useDispatch();
+  const [ready, setReady] = useState(false);
 
   useEffect(() => {
-    dispatch(fetchAttributes());
+    dispatch(fetchAttributes(() => setReady(true)));
   }, [dispatch])
+
+  if (!ready) {
+    return <>Loading...</>
+  }
 
   return (
     <div className="list">
       <CreateAttributeForm></CreateAttributeForm>
-      {attributes.map((attribute) => {
-        return (
-          <AttributeListing
-            key={attribute.key}
-            attributeDetails={attribute}
-          />
-        );
-      })}
+      <AttributeTable attributes={attributes} />
     </div>
   );
 };
