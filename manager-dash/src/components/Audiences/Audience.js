@@ -1,7 +1,8 @@
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom"
 import { fetchAudiences } from "../../features/audiences/audiences";
-import { AudienceCondition } from "./AudienceCondition";
+// import { AudienceCondition } from "./AudienceCondition";
+import { Condition } from "../Conditions/Condition";
 
 export const Audience = () => {
   const audienceKey = useParams().key;
@@ -25,7 +26,7 @@ export const Audience = () => {
       <h2>Conditions:</h2>
       <ul>
         {audienceDetails.conditions.map(condition => {
-          return (<AudienceCondition condition={condition} />)
+          return (<Condition condition={condition} />)
         })}
       </ul>
     </div>

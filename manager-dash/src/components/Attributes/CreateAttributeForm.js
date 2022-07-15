@@ -1,24 +1,12 @@
 import { useState } from "react"
+import { attrTypeOptions } from "../../lib/formConstants"
 
 export const CreateAttributeForm = () => {
   const [name, setName] = useState('')
   const [attrType, setAttrType] = useState('')
 
-  console.log('name: ', name);
-  console.log('attribute type', attrType);
-
-  // TODO: import dynamic list of attribute types from manager
-  const attrTypeOptions = [
-    {value: "", text:"Select a type"}, 
-    {value: "BOOL", text:"Boolean"}, 
-    {value: "STR", text: "String"}, 
-    {value: "NUM", text: "Number"}, 
-    {value: "DATETIME", text: "Date/Timestamp"}
-  ]
-
   const handleSubmit = (e) => {
     e.preventDefault()
-    // TODO: submit attribute to manager backend
 
   }
 

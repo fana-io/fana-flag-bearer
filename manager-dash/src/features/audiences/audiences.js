@@ -11,8 +11,11 @@ export const fetchAudiences = createAsyncThunk("audiences/fetchAudiences", async
   return data;
 })
 
-export const createAudience = createAsyncThunk("audiences/createAudience", async () => {
-  return null;
+export const createAudience = createAsyncThunk("audiences/createAudience", async (newAudience) => {
+  console.log('audience in Thunk', newAudience);
+  const data = await apiClient.createAudience(newAudience)
+
+  return data;
 })
 
 export const editAudience = createAsyncThunk("audiences/editAudience", async () => {

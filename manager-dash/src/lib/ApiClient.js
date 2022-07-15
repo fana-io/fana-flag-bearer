@@ -5,8 +5,9 @@ const apiClient = {
     let { data } = await axios.get('/api/flags');
     return data;
   },
-  createFlag: async () => {
-
+  createFlag: async (flag) => {
+    let { data } = await axios.post('/api/flags', flag);
+    return data
   },
   editFlag: async (key, updatedFields) => {
     let { data } = await axios.patch('/api/flags/' + key, updatedFields);
@@ -19,7 +20,13 @@ const apiClient = {
     let { data } = await axios.get('/api/audiences');
     return data;
   },
-  createAudience: async () => {
+  createAudience: async (audience) => {
+    try {
+      const  {data} = await axios.post('/api/audiences', audience)
+      return data
+    } catch (e) {
+      console.error(e);
+    }
 
   },
   editAudience: async () => {

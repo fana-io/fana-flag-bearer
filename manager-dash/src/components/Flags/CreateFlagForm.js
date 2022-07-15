@@ -1,23 +1,28 @@
 import { useState } from 'react';
-import { audiences } from '../../lib/data';
+import apiClient from '../../lib/ApiClient';
+import { AddAudienceForm } from './AddAudienceForm';
+import { AudiencesSelectedList } from './AudiencesSelectedList';
 
-console.log(audiences);
-
-export const CreateFlagForm = () => {
+export const CreateFlagForm = ({audiences}) => {
   const [displayName, setDisplayName] = useState('');
   const [status, setStatus] = useState(false);
-  // const [audience, setAudience] = useState([]);
+  const [audiencesSelected, setAudiencesSelected] = useState([]); // stores ids of selected audiences
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    let data = await apiClient.createFlag({
+      displayName,
+      // sdkKey: ? , where do i get this?
+      status,
+      audiences: audiencesSelected
+    })
+    // console.log('new flag created', data);
     // TODO: submit to manager backend
   };
-  const addAudienceDropDown = (e) => {
-    e.preventDefault()
-    // TODO: add another dropdown for audience
-    // should take into account previously selected audiences
-    console.log('clicked');
+  const addAudience = (audienceSelectedId) => {
+    setAudiencesSelected([...audiencesSelected, audienceSelectedId ])
   }
+  const removeAudience = (audienceId) => setAudiencesSelected(audiencesSelected.filter(id => id !== audienceId));
 
   return (
     <div>
@@ -33,32 +38,21 @@ export const CreateFlagForm = () => {
         </label>
         <label>
           Status
-          <select type="radio">
+          <select type="radio" onChange={ (e) => setStatus(Boolean(e.target.value))}>
             <option value="false">off</option>
             <option value="true">on</option>
           </select>
         </label>
+        <h4>Audiences</h4>
+          <AudiencesSelectedList audiencesSelected={audiencesSelected} audiences={audiences} removeAudience={removeAudience}/>
         <h4>Add Audiences</h4>
-        <AudienceDropdown />
+        <AddAudienceForm addAudience={addAudience} audiences={audiences}/>
         <div>
 
-        <button onClick={ addAudienceDropDown }>Add Another Audience</button>
+
         </div>
         <input type="submit" value="Create Flag" disabled />
       </form>
     </div>
   );
-
-  function AudienceDropdown() {
-    const [audience, setAudience] = useState([]);
-    return (
-      <label>
-        <select onChange={(e) => setAudience(audience.concat(e.target.value))}>
-          {audiences.map((a) => (
-            <option value={a._id}>{a.displayName}</option>
-          ))}
-        </select>
-      </label>
-    );
-  }
-};
+}
