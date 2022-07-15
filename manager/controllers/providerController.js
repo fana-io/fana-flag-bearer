@@ -91,7 +91,7 @@ function appendToExistingSDK(resultArr, sdkInd, flag) {
       })
     })
 
-    if (!exists) resultArr.audiences.push(buildFlattenedAudience(flagAud))
+    if (!exists) resultArr[sdkInd].audiences.push(buildFlattenedAudience(flagAud))
   })
 }
 
