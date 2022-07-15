@@ -81,7 +81,6 @@ function includeNewSDK(resultArr, flag) {
 
 function appendToExistingSDK(resultArr, sdkInd, flag) {
   resultArr[sdkInd].flags.push(buildFlattenedFlag(flag))
-
   // if audience _doesn't_ already exist, push audience to result
   // else, do nothing
   flag.audiences.forEach(flagAud => {
@@ -91,7 +90,7 @@ function appendToExistingSDK(resultArr, sdkInd, flag) {
       })
     })
 
-    if (!exists) resultArr.audiences.push(buildFlattenedAudience(flagAud))
+    if (!exists) resultArr[sdkInd].audiences.push(buildFlattenedAudience(flagAud))
   })
 }
 

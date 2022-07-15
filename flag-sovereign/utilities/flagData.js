@@ -20,17 +20,17 @@ const seedData = [
       {
         flagKey: 'toggled-off-flag',
         status: false,
-        audiences: ['beta-testers'],
+        audiences: ['beta_testers'],
       },
       {
-        flagKey: 'beta-header',
+        flagKey: 'beta_header',
         status: true,
-        audiences: ['beta-testers'],
+        audiences: ['beta_testers'],
       },
     ],
     audiences: [
       {
-        audienceKey: 'beta-testers',
+        audienceKey: 'beta_testers',
         combination: 'ANY',
         conditions: [
           {
@@ -67,7 +67,7 @@ const seedData = [
       {
         flagKey: 'flag-evals-true',
         status: true,
-        audiences: ['beta-testers', 'california_students'],
+        audiences: ['beta_testers', 'california_students'],
       },
       {
         flagKey: 'flag-evals-false',
@@ -82,12 +82,12 @@ const seedData = [
       {
         flagKey: 'toggled-off-flag',
         status: false,
-        audiences: ['beta-testers'],
+        audiences: ['beta_testers'],
       },
     ],
     audiences: [
       {
-        audienceKey: 'beta-testers',
+        audienceKey: 'beta_testers',
         combination: 'ANY',
         conditions: [
           {

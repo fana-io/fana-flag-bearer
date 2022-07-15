@@ -48,7 +48,6 @@ const pushDisabledFlagsEvent = (newFlagData) => {
   }
   
   const flagUpdates = findDisabledFlags(newFlagData);
-  
   flagUpdates.forEach(sdkUpdate => {
     // custom event type -- client SDKs must listen for custom event
     client.stream.write(`event: ${sdkUpdate.sdk}\n`);
