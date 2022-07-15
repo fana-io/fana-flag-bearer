@@ -1,30 +1,12 @@
-const operators = {
-  EQ: '=',
-  IN: 'is in',
-  STR_CONTAINS: 'contains',
-  STR_STARTS_WITH: 'starts with',
-  STR_ENDS_WITH: 'ends with',
-  GT: '>',
-  LT: '<',
-  LT_EQ: '<=',
-  GT_EQ: '>='
-}
-/*
-  {
-    combine: "ALL",
-    conditions: [],
-    createdAt: new Date(),
-    updatedAt: new Date(),
-    _id: 'abd',
-    key: "california_students",
-    displayName: "California Students"
-  },
-*/
+import { operators } from "../../lib/formConstants";
 
-export const Condition = ({ condition }) => {
+export const Condition = ({ condition, attributes }) => {
+
+  // mapp attributeId in condition to attribute displayName
+  const attribute = attributes.find(a=> a._id === condition.attributeId)
   return (
   <>
-    {condition.name} {operators[condition.operator]} {condition.value}
+    {attribute.displayName} {operators[condition.operator]} {condition.value}
   </>
   );
 };

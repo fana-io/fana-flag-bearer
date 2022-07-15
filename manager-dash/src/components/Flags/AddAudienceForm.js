@@ -1,20 +1,16 @@
 import { useState } from 'react';
-import { useSelector } from 'react-redux'
 
-export const AddAudienceForm = ({ addAudience }) => {
-  const audiences = useSelector(state => state.audiences)
-
-  console.log('audiences', audiences);
-  const [audience, setAudience] = useState(audiences);
+export const AddAudienceForm = ({ addAudience, audiences }) => {
+  const defaultOption = audiences.length ? audiences[0]._id : '' 
+  const [audienceDropdown, setAudienceDropdown] = useState(defaultOption);
 
   const handleAudienceSelect = (e) => {
-    console.log('etarget', e.target.value);
-    setAudience(audience.concat(e.target.value))
+    setAudienceDropdown(e.target.value)
   }
 
   const handleAddAudience = (e) => {
     e.preventDefault()
-    addAudience(audience)
+    addAudience(audienceDropdown)
 
   }
   
@@ -23,7 +19,7 @@ export const AddAudienceForm = ({ addAudience }) => {
       <label>
         <select onChange={ handleAudienceSelect}>
           {audiences.map((a) => (
-            <option value={a._id}>{a.displayName}</option>
+            <option value={a._id} key={a._id}>{a.displayName}</option>
           ))}
         </select>
       </label>

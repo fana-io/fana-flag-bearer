@@ -1,29 +1,28 @@
 import { useState } from 'react';
+import apiClient from '../../lib/ApiClient';
 import { AddAudienceForm } from './AddAudienceForm';
 import { AudiencesSelectedList } from './AudiencesSelectedList';
-import { useDispatch } from 'react-redux';
 
-/*
-todo:
-- validate: don't allow duplicate audiences
-*/
-
-export const CreateFlagForm = () => {
+export const CreateFlagForm = ({audiences}) => {
   const [displayName, setDisplayName] = useState('');
   const [status, setStatus] = useState(false);
-  const [audiences, setAudiences] = useState([]);
-  const dispatch = useDispatch()
+  const [audiencesSelected, setAudiencesSelected] = useState([]); // stores ids of selected audiences
 
-  console.log('flag form audiences saved:', audiences);
-
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    let data = await apiClient.createFlag({
+      displayName,
+      // sdkKey: ? , where do i get this?
+      status,
+      audiences: audiencesSelected
+    })
+    // console.log('new flag created', data);
     // TODO: submit to manager backend
   };
-  const addAudience = (audienceSelected) => {
-    console.log('audience received', audienceSelected);
-    setAudiences([...audiences, audienceSelected ])
+  const addAudience = (audienceSelectedId) => {
+    setAudiencesSelected([...audiencesSelected, audienceSelectedId ])
   }
+  const removeAudience = (audienceId) => setAudiencesSelected(audiencesSelected.filter(id => id !== audienceId));
 
   return (
     <div>
@@ -39,15 +38,15 @@ export const CreateFlagForm = () => {
         </label>
         <label>
           Status
-          <select type="radio">
+          <select type="radio" onChange={ (e) => setStatus(Boolean(e.target.value))}>
             <option value="false">off</option>
             <option value="true">on</option>
           </select>
         </label>
         <h4>Audiences</h4>
-          <AudiencesSelectedList audiences={audiences} />
+          <AudiencesSelectedList audiencesSelected={audiencesSelected} audiences={audiences} removeAudience={removeAudience}/>
         <h4>Add Audiences</h4>
-        <AddAudienceForm addAudience={addAudience}/>
+        <AddAudienceForm addAudience={addAudience} audiences={audiences}/>
         <div>
 
 

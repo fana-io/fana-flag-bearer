@@ -23,8 +23,8 @@ export const AudiencesList = () => {
 
   return (
     <div className="list">
-      <CreateAudienceForm></CreateAudienceForm>
       <AudienceTable audiences={audiences} />
+      <CreateAudienceForm/>
     </div>
   )
 }

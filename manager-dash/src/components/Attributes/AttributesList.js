@@ -19,8 +19,8 @@ export const AttributesList = () => {
 
   return (
     <div className="list">
-      <CreateAttributeForm></CreateAttributeForm>
       <AttributeTable attributes={attributes} />
+      <CreateAttributeForm />
     </div>
   );
 };
