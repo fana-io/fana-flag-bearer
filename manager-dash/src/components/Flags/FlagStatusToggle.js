@@ -1,15 +1,13 @@
 import { useState } from "react"
-import { useDispatch } from "react-redux";
-import { editFlag } from "../../features/flags/flags";
+import ApiClient from "../../lib/ApiClient";
 
 export const FlagStatusToggle = ({ flag }) => {
   const [pendingToggle, setPendingToggle] = useState(false);
-  const dispatch = useDispatch();
 
-  const toggleFlagStatus = () => {
+  const toggleFlagStatus = async () => {
     setPendingToggle(true)
-    // using key for now, but may need to use a more unique identifier since key can possibly change??
-    dispatch(editFlag({ key: flag.key, updatedFields: { status: !flag.status }, callback: () => setPendingToggle(false)}))
+    await ApiClient.editFlag(flag.id, { status: !flag.status })
+    setPendingToggle(false);
   }
 
   return (

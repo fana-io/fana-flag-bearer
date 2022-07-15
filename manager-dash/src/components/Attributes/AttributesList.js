@@ -1,17 +1,20 @@
-import { useSelector, useDispatch } from 'react-redux';
 import { useEffect, useState } from 'react';
-import { fetchAttributes } from '../../features/attributes/attributes';
+import ApiClient from '../../lib/ApiClient';
 import { CreateAttributeForm } from "./CreateAttributeForm"
 import { AttributeTable } from './AttributeTable';
 
 export const AttributesList = () => {
-  const attributes = useSelector(state => state.attributes);
-  const dispatch = useDispatch();
   const [ready, setReady] = useState(false);
+  const [attributes, setAttributes] = useState([]);
 
   useEffect(() => {
-    dispatch(fetchAttributes(() => setReady(true)));
-  }, [dispatch])
+    const init = async () => {
+      const attributes = await ApiClient.getAttributes();
+      setAttributes(attributes);
+      setReady(true)
+    }
+    init();
+  }, [])
 
   if (!ready) {
     return <>Loading...</>

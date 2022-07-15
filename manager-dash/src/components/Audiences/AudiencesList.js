@@ -1,17 +1,21 @@
 import { AudienceTable } from './AudienceTable';
-import { useSelector, useDispatch } from 'react-redux';
 import { useEffect, useState } from 'react';
-import { fetchAudiences } from '../../features/audiences/audiences';
+import ApiClient from '../../lib/ApiClient';
 import { CreateAudienceForm } from './CreateAudienceForm';
 
 export const AudiencesList = () => {
-  const audiences = useSelector(state => state.audiences);
-  const dispatch = useDispatch();
   const [ready, setReady] = useState(false);
+  const [audiences, setAudiences] = useState([]);
 
   useEffect(() => {
-    dispatch(fetchAudiences(() => setReady(true)));
-  }, [dispatch])
+    const init = async () => {
+      const audiences = await ApiClient.getAudiences();
+      // also get all attributes for the create form
+      setAudiences(audiences);
+      setReady(true)
+    }
+    init();
+  }, [])
 
   if (!ready) {
     return <>Loading...</>

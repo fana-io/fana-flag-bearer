@@ -18,8 +18,8 @@ function App() {
       <main>
         <Navigation />
         <Route path="/" exact component={FlagsList} />
-        <Route path="/flags/:key" component={Flag} />
-        <Route path="/audiences/:key" component={Audience} />
+        <Route path="/flags/:id" component={Flag} />
+        <Route path="/audiences/:id" component={Audience} />
         <Route path="/flags" exact component={FlagsList} />
         <Route path="/audiences" exact component={AudiencesList} />
         <Route path="/attributes" component={AttributesList} />

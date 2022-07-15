@@ -1,17 +1,21 @@
 import { useEffect, useState } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { fetchFlags } from '../../features/flags/flags';
+import ApiClient from '../../lib/ApiClient';
 import { CreateFlagForm } from './CreateFlagForm';
 import { FlagTable } from './FlagTable';
 
 export const FlagsList = () => {
-  const flags = useSelector(state => state.flags);
   const [ready, setReady] = useState(false);
-  const dispatch = useDispatch();
+  const [flags, setFlags] = useState([])
 
   useEffect(() => {
-    dispatch(fetchFlags(() => setReady(true)));
-  }, [dispatch, setReady])
+    const init = async () => {
+      const flags = await ApiClient.getFlags();
+      // also fetch audience list to use for the CreateFlagForm (should this be in a different effect hook?)
+      setFlags(flags);
+      setReady(true)
+    }
+    init();
+  }, [])
 
   if (!ready) {
     return <>Loading...</>
