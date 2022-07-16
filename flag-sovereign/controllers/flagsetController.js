@@ -1,6 +1,13 @@
 const { validationResult } = require('express-validator');
 const { flagData } = require('../utilities/flagData');
 const { pushDisabledFlagsEvent } = require('./clientSdkController');
+const { getRuleset } = require('../utilities/apiClient')
+
+const getFlagset = async () => {
+  let updatedFlagData = await getRuleset();
+  flagData.setFlagData(updatedFlagData);
+  return
+};
 
 const createFlagset = (req, res, next) => {
   const errors = validationResult(req);
@@ -18,4 +25,5 @@ const createFlagset = (req, res, next) => {
 
 module.exports = {
   createFlagset,
+  getFlagset,
 };
