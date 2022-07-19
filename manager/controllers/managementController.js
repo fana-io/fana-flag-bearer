@@ -18,7 +18,10 @@ const createFlag = async (req, res, next) => {
       let createFlag = await processAPIFlag(req.body);
       let flag = await Flag.create(createFlag);
 
-      let dataToSend = {
+      publisher.publishUpdate(JSON.stringify(flag));
+      // next();
+
+      res.json({
         key: flag.keyag.displayName,
         sdkKey: flag.sdkKey,
         audiences: flag.audiences,
@@ -26,11 +29,7 @@ const createFlag = async (req, res, next) => {
         displayName: flatus,
         createdAt: flag.createdAt,
         updatedAt: flag.updatedAt,
-      };
-      publisher.publishUpdate(JSON.stringify(dataToSend));
-      // next();
-
-      res.json(dataToSend);
+      });
     } else {
       return next(new HttpError('The input field is empty.', 404));
     }
