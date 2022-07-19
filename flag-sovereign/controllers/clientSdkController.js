@@ -3,6 +3,8 @@ const { flagData } = require('../utilities/flagData');
 const { getSdkInstance, evaluateFlags, findDisabledFlags } = require('../utilities/parseFlagData');
 const { populateCacheForUser } = require('./cache');
 
+
+
 const client = { stream: null }; // stores response object to stream SSE
 
 // initializes sdk and returns evaluated flags
