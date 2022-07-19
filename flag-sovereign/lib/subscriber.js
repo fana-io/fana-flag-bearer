@@ -5,7 +5,7 @@ const REDIS_PORT = process.env.REDIS_PORT || 6379;
 const REDIS_HOST = process.env.REDIS_HOST || 'localhost';
 
 // may need to add more based on types of updates being sent
-const CHANNELS = ['flag-update-channel', 'flag-toggle-channel']
+const CHANNELS = process.env.CHANNELS || ['flag-update-channel', 'flag-toggle-channel']
 
 class Subscriber {
   constructor(port, host, subscriptionList) {
@@ -25,7 +25,7 @@ class Subscriber {
     try {
       await this.redis.connect();
       await Promise.all([CHANNELS.map(c=> this.subscribeTo(c))])
-      
+
     } catch (err) {
       console.log('Error: ' + err);
     }
@@ -47,6 +47,7 @@ class Subscriber {
 
   publish(channel, data) {
     if (channel === 'flag-toggle-channel') {
+      // all sdk streams get update
       for (let sdkType in this.list) {
         this.list[sdkType].forEach(client => {
           client.stream.write(`event: sdkKey\n`)
@@ -56,14 +57,14 @@ class Subscriber {
         })
       }
     } else {
+      // only server streams get update
       this.list.servers.forEach(client => {
-        client.stream.write(`event: sdkKey\n`)
+        client.stream.write(`event: sdkKey\n`) // TODO: how can we get sdk key? 
         client.stream.write(`channel: ${JSON.stringify(channel)}\n`)
         client.stream.write(`data: ${JSON.stringify(data)}\n`)
         client.stream.write(`\n\n`);
       })
     }
-    console.log('done publishing');
   }
 }
 

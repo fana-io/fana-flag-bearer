@@ -1,29 +1,5 @@
-/*
-Requirements:
-- create sub lists for two topics: 'flag toggles' and 'flag updates'
-- track unique connections and save their res objects to be writable
-- remove client ids when SSE connections are dropped
-- add client ids to sub list based on topic
-- publish messages from Subscriber to respective topics by iterating through subs list
-
-if client sdk - only subscribe to flag toggles 
-- in the future, will clients want to subscribe to all updates?  
-if server, subscribe to all channels 
-
-do we need to differentiate between create flags vs create audience ? 
-
-subscriptions {
-    clientSDK: [
-      {
-        clientid: number,
-        stream: response object
-      }
-    ],
-    serverSDKs: [...]
-}
-
-*/
 const MINIMUM_ID_LENGTH = 30;
+
 class ClientsManager {
   constructor() {
     this.subscriptions = {servers: [], clients: []}
@@ -33,12 +9,9 @@ class ClientsManager {
       'Cache-Control': 'no-cache',
     };
     this.validParams = ['server', 'client'] // as of now, we only have two different subscription lists
-    
   }
 
   stream(req, res, next) {
-    // validate result
-    // do we expect an unique id for each SDK ?
     const { sdkType, id} = req.params;
     const result = this.validateParam(sdkType)
 
