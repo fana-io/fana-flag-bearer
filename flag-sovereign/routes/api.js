@@ -5,14 +5,13 @@ const { checkCache } = require('../controllers/cache');
 const { createFlagset } = require('../controllers/flagsetController');
 const { initializeServerSDK } = require('../controllers/serverSdkController');
 const { initializeClientSDK } = require('../controllers/clientSdkController');
-const { authorizeSdkKey } = require('../utilities/middleware')
 
 const ClientsManager = require('../lib/clientsManager')
 const Subscriber = require('../lib/subscriber')
 const REDIS_PORT = process.env.REDIS_PORT || 6379;
 const REDIS_HOST = process.env.REDIS_HOST || 'localhost';
 
-const manager = new ClientsManager(SDK_KEYS) // TODO: needs to be fed sdk keys from manager
+const manager = new ClientsManager(SDK_KEYS=[]) // TODO: needs to be fed sdk keys from manager
 const subscriber = new Subscriber(REDIS_PORT, REDIS_HOST, manager.subscriptions);
 
 // route to receive webhook from flag manager
@@ -23,7 +22,6 @@ router.post('/flagset', validateFlagset, createFlagset);
 router.post(
   `/connect/clientInit`,
   validateClientInit,
-  authorizeSdkKey,
   checkCache,
   initializeClientSDK
 );

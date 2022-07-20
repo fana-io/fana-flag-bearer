@@ -7,13 +7,14 @@ const initializeServerSDK = (req, res, next) => {
   if (errors.isEmpty()) {
     const allFlags = flagData.getFlagData();
     const sdkInstance = getSdkInstance(req.body.sdkKey, allFlags);
+
     if (!sdkInstance) {
       return res.status(400).send({ error: 'Invalid SDK key.' });
     }
 
     res.json(sdkInstance);
   } else {
-    res.status(400).send({ error: 'SDK key is required.' });
+    res.status(401).send({ error: 'SDK key is required in Authorization header.' });
   }
 }
 
