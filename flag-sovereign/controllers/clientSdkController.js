@@ -18,7 +18,6 @@ const initializeClientSDK = (req, res) => {
     }
     const userFlagEvals = evaluateFlags(sdkInstance, userContext);
     populateCacheForUser(req.body.sdkKey, userContext, userFlagEvals);
-    // console.log('sending from initializeClient')
     return res.json(userFlagEvals);
   } else {
     return res.status(400).send({ error: 'SDK key and userId are required.' });
