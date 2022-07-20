@@ -1,5 +1,5 @@
 const { validationResult } = require('express-validator');
-const { flagData } = require('../utilities/flagData');
+const { flagData } = require('../lib/flagData');
 const { pushDisabledFlagsEvent } = require('./clientSdkController');
 
 const createFlagset = (req, res, next) => {

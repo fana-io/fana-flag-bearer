@@ -131,6 +131,7 @@ const seedData = [
 class FlagData {
   constructor() {
     this._flagData = seedData;
+    this._sdkKeys;
   }
 
   setFlagData(newFlagData) {
@@ -141,6 +142,8 @@ class FlagData {
   getFlagData() {
     return this._flagData;
   }
+
+  
 }
 
 module.exports.flagData = new FlagData();

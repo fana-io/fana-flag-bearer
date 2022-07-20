@@ -1,6 +1,6 @@
 const { validationResult } = require('express-validator');
 const { getSdkInstance } = require('../utilities/parseFlagData');
-const { flagData } = require('../utilities/flagData');
+const { flagData } = require('../lib/flagData');
 
 const initializeServerSDK = (req, res, next) => {
   const errors = validationResult(req);

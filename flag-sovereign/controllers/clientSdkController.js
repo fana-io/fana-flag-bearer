@@ -1,5 +1,5 @@
 const { validationResult } = require('express-validator');
-const { flagData } = require('../utilities/flagData');
+const { flagData } = require('../lib/flagData');
 const { getSdkInstance, evaluateFlags, findDisabledFlags } = require('../utilities/parseFlagData');
 const { populateCacheForUser } = require('./cache');
 
@@ -23,7 +23,7 @@ const initializeClientSDK = (req, res) => {
     // populateCacheForUser(req.body.sdkKey, userId, userFlagEvals);
     return res.json(userFlagEvals);
   } else {
-    return res.status(400).send({ error: 'SDK key and userId are required.' });
+    return res.status(400).send({ error: 'Invalid SDK keyin header or no userId provided.' });
   }
 };
 
