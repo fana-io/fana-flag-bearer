@@ -18,15 +18,17 @@ const createFlag = async (req, res, next) => {
       let createFlag = await processAPIFlag(req.body);
       let flag = await Flag.create(createFlag);
 
+      console.log('flag created', flag);
+
       publisher.publishUpdate(JSON.stringify(flag));
       // next();
 
       res.json({
-        key: flag.keyag.displayName,
+        key: flag.key,
         sdkKey: flag.sdkKey,
         audiences: flag.audiences,
-        status: flag.st,
-        displayName: flatus,
+        status: flag.status,
+        displayName: flag.displayName,
         createdAt: flag.createdAt,
         updatedAt: flag.updatedAt,
       });

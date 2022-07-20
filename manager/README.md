@@ -77,11 +77,13 @@ Expected Payload:
     "combine": "ANY",
     "conditions": [
         {
+        "negate": true,
         "attribute": "state",
         "operator": "EQ",
         "value": "california"
         },
         {
+        "negate": false,
         "attribute": "beta",
         "operator": "EQ",
         "value": "true"
