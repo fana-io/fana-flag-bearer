@@ -11,6 +11,8 @@ class FlagData {
   getFlagData() {
     return this._flagData;
   }
+
+  
 }
 
 module.exports.flagData = new FlagData();
