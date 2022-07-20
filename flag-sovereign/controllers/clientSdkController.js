@@ -9,16 +9,16 @@ const client = { stream: null }; // stores response object to stream SSE
 const initializeClientSDK = (req, res) => {
   const errors = validationResult(req);
   if (errors.isEmpty()) {
-    const { userId } = req.body.userContext;
+    const userContext = req.body.userContext;
     const allFlags = flagData.getFlagData();
     // rename sdkInstance
     const sdkInstance = getSdkInstance(req.body.sdkKey, allFlags);
-
     if (!sdkInstance) {
       return res.status(400).send({ error: 'Invalid SDK key.' });
     }
-    const userFlagEvals = evaluateFlags(sdkInstance, req.body.userContext);
-    // populateCacheForUser(req.body.sdkKey, userId, userFlagEvals);
+    const userFlagEvals = evaluateFlags(sdkInstance, userContext);
+    populateCacheForUser(req.body.sdkKey, userContext, userFlagEvals);
+    // console.log('sending from initializeClient')
     return res.json(userFlagEvals);
   } else {
     return res.status(400).send({ error: 'SDK key and userId are required.' });

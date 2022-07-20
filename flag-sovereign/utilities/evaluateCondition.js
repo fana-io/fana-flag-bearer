@@ -1,6 +1,7 @@
 // for both strings and booleans
 // targetVal is from flag rules
 // candidateVal is from userContext
+// if condition is negate, flip
 const isEq = (targetVal, candidateVal) => {
   if (typeof candidateVal === 'string') {
     candidateVal = candidateVal.toLowerCase();

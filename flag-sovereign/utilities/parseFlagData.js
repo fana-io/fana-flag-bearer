@@ -1,7 +1,6 @@
 const { evaluateCondition } = require('./evaluateCondition')
 const { allFlagData, testUser } = require('../seed-data')
 
-
 // finds sdkInstance object from full flag data set
 function getSdkInstance(sdkKey, allFlagData) {
   return allFlagData.find(sdk => sdk.sdkKey === sdkKey);
