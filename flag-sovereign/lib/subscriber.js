@@ -1,8 +1,5 @@
 require('dotenv').config();
 const redis = require('redis');
-const ClientsManager = require('./clientsManager')
-const REDIS_PORT = process.env.REDIS_PORT || 6379;
-const REDIS_HOST = process.env.REDIS_HOST || 'localhost';
 
 // may need to add more based on types of updates being sent
 const CHANNELS = process.env.CHANNELS || ['flag-update-channel', 'flag-toggle-channel']
@@ -14,7 +11,7 @@ class Subscriber {
       port,
       host,
     });
-    this.list = subscriptionList;
+    this.list = subscriptionList; // reference to client & server sdk SSE connections managed by Client Manager object
     this.init();
   }
 
@@ -24,7 +21,7 @@ class Subscriber {
 
     try {
       await this.redis.connect();
-      await Promise.all([CHANNELS.map(c=> this.subscribeTo(c))])
+      await Promise.all([CHANNELS.map(c=> this.subscribeTo(c))]) // subscribe to available publisher channels
 
     } catch (err) {
       console.log('Error: ' + err);
@@ -32,6 +29,7 @@ class Subscriber {
   }
 
   async subscribeTo(channelName) {
+    // forwards published messages to SSE connections in subscriptions list
     try {
       await this.redis.subscribe(channelName, (message, channel) => {
         console.log(`${channel}: ${message}`);
@@ -47,19 +45,18 @@ class Subscriber {
 
   publish(channel, data) {
     if (channel === 'flag-toggle-channel') {
-      // all sdk streams get update
+      // all sdk streams get updated when a flag is toggle on or off
       for (let sdkType in this.list) {
         this.list[sdkType].forEach(client => {
-          client.stream.write(`event: sdkKey\n`)
+          client.stream.write(`event: ${JSON.stringify(client.sdkKey)}\n`)
           client.stream.write(`channel: ${JSON.stringify(channel)}\n`)
           client.stream.write(`data: ${JSON.stringify(data)}\n`)
           client.stream.write(`\n\n`);
         })
       }
     } else {
-      // only server streams get update
+      // only server streams get updates to individual flags
       this.list.servers.forEach(client => {
-        client.stream.write(`event: sdkKey\n`) // TODO: how can we get sdk key? 
         client.stream.write(`channel: ${JSON.stringify(channel)}\n`)
         client.stream.write(`data: ${JSON.stringify(data)}\n`)
         client.stream.write(`\n\n`);
@@ -67,10 +64,6 @@ class Subscriber {
     }
   }
 }
-
-
-
-
 
 module.exports = Subscriber;
 

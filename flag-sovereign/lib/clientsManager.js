@@ -9,7 +9,7 @@ class ClientsManager {
       'Cache-Control': 'no-cache',
     };
     this.sdkKeys = sdkKeys; // list of valid sdk keys from Manager
-    this.validParams = ['server', 'client']; // as of now, we only have two different subscription lists
+    this.subscriptionTypes = ['server', 'client']; // as of now, we only have two different subscription lists
   }
 
   stream(req, res, next) {
@@ -21,13 +21,13 @@ class ClientsManager {
       return res.status(result.code).send(result.error);
     }
 
-    const client = this.addClient(sdkType, id);
+    const client = this.addClient(sdkType, id, sdkKey);
     this.connectClient(client, req, res);
     this.reportOnAllConnections();
   }
 
   validateParams(sdkType, sdkKey) {
-    const validType = this.validParams.includes(sdkType);
+    const validType = this.subscriptionTypes.includes(sdkType);
     const validKey = this.sdkKeys.includes(sdkKey);
 
     if (validType && validKey) return { valid: true };
@@ -39,10 +39,11 @@ class ClientsManager {
     return { valid: false, code: 400, error: errorMessage };
   }
 
-  addClient(sdkType, id) {
-    if (!id || typeof id !== 'string')
-      id = this.generateRandomId(MINIMUM_ID_LENGTH);
-    const newClient = { id };
+  // SSE connections are organized by sdk type
+  addClient(sdkType, id, sdkKey) {
+    if (!id || typeof id !== 'string') id = this.generateRandomId(MINIMUM_ID_LENGTH);
+    
+    const newClient = { id, sdkKey };
 
     if (sdkType === 'client') {
       this.subscriptions.clients.push(newClient);
@@ -52,12 +53,17 @@ class ClientsManager {
     return newClient;
   }
 
+  // create initial SSE streaming connection
   connectClient(client, req, res) {
     res.writeHead(200, this.responseHeaders);
     res.write(`data: Success: subscribed to messages.`);
     res.write('\n\n');
     console.log(`client ${client.id} connected successfully.`);
-
+    
+    // store response obj to be written to later
+    client.stream = res; 
+    
+    // remove SSE client from appropriate subscriptions list when conn is closed
     req.on('close', () => {
       this.subscriptions.clients = this.subscriptions.clients.filter(
         (c) => c.id !== client.id
@@ -65,7 +71,6 @@ class ClientsManager {
       console.log(`client ${client.id} disconnected`);
       this.reportOnAllConnections();
     });
-    client.stream = res; // store response obj to be written to later
   }
 
   reportOnAllConnections() {
