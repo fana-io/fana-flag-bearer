@@ -7,8 +7,9 @@ const initializeClientSDK = (req, res) => {
   const errors = validationResult(req);
   if (errors.isEmpty()) {
     const allFlags = flagData.getFlagData();
-    
-    const sdkInstance = getSdkInstance(req.body.sdkKey, allFlags);
+    const sdkKey = req.header('Authorization');
+
+    const sdkInstance = getSdkInstance(sdkKey, allFlags);
 
     if (!sdkInstance) {
       return res.status(400).send({ error: 'Invalid SDK key.' });
@@ -17,10 +18,12 @@ const initializeClientSDK = (req, res) => {
     // populateCacheForUser(req.body.sdkKey, userId, userFlagEvals);
     return res.json(userFlagEvals);
   } else {
-    return res.status(400).send({ error: 'Invalid SDK keyin header or no userId provided.' });
+    return res
+      .status(400)
+      .send({ error: 'Invalid SDK key in header or no userId provided.' });
   }
 };
 
 module.exports = {
-  initializeClientSDK
+  initializeClientSDK,
 };
