@@ -1,24 +1,27 @@
+import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
+import TableHead from "@mui/material/TableHead";
+import TableRow from "@mui/material/TableRow";
+import Table from "@mui/material/Table";
+import TableContainer from "@mui/material/TableContainer";
 import { AttributeRow } from "./AttributeRow"
 
 export const AttributeTable = ({ attributes }) => {
-  if (!attributes.length) {
-    return (<>Loading...</>)
-  }
   return (
-    <table>
-      <thead>
-        <tr>
-          <th>Attribute Name</th>
-          <th>Attribute Key</th>
-          <th>Created</th>
-          <th>Last Updated</th>
-        </tr>
-      </thead>
-      <tbody>
+    <TableContainer>
+      <TableHead>
+        <TableRow>
+          <TableCell style={{width: 300}}>Attribute Name</TableCell>
+          <TableCell style={{width: 200}}>Attribute Key</TableCell>
+          <TableCell style={{width: 200}}>Data Type</TableCell>
+          <TableCell>Created</TableCell>
+        </TableRow>
+      </TableHead>
+      <TableBody>
         {attributes.map(attribute => {
           return (<AttributeRow key={attribute.key} attribute={attribute} />)
         })}
-      </tbody>
-    </table>
+      </TableBody>
+    </TableContainer>
   )
 }
