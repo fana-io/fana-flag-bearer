@@ -36,7 +36,7 @@ app.use((err, req, res, next) => {
 });
 
 // get data from Manager
-getFlagset();
+// getFlagset();
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
