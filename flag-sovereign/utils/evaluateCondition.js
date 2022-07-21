@@ -46,7 +46,7 @@ const evaluateCondition = (userContext, condition) => {
   const op = condition.operator;
   const attribute = condition.attribute;
   // targetValue needs to be cast to whatever condition.type is
-  const targetValue = condition.value;
+  const targetValue = condition.vals;
   const candidateValue = userContext[attribute];
   if (!candidateValue) return false;
   return operandMapper[op](targetValue, candidateValue);
