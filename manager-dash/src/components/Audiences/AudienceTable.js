@@ -1,21 +1,29 @@
+import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
+import TableHead from "@mui/material/TableHead";
+import TableRow from "@mui/material/TableRow";
+import Table from "@mui/material/Table";
+import TableContainer from "@mui/material/TableContainer";
 import { AudienceRow } from "./AudienceRow"
 
 export const AudienceTable = ({ audiences }) => {
   return (
-    <table>
-      <thead>
-        <tr>
-          <th>Audience Name</th>
-          <th>Audience Key</th>
-          <th>Created</th>
-          <th>Last Updated</th>
-        </tr>
-      </thead>
-      <tbody>
-        {audiences.map(audience => {
-          return (<AudienceRow key={audience.key} audience={audience} />)
-        })}
-      </tbody>
-    </table>
+    <TableContainer>
+      <Table stickyHeader>
+        <TableHead>
+          <TableRow>
+            <TableCell style={{width: 300}}>Audience Name</TableCell>
+            <TableCell style={{width: 200}}>Audience Key</TableCell>
+            <TableCell>Created</TableCell>
+            <TableCell>Last Updated</TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {audiences.map(audience => {
+            return (<AudienceRow key={audience.key} audience={audience} />)
+          })}
+        </TableBody>
+      </Table>
+    </TableContainer>
   )
 }
