@@ -24,7 +24,7 @@ const operators = {
 export const AudienceCondition = ({ condition }) => {
   return (
     <li>
-      {condition.attribute.key} {operators[condition.operator]} {condition.value}
+      {condition.attributeKey} {operators[condition.operator]} {condition.vals}
     </li>
   )
 }

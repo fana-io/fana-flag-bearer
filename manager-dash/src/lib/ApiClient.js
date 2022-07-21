@@ -5,6 +5,10 @@ const apiClient = {
     let { data } = await axios.get('/api/flags');
     return data;
   },
+  getFlag: async (id) => {
+    let { data } = await axios.get(`/api/flags/${id}`);
+    return data;
+  },
   createFlag: async () => {
 
   },
@@ -17,6 +21,10 @@ const apiClient = {
   },
   getAudiences: async () => {
     let { data } = await axios.get('/api/audiences');
+    return data;
+  },
+  getAudience: async(id) => {
+    let { data } = await axios.get(`/api/audiences/${id}`);
     return data;
   },
   createAudience: async () => {

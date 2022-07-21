@@ -1,19 +1,13 @@
-import { useState } from "react"
+import { Switch } from "@mui/material";
 import ApiClient from "../../lib/ApiClient";
 
 export const FlagStatusToggle = ({ flag }) => {
-  const [pendingToggle, setPendingToggle] = useState(false);
-
   const toggleFlagStatus = async () => {
-    setPendingToggle(true)
-    await ApiClient.editFlag(flag.id, { status: !flag.status })
-    setPendingToggle(false);
+    console.log('flag status toggled')
+    // await ApiClient.editFlag(flag.id, { status: !flag.status })
   }
 
   return (
-    <label className="switch">
-      <input type="checkbox" checked={flag.status} disabled={pendingToggle} onChange={toggleFlagStatus} />
-      <span className="slider round"></span>
-    </label>
+    <Switch checked={flag.status} onChange={toggleFlagStatus} />
   )
 }

@@ -1,34 +1,65 @@
 import { AudienceTable } from './AudienceTable';
 import { useEffect, useState } from 'react';
-import ApiClient from '../../lib/ApiClient';
-import { CreateAudienceForm } from './CreateAudienceForm';
+import apiClient from '../../lib/ApiClient';
+import { CreateAudienceModal } from './CreateAudienceModal';
+import Grid from '@mui/material/Grid';
+import Typography from '@mui/material/Typography';
+import TextField from '@mui/material/TextField';
+import Button from '@mui/material/Button';
 
 export const AudiencesList = () => {
   const [ready, setReady] = useState(false);
   const [audiences, setAudiences] = useState([]);
+  const [displayedAudiences, setDisplayedAudiences] = useState([]);
+  const [searchText, setSearchText] = useState('');
+  const [formOpen, setFormOpen] = useState(false);
 
   useEffect(() => {
-    const init = async () => {
-      const audiences = await ApiClient.getAudiences();
+    const fetchAudiences = async () => {
+      const a = await apiClient.getAudiences();
       // also get all attributes for the create form
-      setAudiences(audiences);
+      setAudiences(a);
+      setDisplayedAudiences(a);
       setReady(true)
     }
-    init();
+    fetchAudiences();
   }, [])
+
+  useEffect(() => {
+    const lcSearchText = searchText.toLowerCase();
+    const filteredAudiences = audiences.filter(a => {
+      return (a.displayName.toLowerCase().includes(lcSearchText) || a.key.toLowerCase().includes(lcSearchText))
+    })
+    setDisplayedAudiences(filteredAudiences);
+  }, [searchText, audiences])
 
   if (!ready) {
     return <>Loading...</>
   }
 
-  if (!audiences.length) {
-    return null;
-  }
-
   return (
-    <div className="list">
-      <CreateAudienceForm></CreateAudienceForm>
-      <AudienceTable audiences={audiences} />
-    </div>
+    <Grid container spacing={2} sx={{
+      marginLeft: 8,
+      maxWidth: 1000
+    }}>
+      <Grid item xs={12}>
+        <Typography variant="h3">Audiences</Typography>
+      </Grid>
+      <Grid item xs={8}>
+        <TextField
+          id="outlined-basic"
+          label="Search audiences"
+          variant="outlined"
+          value={searchText}
+          onChange={(e) => setSearchText(e.target.value)}
+        />
+      </Grid>
+      <Grid item container xs={3} direction="column" alignItems="flex-end" justify="flex-end">
+        <Button variant="outlined" onClick={() => setFormOpen(true)}>Create audience</Button>
+      </Grid>
+      <CreateAudienceModal isOpen={formOpen} setFormOpen={setFormOpen} />
+      <AudienceTable audiences={displayedAudiences} />
+    </Grid>
   )
 }
+

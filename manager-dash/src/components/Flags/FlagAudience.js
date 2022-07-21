@@ -1,17 +1,23 @@
+import ListItemText from "@mui/material/ListItemText";
+import ListItem from "@mui/material/ListItem";
+import IconButton from "@mui/material/IconButton";
+import DeleteIcon from "@mui/icons-material/Delete"
 import { Link } from "react-router-dom"
-import { AudienceCondition } from "../Audiences/AudienceCondition";
 
-export const FlagAudience = ({ audience }) => {
-  const link = "/audiences/" + audience.key;
+export const FlagAudience = ({ audience, removeAudience }) => {
+  const link = "/audiences/" + audience.ID;
   console.log('audience', audience)
   return (
-    <li>
-      <Link to={link}><h4>{audience.displayName}</h4></Link>
-      <ul>
-        {audience.conditions.map(condition => {
-          return (<AudienceCondition key={condition.attribute.key} condition={condition} />)
-        })}
-      </ul>
-    </li>
+    <ListItem divider
+      secondaryAction={
+        <IconButton edge="end" aria-label="delete" onClick={() => removeAudience(audience.key)} >
+          <DeleteIcon/>
+        </IconButton>
+      }
+    >
+      <ListItemText>
+        <Link to={link}>{audience.displayName}</Link>
+      </ListItemText>
+    </ListItem>
   )
 }

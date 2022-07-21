@@ -6,7 +6,6 @@ todo's
 
 */
 const combinationOptions = [
-  { value: '', text: 'Select a type' },
   { value: 'ANY', text: 'Any' },
   { value: 'ALL', text: 'All' },
 ];
@@ -18,10 +17,8 @@ const attributeOptions = createAttrOptions(attributes);
 
 // note: operands should be based on attribute type
 const operatorOptions = [
-  { value: '', text: 'Select an operator' },
   { value: 'EQ', text: 'is equal to' },
   { value: 'IN', text: 'is in' },
-  { value: 'NOT_IN', text: 'is not in' },
   { value: 'STR_CONTAINS', text: 'contains' },
   { value: 'STR_STARTS_WITH', text: 'starts with' },
   { value: 'STR_ENDS_WITH', text: 'ends with' },
