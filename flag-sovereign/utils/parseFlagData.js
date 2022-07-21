@@ -61,7 +61,6 @@ function evaluateFlags(sdkInstance, userContext) {
         }
       }
     } 
-
     flagEvals[flag.flagKey] = eval; 
   });
   return flagEvals;

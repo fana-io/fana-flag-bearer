@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const routes = require('./routes/api');
 const HttpError = require('./models/httpError');
 require('dotenv').config();
-
+const morgan = require('morgan')
 const app = express();
 
 const port = process.env.PORT || 6000;
@@ -23,6 +23,7 @@ app.use((req, res, next) => {
 });
 
 app.use(express.json());
+app.use(morgan("tiny"));
 
 app.use('/api', routes);
 

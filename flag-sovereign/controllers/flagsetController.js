@@ -1,6 +1,13 @@
 const { validationResult } = require('express-validator');
-const { flagData } = require('../utilities/flagData');
+const { flagData } = require('../lib/flagData');
 const { pushDisabledFlagsEvent } = require('./clientSdkController');
+const { getRuleset } = require('../utils/apiClient')
+
+const getFlagset = async () => {
+  let updatedFlagData = await getRuleset();
+  flagData.setFlagData(updatedFlagData);
+  return
+};
 
 const createFlagset = (req, res, next) => {
   const errors = validationResult(req);
@@ -8,7 +15,6 @@ const createFlagset = (req, res, next) => {
   if (errors.isEmpty()) {
     // assuming Manager always sends full set of flags
     flagData.setFlagData(req.body);
-
     // sends push event of disabled flags to clientSDK
     pushDisabledFlagsEvent(req.body);
     res.status(201).send('201: Flagset created');
@@ -19,4 +25,5 @@ const createFlagset = (req, res, next) => {
 
 module.exports = {
   createFlagset,
+  getFlagset,
 };

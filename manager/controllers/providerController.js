@@ -3,10 +3,12 @@ const HttpError = require('../models/httpError');
 const axios = require('axios')
 require('dotenv').config();
 const { validationResult } = require('express-validator');
+const publisher = require('../lib/publisher')
 
 axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 axios.defaults.headers.common['Accept'] = 'application/json';
-const webhookEndpoint = process.env.WH_URI
+const webhookEndpoint = process.env.WH_URI || 'http://localhost:3001/flagset'
+
 
 const getRuleset = async(req, res, next) => {
   try {
@@ -22,9 +24,11 @@ const getRuleset = async(req, res, next) => {
 const pushUpdatesWH = async(req, res, next) => {
   const rawFlags = await fetchFlags()
   const processedFlags = flattenFlags(rawFlags)
+  console.log('publishing....');
+  publisher.publishUpdate(JSON.stringify(processedFlags))
 
   try {
-    await axios.post(webhookEndpoint, processedFlags)
+    // await axios.post(webhookEndpoint, processedFlags)
   } catch (err) {console.log(err)}
 }
 
@@ -81,7 +85,6 @@ function includeNewSDK(resultArr, flag) {
 
 function appendToExistingSDK(resultArr, sdkInd, flag) {
   resultArr[sdkInd].flags.push(buildFlattenedFlag(flag))
-
   // if audience _doesn't_ already exist, push audience to result
   // else, do nothing
   flag.audiences.forEach(flagAud => {
@@ -91,7 +94,7 @@ function appendToExistingSDK(resultArr, sdkInd, flag) {
       })
     })
 
-    if (!exists) resultArr.audiences.push(buildFlattenedAudience(flagAud))
+    if (!exists) resultArr[sdkInd].audiences.push(buildFlattenedAudience(flagAud))
   })
 }
 

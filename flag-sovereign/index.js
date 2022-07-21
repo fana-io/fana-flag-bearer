@@ -4,6 +4,7 @@ const cors = require("cors");
 const morgan = require("morgan");
 const routes = require("./routes/api");
 const ngrok = require('ngrok')
+const { getFlagset } = require('./controllers/flagsetController')
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -33,6 +34,9 @@ app.use((err, req, res, next) => {
   res.status(err.code || 500);
   res.json({ error: err.message || 'An unknown error occured' });
 });
+
+// get data from Manager
+getFlagset();
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
