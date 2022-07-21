@@ -11,8 +11,8 @@ const Subscriber = require('../lib/subscriber')
 const REDIS_PORT = process.env.REDIS_PORT || 6379;
 const REDIS_HOST = process.env.REDIS_HOST || 'localhost';
 
-const manager = new ClientsManager(SDK_KEYS=[]) // TODO: needs to be fed sdk keys from manager
-const subscriber = new Subscriber(REDIS_PORT, REDIS_HOST, manager.subscriptions);
+const manager = new ClientsManager(SDK_KEYS=['beta_sdk_0']) // TODO: needs to be fed sdk keys from manager
+const subscriber = new Subscriber(REDIS_PORT, REDIS_HOST, manager);
 
 // route to receive webhook from flag manager
 // also sends push event of disabled flags within createFlagset

@@ -14,7 +14,8 @@ class ClientsManager {
 
   stream(req, res, next) {
     const { sdkType, id } = req.params;
-    const sdkKey = req.header('Authorization');
+    const sdkKey = req.query.sdkKey;
+
     const result = this.validateParams(sdkType, sdkKey);
 
     if (!result.valid) {
@@ -29,6 +30,7 @@ class ClientsManager {
   validateParams(sdkType, sdkKey) {
     const validType = this.subscriptionTypes.includes(sdkType);
     const validKey = this.sdkKeys.includes(sdkKey);
+    console.log('validators', validType, validKey);
 
     if (validType && validKey) return { valid: true };
 
@@ -41,8 +43,9 @@ class ClientsManager {
 
   // SSE connections are organized by sdk type
   addClient(sdkType, id, sdkKey) {
-    if (!id || typeof id !== 'string') id = this.generateRandomId(MINIMUM_ID_LENGTH);
-    
+    if (!id || typeof id !== 'string')
+      id = this.generateRandomId(MINIMUM_ID_LENGTH);
+
     const newClient = { id, sdkKey };
 
     if (sdkType === 'client') {
@@ -59,10 +62,10 @@ class ClientsManager {
     res.write(`data: Success: subscribed to messages.`);
     res.write('\n\n');
     console.log(`client ${client.id} connected successfully.`);
-    
+
     // store response obj to be written to later
-    client.stream = res; 
-    
+    client.stream = res;
+
     // remove SSE client from appropriate subscriptions list when conn is closed
     req.on('close', () => {
       this.subscriptions.clients = this.subscriptions.clients.filter(
