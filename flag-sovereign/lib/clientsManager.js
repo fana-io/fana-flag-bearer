@@ -1,4 +1,6 @@
 const MINIMUM_ID_LENGTH = 30;
+const SEC_TO_RETRY = 7000; // recommended ms to wait in-between failed SSE connection attempts
+const SUBSCRIPTION_TYPES = ['server', 'client'];
 
 class ClientsManager {
   constructor(sdkKeys) {
@@ -9,13 +11,13 @@ class ClientsManager {
       'Cache-Control': 'no-cache',
     };
     this.sdkKeys = sdkKeys; // list of valid sdk keys from Manager
-    this.subscriptionTypes = ['server', 'client']; // as of now, we only have two different subscription lists
+    this.subscriptionTypes = SUBSCRIPTION_TYPES
+    this.retryTimeout = SEC_TO_RETRY
   }
 
   stream(req, res, next) {
     const { sdkType, id } = req.params;
     const sdkKey = req.query.sdkKey;
-
     const result = this.validateParams(sdkType, sdkKey);
 
     if (!result.valid) {
@@ -59,6 +61,7 @@ class ClientsManager {
   // create initial SSE streaming connection
   connectClient(client, req, res) {
     res.writeHead(200, this.responseHeaders);
+    res.write(`retry: 7000.\n`);
     res.write(`data: Success: subscribed to messages.`);
     res.write('\n\n');
     console.log(`client ${client.id} connected successfully.`);

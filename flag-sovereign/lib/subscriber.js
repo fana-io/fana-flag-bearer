@@ -60,6 +60,7 @@ class Subscriber {
     } else {
       // only server streams get updates to individual flags
       this.manager.subscriptions.servers.forEach(client => {
+        client.stream.write(`event: ${client.sdkKey}\n`)
         client.stream.write(`channel: ${channel}\n`)
         client.stream.write(`data: ${JSON.stringify(data)}\n`)
         client.stream.write(`\n\n`);
