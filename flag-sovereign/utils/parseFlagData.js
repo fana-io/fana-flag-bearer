@@ -1,6 +1,12 @@
 const { evaluateCondition } = require('./evaluateCondition')
 // const { allFlagData, testUser } = require('../seed-data')
 const { flagData } = require('../lib/flagData');
+const { sdkKeys, ...flags } = flagData.getFlagData()
+
+// validate sdk Key
+const validSdkKey = (sdkKey) => {
+  return sdkKeys[sdkKey];
+}
 
 // evaluate audience conditions based on user attributes
 function evaluateAudience(audienceContext, userContext) {
@@ -31,7 +37,6 @@ function evaluateAudience(audienceContext, userContext) {
 
 // Returns overall flag evaluation based on set of audience logic evaluations for a given user
 function evaluateFlags(userContext) {
-  const { sdkKeys, ...flags } = flagData.getFlagData()
   const flagEvals = {};
   const audienceEvals = {};
   // const userAudienceEvals = evaluateAudiences(sdkInstance, userContext);
@@ -97,7 +102,7 @@ function evaluateFlags(userContext) {
 // const testUserContext1 = {
 //   userId: 'JJUY',
 //   beta: false,
-//   age: 24,
+//   age: 16,
 //   country: 'CanadA',
 // }
 // const testUserContext2 = {
@@ -106,7 +111,7 @@ function evaluateFlags(userContext) {
 //   age: 24,
 //   country: 'CanadA',
 // }
-// console.log('canada', evaluateFlags(testUserContext1))
+// console.log('NONE', evaluateFlags(testUserContext1))
 // console.log('=====')
 // console.log('beta & canada', evaluateFlags(testUserContext2))
-module.exports = { evaluateFlags }
+module.exports = { evaluateFlags, validSdkKey }

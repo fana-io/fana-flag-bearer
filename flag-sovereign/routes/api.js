@@ -22,7 +22,6 @@ router.post('/flagset', validateFlagset, createFlagset);
 router.post(
   `/connect/clientInit`,
   validateClientInit,
-  checkCache,
   initializeClientSDK
 );
 

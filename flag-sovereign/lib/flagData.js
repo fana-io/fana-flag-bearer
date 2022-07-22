@@ -20,9 +20,11 @@ const condition_3 = {
 }
 
 const seedData = {
-  sdkKeys: [
-    "beta_sdk_0"
-  ],
+  sdkKeys: {
+    "beta_sdk_0":true,
+    "de9-6bf1a0c-3":true,
+    "fa4-d731f0e-4":true
+  },
 
   "beta-header": {
       "status": true,
@@ -32,7 +34,7 @@ const seedData = {
           {
             "attribute": "beta",
             "operator": "EQ",
-            "vals": "true",
+            "vals": ["true"],
             "negate": false
           }
         ]
@@ -40,13 +42,19 @@ const seedData = {
   },
   "CA-header": {
     "status": true,
-    "ca-testers": {
-      combine: "ANY",
+    "na-testers": {
+      combine: "ALL",
       conditions: [
         {
           "attribute": "country",
-          "operator": "EQ",
-          "vals": "canada",
+          "operator": "IN",
+          "vals": ["canada", "usa"],
+          "negate": false
+        },
+        {
+          "attribute": "age",
+          "operator": "GT",
+          "vals": ["18"],
           "negate": false
         }
       ]
