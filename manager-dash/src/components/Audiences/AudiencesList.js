@@ -38,10 +38,7 @@ export const AudiencesList = () => {
   }
 
   return (
-    <Grid container spacing={2} sx={{
-      marginLeft: 8,
-      maxWidth: 1000
-    }}>
+    <Grid container spacing={2}>
       <Grid item xs={12}>
         <Typography variant="h3">Audiences</Typography>
       </Grid>

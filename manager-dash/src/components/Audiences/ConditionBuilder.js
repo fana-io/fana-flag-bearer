@@ -10,7 +10,8 @@ import Stack from "@mui/material/Stack"
 import FormControlLabel from "@mui/material/FormControlLabel";
 import FormHelperText from "@mui/material/FormHelperText";
 import Button from "@mui/material/Button"
-import { Typography } from "@mui/material";
+import Typography from "@mui/material/Typography";
+import apiClient from "../../lib/apiClient";
 
 const operatorOptions = {
   STR: [
@@ -32,14 +33,33 @@ const operatorOptions = {
   ]
 }
 
-export const ConditionComponent = ({ attributeOptions, handleSaveCondition, closeConditionForm }) => {
-  console.log('attribute options', attributeOptions)
+export const ConditionBuilder = ({ handleSaveCondition, closable = false, closeConditionForm }) => {
+  const [attributeOptions, setAttributeOptions] = useState([]);
   const [attribute, setAttribute] = useState('');
   const [attrType, setAttrType] = useState('');
   const [negate, setNegate] = useState(false);
   const [operator, setOperator] = useState('');
   const [possibleOperators, setPossibleOperators] = useState([]);
-  const [targetValue, setTargetValue] = useState('');
+  const [vals, setVals] = useState('');
+  const [readyToSubmit, setReadyToSubmit] = useState(false);
+
+  useEffect(() => {
+    const initialize = async () => {
+      const atts = await apiClient.getAttributes();
+      setAttributeOptions(atts);
+    }
+    initialize();
+  }, []);
+
+  useEffect(() => {
+    if (attribute.length === 0 ||
+        operator.length === 0 ||
+        vals.trim().length === 0) {
+        setReadyToSubmit(false);
+    } else {
+      setReadyToSubmit(true);
+    }
+  }, [attribute, operator, vals])
 
   useEffect(() => {
     if (!attribute) {
@@ -54,20 +74,22 @@ export const ConditionComponent = ({ attributeOptions, handleSaveCondition, clos
 
   useEffect(() => {
     setOperator('');
-    setTargetValue('');
+    setVals('');
   }, [attrType])
 
   const handleSubmit = () => {
     // if any of the fields are empty, deny
     // if type is boolean and value isn't true or false, deny
-
-    if (attribute.length === 0 || operator === '' || targetValue.trim().length === 0) {
-      alert('Please fill out all condition fields')
-      return;
+    if (closable) {
+      closeConditionForm();
+    } else {
+      setAttribute('');
+      setAttrType('');
+      setNegate(false);
+      setOperator('');
+      setVals('');
     }
-
-    closeConditionForm();
-    handleSaveCondition({ attribute, negate, operator, targetValue })
+    handleSaveCondition({ attribute, negate, operator, vals })
   }
 
   return (
@@ -102,7 +124,7 @@ export const ConditionComponent = ({ attributeOptions, handleSaveCondition, clos
                   input={<OutlinedInput label="Select Operator"/>}
                 >
                   {possibleOperators.map((option) => {
-                    return <MenuItem value={option.value}>{option.text}</MenuItem>;
+                    return <MenuItem key={option.value} value={option.value}>{option.text}</MenuItem>;
                   })}
                 </Select>
               </FormControl>
@@ -113,8 +135,8 @@ export const ConditionComponent = ({ attributeOptions, handleSaveCondition, clos
                 required
                 variant="outlined"
                 label="Condition Value"
-                value={targetValue}
-                onChange={(e) => setTargetValue(e.target.value)}
+                value={vals}
+                onChange={(e) => setVals(e.target.value)}
               />
               {operator === "IN" ? <FormHelperText>Enter your values separated by commas</FormHelperText> : null}
             </Stack>
@@ -126,8 +148,8 @@ export const ConditionComponent = ({ attributeOptions, handleSaveCondition, clos
                   required
                   labelId="boolean-dropdown-label"
                   defaultValue={"false"}
-                  value={targetValue}
-                  onChange={(e) => setTargetValue(e.target.value)}
+                  value={vals}
+                  onChange={(e) => setVals(e.target.value)}
                   input={<OutlinedInput label="Select Boolean Value"/>}
                 >
                 <MenuItem value="true">true</MenuItem>
@@ -143,8 +165,8 @@ export const ConditionComponent = ({ attributeOptions, handleSaveCondition, clos
           <Checkbox checked={negate} onChange={() => setNegate(!negate)} />
         } label="Negate Condition" />
       </Stack>
-      <Button variant="outlined" onClick={handleSubmit}>Save Condition</Button>
-      <Button variant="outlined" color="error" onClick={closeConditionForm}>Scrap Condition</Button>
+      <Button disabled={!readyToSubmit} variant="outlined" onClick={handleSubmit}>Save Condition</Button>
+      {closable ? (<Button variant="outlined" color="error" onClick={closeConditionForm}>Scrap Condition</Button>) : null}
     </Stack>
   )
 }

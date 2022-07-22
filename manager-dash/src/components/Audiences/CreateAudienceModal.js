@@ -8,31 +8,15 @@ import FormHelperText from '@mui/material/FormHelperText';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
-import apiClient from '../../lib/apiClient';
 import { bigModalStyle } from '../../utils/modalStyle';
 import validateAndSetKey from '../../utils/validateAndSetKey';
-import { ConditionComponent } from './ConditionComponent';
+import { ConditionBuilder } from './ConditionBuilder';
 import Grid from '@mui/material/Grid';
-import ListItem from '@mui/material/ListItem';
 import Select from '@mui/material/Select';
-import IconButton from '@mui/material/IconButton';
-import DeleteIcon from '@mui/icons-material/Delete';
 import MenuItem from '@mui/material/MenuItem';
-import Paper from '@mui/material/Paper'
-const operators = {
-  EQ: '=',
-  IN: 'is in',
-  STR_CONTAINS: 'contains',
-  STR_STARTS_WITH: 'starts with',
-  STR_ENDS_WITH: 'ends with',
-  GT: '>',
-  LT: '<',
-  LT_EQ: '<=',
-  GT_EQ: '>='
-}
+import { SingleCondition } from './SingleCondition';
 
 export const CreateAudienceModal = ({ isOpen, setFormOpen }) => {
-  const [attributes, setAttributes] = useState([]);
   const [displayName, setDisplayName] = useState('');
   const [audienceKey, setAudienceKey] = useState('');
   const [combination, setCombination] = useState('ANY');
@@ -40,15 +24,6 @@ export const CreateAudienceModal = ({ isOpen, setFormOpen }) => {
   const [conditions, setConditions] = useState([]);
   const [keyError, setKeyError] = useState(false);
   const [readyToSubmit, setReadyToSubmit] = useState(false);
-
-  useEffect(() => {
-    const fetchAttributes = async () => {
-      const a = await apiClient.getAttributes();
-      console.log('fetch attributes')
-      setAttributes(a);
-    }
-    fetchAttributes();
-  }, [])
 
   useEffect(() => {
     if (displayName.trim().length === 0 ||
@@ -59,6 +34,7 @@ export const CreateAudienceModal = ({ isOpen, setFormOpen }) => {
       setReadyToSubmit(true);
     }
   }, [displayName, audienceKey, conditionFieldActive, setReadyToSubmit])
+  
   const onKeyInput = (e) => {
     validateAndSetKey(e.target.value, setAudienceKey, setKeyError);
   }
@@ -142,23 +118,12 @@ export const CreateAudienceModal = ({ isOpen, setFormOpen }) => {
             <Grid container spacing={2}>
               {conditions.map((c, idx) => {
                 return (
-                  <Grid item xs={5}>
-                    <Paper style={{ overflow: 'scroll' }} elevation={3}>
-                      <ListItem divider
-                        secondaryAction={
-                          <IconButton edge="end" aria-label="delete" onClick={() => removeCondition(idx)} >
-                            <DeleteIcon/>
-                          </IconButton>
-                        }
-                      >
-                        {`${c.attribute} ${c.negate ? "NOT" : ""} ${operators[c.operator]} ${c.targetValue}`}
-                      </ListItem>
-                      </Paper>
-                  </Grid>)
+                  <SingleCondition idx={idx} condition={c} handleRemove={removeCondition} />
+                )
               })}
             </Grid>
             {conditionFieldActive ? 
-              <ConditionComponent attributeOptions={attributes} handleSaveCondition={handleSaveCondition} closeConditionForm={closeConditionForm} /> :
+              <ConditionBuilder handleSaveCondition={handleSaveCondition} closable={true} closeConditionForm={closeConditionForm} /> :
               <Button variant="outlined" onClick={() => setConditionFieldActive(true)}>Add Condition</Button>
             }
             <Button disabled={!readyToSubmit} variant="outlined" onClick={handleSubmit}>Create Audience</Button>

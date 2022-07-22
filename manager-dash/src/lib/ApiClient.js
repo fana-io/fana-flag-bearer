@@ -36,8 +36,10 @@ const apiClient = {
   createAudience: async () => {
 
   },
-  editAudience: async () => {
-
+  editAudience: async (id, updatedFields) => {
+    let { data } = await axios.patch('/api/audiences/' + id, updatedFields);
+    console.log(data);
+    return data;
   },
   getAttributes: async () => {
     let { data } = await axios.get('/api/attributes');

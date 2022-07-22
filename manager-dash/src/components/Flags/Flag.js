@@ -11,6 +11,7 @@ import List from "@mui/material/List";
 import { AddAudienceToFlag } from "./AddAudienceToFlag";
 import Divider from "@mui/material/Divider";
 import Button from "@mui/material/Button";
+import TextField from "@mui/material/TextField";
 import _ from 'lodash';
 
 export const Flag = () => {
@@ -21,8 +22,8 @@ export const Flag = () => {
   const [allAudiences, setAllAudiences] = useState([]);
   const [pendingChanges, setPendingChanges] = useState(false);
   const [temporaryDisplayName, setTemporaryDisplayName] = useState([]);
+  const [editingDisplayName, setEditingDisplayName] = useState(false);
 
-  console.log(temporaryAudiences);
   const removeAudience = (audienceKey) => {
     const updatedAudiences = temporaryAudiences.filter(a => {
       if (a.key === audienceKey) {
@@ -43,25 +44,31 @@ export const Flag = () => {
   }
 
   const submitAudienceEdit = async () => {
-    // api patch request with temporary fields
-    // hardcoding status: false bc go will determine that it is a zero value, and won't update it
-    // this patch is only for updating audiences, so that's okay
     const patchedFlag = {
-      displayName: flag.displayName,
       audiences: temporaryAudiences.map(a => a.key)
     }
 
-    console.log('sent this to manager:', patchedFlag)
-    await apiClient.editFlag(flag.id, patchedFlag)
+    try {
+      await apiClient.editFlag(flag.id, patchedFlag)
+      let f = await fetchFlag();
+      setTemporaryAudiences(f.audiences);
+    } catch (e) {
+      alert('Something went wrong. Please try again later')
+    }
   }
 
   const submitDisplayNameEdit = async () => {
     const patchedFlag = {
       displayName: temporaryDisplayName,
-      audiences: flag.audiences
     }
 
-    await apiClient.editFlag(flag.id, patchedFlag)
+    try {
+      await apiClient.editFlag(flag.id, patchedFlag);
+      fetchFlag();
+      setEditingDisplayName(false);
+    } catch(e) {
+      alert('Something went wrong. Please try again later')
+    }
   }
 
   const fetchFlag = useCallback(async () => {
@@ -77,9 +84,9 @@ export const Flag = () => {
 
   useEffect(() => {
     const initialize = async () => {
-      const newFlag = await fetchFlag();
-      setTemporaryAudiences(newFlag.audiences);
-      setTemporaryDisplayName(newFlag.displayName);
+      const f = await fetchFlag();
+      setTemporaryAudiences(f.audiences);
+      setTemporaryDisplayName(f.displayName);
       fetchAudiences();
       setReady(true);
     }
@@ -89,8 +96,10 @@ export const Flag = () => {
   useEffect(() => {
     // when temporaryAudiences changes, see if it matches the actual audiences
     if (ready) {
-      const tempKeys = temporaryAudiences.map(a => a.key);
-      const appliedKeys = flag.audiences.map(a => a.key)
+      const tempKeys = temporaryAudiences.map(a => a.key).sort();
+      const appliedKeys = flag.audiences.map(a => a.key).sort()
+      console.log(tempKeys);
+      console.log(appliedKeys);
       if (!_.isEqual(tempKeys, appliedKeys)) {
         setPendingChanges(true);
       } else {
@@ -103,15 +112,29 @@ export const Flag = () => {
     return <>Loading...</>
   }
   return (
-    <Box container="true" spacing={1} sx={{
-      marginLeft: 8,
-      maxWidth: 1000
-    }}>
+    <Box container="true" spacing={1}>
       <Stack container="true" spacing={2}>
         <Typography variant="h3">Flag Details</Typography>
         <Stack>
           <Typography variant="caption">Title</Typography>
-          <Typography variant="subtitle1">{flag.displayName}</Typography>
+          {editingDisplayName ? (
+            <Stack direction="row" spacing={2}>
+              <TextField
+                id="outlined-basic"
+                label="Edit flag title"
+                variant="outlined"
+                value={temporaryDisplayName}
+                onChange={(e) => setTemporaryDisplayName(e.target.value)}
+              />
+              <Button variant="outlined" disabled={temporaryDisplayName.trim().length === 0} onClick={submitDisplayNameEdit}>Save</Button>
+              <Button variant="outlined" color="error" onClick={() => setEditingDisplayName(false)}>Cancel</Button>
+            </Stack>
+          ) : (
+            <Stack direction="row" spacing={2}>
+              <Typography variant="subtitle1">{flag.displayName}</Typography>
+              <Button variant="outlined" onClick={() => setEditingDisplayName(true)}>Edit</Button>
+            </Stack>
+            )}
         </Stack>
         <Stack>
           <Typography variant="caption">Key</Typography>

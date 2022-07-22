@@ -19,14 +19,16 @@ function App() {
         <Toolbar />
         <Box sx={{ display: 'flex' }}>
           <Navigation />
-          <Route path="/" exact component={FlagsList} />
-          <Route path="/flags/:id" component={Flag} />
-          <Route path="/audiences/:id" component={Audience} />
-          <Route path="/attributes/:id" component={Attribute} />
-          <Route path="/flags" exact component={FlagsList} />
-          <Route path="/audiences" exact component={AudiencesList} />
-          <Route path="/attributes" component={AttributesList} />
-          <Route path="/settings" component={Settings} />
+          <Box sx={{ marginLeft: 8, maxWidth: 1000 }}>
+            <Route path="/" exact component={FlagsList} />
+            <Route path="/flags/:id" component={Flag} />
+            <Route path="/audiences/:id" component={Audience} />
+            <Route path="/attributes/:id" component={Attribute} />
+            <Route path="/flags" exact component={FlagsList} />
+            <Route path="/audiences" exact component={AudiencesList} />
+            <Route path="/attributes" component={AttributesList} />
+            <Route path="/settings" component={Settings} />
+          </Box>
         </Box>
       </main>
     </Paper>
