@@ -13,10 +13,11 @@ class Subscriber {
     });
     this.init();
     this.manager = manager
+
+    this.redis.on('connect', () => console.log(`Subscriber redis on port ${port}`));
   }
 
   async init() {
-    this.redis.on('connect', () => console.log(`Connected to redis on port ${this.port}`));
     this.redis.on('error', (err) => console.error('Error: ' + err));
 
     try {

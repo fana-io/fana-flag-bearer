@@ -4,8 +4,9 @@ const app = express();
 const cors = require("cors");
 const morgan = require("morgan");
 const routes = require("./routes/api");
-const ClientsManager = require('../lib/clientsManager')
-const Subscriber = require('../lib/subscriber')
+const ClientsManager = require('./lib/ClientsManager')
+const Subscriber = require('./lib/Subscriber')
+const redis = require('redis');
 
 const PORT = process.env.PORT || 3001;
 const REDIS_PORT = process.env.REDIS_PORT || 6379;
