@@ -16,6 +16,7 @@ import { ThemeProvider, createTheme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import {red } from '@mui/material/colors'
 import useMediaQuery from '@mui/material/useMediaQuery';
+import Breadcrumbs from './components/Breadcrumbs';
 
 function App() {
   const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
@@ -41,6 +42,7 @@ function App() {
         <Box sx={{ display: 'flex' }}>
           <Navigation />
           <Box sx={{ marginLeft: 8, maxWidth: 1000 }}>
+        <Breadcrumbs />
             <Route path="/" exact component={FlagsList} />
             <Route path="/flags/:id" component={Flag} />
             <Route path="/audiences/:id" component={Audience} />
