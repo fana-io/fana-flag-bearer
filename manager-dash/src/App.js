@@ -17,10 +17,9 @@ import CssBaseline from '@mui/material/CssBaseline';
 import {red } from '@mui/material/colors'
 import useMediaQuery from '@mui/material/useMediaQuery';
 
-
 function App() {
   const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
-  
+
     const theme = useMemo(
       () =>
         createTheme({
@@ -35,7 +34,7 @@ function App() {
     );
   return (
     <ThemeProvider theme={theme}>
-      <CssBaseline/>
+      <CssBaseline enableColorScheme/>
     <Paper sx={{ width: '100%', overflow: 'hidden' }}>
       <main>
         <Toolbar />

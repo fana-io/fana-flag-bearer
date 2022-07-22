@@ -9,9 +9,12 @@ export const AttributeRow = ({ attribute }) => {
   const link = "/attributes/" + attribute.id;
   return (
     <TableRow>
-      <TableCell><Link underline="hover">
-      <RouterLink to={link}>{attribute.key}</RouterLink>
+      <TableCell>
+      <RouterLink to={link}>
+        <Link underline="hover" component={'span'}>
+        {attribute.key}
       </Link >
+      </RouterLink>
       </TableCell>
       <TableCell>{attrTypeMapper[attribute.type]}</TableCell>
       <TableCell>{moment(attribute.CreatedAt).format("MMM Do YY")}</TableCell>
