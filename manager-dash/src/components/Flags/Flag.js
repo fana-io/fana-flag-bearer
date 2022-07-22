@@ -13,6 +13,7 @@ import Divider from "@mui/material/Divider";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import _ from 'lodash';
+import { generalErrorMessage, initializationErrorMessage } from "../../lib/messages";
 
 export const Flag = () => {
   const flagId = useParams().id;
@@ -53,7 +54,7 @@ export const Flag = () => {
       let f = await fetchFlag();
       setTemporaryAudiences(f.audiences);
     } catch (e) {
-      alert('Something went wrong. Please try again later')
+      alert(generalErrorMessage)
     }
   }
 
@@ -67,7 +68,7 @@ export const Flag = () => {
       fetchFlag();
       setEditingDisplayName(false);
     } catch(e) {
-      alert('Something went wrong. Please try again later')
+      alert(generalErrorMessage)
     }
   }
 
@@ -84,11 +85,15 @@ export const Flag = () => {
 
   useEffect(() => {
     const initialize = async () => {
-      const f = await fetchFlag();
-      setTemporaryAudiences(f.audiences);
-      setTemporaryDisplayName(f.displayName);
-      fetchAudiences();
-      setReady(true);
+      try {
+        const f = await fetchFlag();
+        setTemporaryAudiences(f.audiences);
+        setTemporaryDisplayName(f.displayName);
+        fetchAudiences();
+        setReady(true);
+      } catch (e) {
+        alert(initializationErrorMessage)
+      }
     }
     initialize();
   }, [fetchFlag])

@@ -3,22 +3,10 @@ import ListItem from '@mui/material/ListItem';
 import Paper from '@mui/material/Paper';
 import IconButton from '@mui/material/IconButton';
 import DeleteIcon from '@mui/icons-material/Delete';
-
-const operators = {
-  EQ: '=',
-  IN: 'is in',
-  STR_CONTAINS: 'contains',
-  STR_STARTS_WITH: 'starts with',
-  STR_ENDS_WITH: 'ends with',
-  GT: '>',
-  LT: '<',
-  LT_EQ: '<=',
-  GT_EQ: '>='
-}
+import { operators } from '../../lib/formConstants';
 
 export const SingleCondition = ({condition, handleRemove, idx}) => {
   const operatorString = (condition.negate ? "NOT " : "") + operators[condition.operator];
-  condition.attribute = 'key';
   const conditionString = (
     <>
       <b>{condition.attribute}</b>&nbsp;

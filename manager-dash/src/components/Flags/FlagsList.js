@@ -8,6 +8,7 @@ import TextField from '@mui/material/TextField';
 import Grid from '@mui/material/Grid';
 import Checkbox from '@mui/material/Checkbox';
 import FormControlLabel from '@mui/material/FormControlLabel';
+import { initializationErrorMessage } from '../../lib/messages';
 
 export const FlagsList = () => {
   const [ready, setReady] = useState(false);
@@ -20,12 +21,21 @@ export const FlagsList = () => {
   const fetchFlags = async () => {
     const f = await apiClient.getFlags();
     setFlags(f);
-    setDisplayedFlags(f);
+    return f;
   }
 
   useEffect(() => {
-      fetchFlags();
-      setReady(true)
+    const initialize = async () => {
+      try {
+        const f = await fetchFlags();
+        setDisplayedFlags(f);
+        setReady(true)
+      } catch (e) {
+        alert(initializationErrorMessage)
+      }
+    }
+
+    initialize();
   }, [])
 
   useEffect(() => {

@@ -6,6 +6,7 @@ import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
+import { initializationErrorMessage } from '../../lib/messages';
 
 export const AttributesList = () => {
   const [ready, setReady] = useState(false);
@@ -14,19 +15,29 @@ export const AttributesList = () => {
   const [searchText, setSearchText] = useState('');
   const [formOpen, setFormOpen] = useState(false);
 
+  const fetchAttributes = async () => {
+    const a = await apiClient.getAttributes();
+    setAttributes(a);
+    return a;
+  }
+
   useEffect(() => {
-    const init = async () => {
-      const attributes = await apiClient.getAttributes();
-      setAttributes(attributes);
-      setReady(true)
+    const initialize = async () => {
+      try {
+        const a = await fetchAttributes();
+        setDisplayedAttributes(a);
+        setReady(true)
+      } catch (e) {
+        alert(initializationErrorMessage)
+      }
     }
-    init();
+    initialize();
   }, [])
 
   useEffect(() => {
     const lcSearchText = searchText.toLowerCase();
     const filteredAttributes = attributes.filter(a => {
-      return (a.type.toLowerCase().includes(lcSearchText) || a.key.toLowerCase().includes(lcSearchText))
+      return (a.attrType.toLowerCase().includes(lcSearchText) || a.key.toLowerCase().includes(lcSearchText))
     })
     setDisplayedAttributes(filteredAttributes);
   }, [searchText, attributes])
@@ -52,7 +63,7 @@ export const AttributesList = () => {
       <Grid item container xs={3} direction="column" alignItems="flex-end" justify="flex-end">
         <Button variant="outlined" onClick={() => setFormOpen(true)}>Create attribute</Button>
       </Grid>
-      {formOpen && (<CreateAttributeModal isOpen={formOpen} setFormOpen={setFormOpen} />)}
+      {formOpen && (<CreateAttributeModal isOpen={formOpen} setFormOpen={setFormOpen} refreshAtts={fetchAttributes} />)}
       <AttributeTable attributes={displayedAttributes} />
     </Grid>
   );

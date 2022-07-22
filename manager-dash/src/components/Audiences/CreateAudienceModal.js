@@ -15,8 +15,10 @@ import Grid from '@mui/material/Grid';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import { SingleCondition } from './SingleCondition';
+import apiClient from '../../lib/apiClient';
+import { duplicateErrorMessage, generalErrorMessage } from '../../lib/messages';
 
-export const CreateAudienceModal = ({ isOpen, setFormOpen }) => {
+export const CreateAudienceModal = ({ isOpen, setFormOpen, refreshAudiences }) => {
   const [displayName, setDisplayName] = useState('');
   const [audienceKey, setAudienceKey] = useState('');
   const [combination, setCombination] = useState('ANY');
@@ -34,7 +36,7 @@ export const CreateAudienceModal = ({ isOpen, setFormOpen }) => {
       setReadyToSubmit(true);
     }
   }, [displayName, audienceKey, conditionFieldActive, setReadyToSubmit])
-  
+
   const onKeyInput = (e) => {
     validateAndSetKey(e.target.value, setAudienceKey, setKeyError);
   }
@@ -53,16 +55,24 @@ export const CreateAudienceModal = ({ isOpen, setFormOpen }) => {
     setConditions(conditions.concat(condition));
   }
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     const submission = {
       displayName,
       key: audienceKey,
       combination,
       conditions
     }
-    console.log(submission);
-    e.preventDefault();
-    // TODO: submit to manager backend
+    try {
+      await apiClient.createAudience(submission);
+      setFormOpen(false);
+      refreshAudiences();
+    } catch (e) {
+      if (e.status.response === 409) {
+        alert(duplicateErrorMessage);
+      } else {
+        alert(generalErrorMessage);
+      }
+    }
   };
 
   return (

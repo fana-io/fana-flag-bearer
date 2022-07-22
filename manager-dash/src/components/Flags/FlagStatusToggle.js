@@ -1,5 +1,6 @@
 import { Switch } from "@mui/material";
 import apiClient from "../../lib/apiClient";
+import { generalErrorMessage } from "../../lib/messages";
 
 export const FlagStatusToggle = ({ flag, refreshFlags }) => {
   const toggleFlagStatus = async () => {
@@ -7,7 +8,7 @@ export const FlagStatusToggle = ({ flag, refreshFlags }) => {
       await apiClient.toggleFlag(flag.id, { status: !flag.status })
       refreshFlags();
     } catch(e) {
-      alert('Something went wrong. Please try again later')
+      alert(generalErrorMessage)
     }
   }
 

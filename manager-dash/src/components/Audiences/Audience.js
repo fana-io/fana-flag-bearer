@@ -13,6 +13,7 @@ import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import { ConditionBuilder } from "./ConditionBuilder";
 import { SingleCondition } from "./SingleCondition";
+import { generalErrorMessage, initializationErrorMessage } from "../../lib/messages";
 
 export const Audience = () => {
   const audienceId = useParams().id;
@@ -29,7 +30,6 @@ export const Audience = () => {
       if (idx === removedConditionIdx) {
         return false;
       }
-
       return true;
     })
 
@@ -42,6 +42,7 @@ export const Audience = () => {
 
   const submitConditionEdit = async () => {
     const patchedAudience = {
+      combine: temporaryCombination,
       conditions: temporaryConditions
     }
 
@@ -49,7 +50,7 @@ export const Audience = () => {
       await apiClient.editAudience(audience.id, patchedAudience);
       fetchAudience();
     } catch(e) {
-      alert('Something went wrong. Please try again later');
+      alert(generalErrorMessage);
     }
   }
 
@@ -63,7 +64,7 @@ export const Audience = () => {
       fetchAudience();
       setEditingDisplayName(false);
     } catch(e) {
-      alert('Something went wrong. Please try again later')
+      alert(generalErrorMessage)
     }
   }
 
@@ -75,11 +76,15 @@ export const Audience = () => {
 
   useEffect(() => {
     const initialize = async () => {
-      const a = await fetchAudience()
-      setTemporaryConditions(a.conditions);
-      setTemporaryDisplayName(a.displayName);
-      setTemporaryCombination(a.combine);
-      setReady(true);
+      try {
+        const a = await fetchAudience()
+        setTemporaryConditions(a.conditions);
+        setTemporaryDisplayName(a.displayName);
+        setTemporaryCombination(a.combine);
+        setReady(true);
+      } catch (e) {
+        alert(initializationErrorMessage)
+      }
     }
 
     initialize();
@@ -157,7 +162,9 @@ export const Audience = () => {
             </List>
             <Button disabled={!pendingChanges} variant="outlined" onClick={submitConditionEdit}>Save Conditions</Button>
           </Stack>
+          <Stack>
           <ConditionBuilder closable={false} handleSaveCondition={addCondition} />
+          </Stack>
         </Stack>
       </Stack>
     </Box>

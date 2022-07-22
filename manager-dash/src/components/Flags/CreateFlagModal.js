@@ -17,6 +17,7 @@ import Chip from '@mui/material/Chip';
 import apiClient from '../../lib/apiClient';
 import validateAndSetKey from '../../utils/validateAndSetKey';
 import { smallModalStyle } from '../../utils/modalStyle';
+import { duplicateErrorMessage, generalErrorMessage } from '../../lib/messages';
 
 export const CreateFlagModal = ({isOpen, setFormOpen, refreshFlags}) => {
   const [audiences, setAudiences] = useState([]);
@@ -48,7 +49,11 @@ export const CreateFlagModal = ({isOpen, setFormOpen, refreshFlags}) => {
       setFormOpen(false);
       refreshFlags();
     } catch (e) {
-      alert('Something has gone wrong, please try again later')
+      if (e.status.response === 409) {
+        alert(duplicateErrorMessage);
+      } else {
+        alert(generalErrorMessage);
+      }
     }
   };
 

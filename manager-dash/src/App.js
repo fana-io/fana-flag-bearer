@@ -1,5 +1,5 @@
 import './App.css';
-import {useMemo} from 'react'
+import {useMemo, useState} from 'react'
 import { Navigation } from './components/Navigation';
 import { FlagsList } from './components/Flags/FlagsList';
 import { AudiencesList } from './components/Audiences/AudiencesList';
@@ -14,25 +14,30 @@ import Paper from '@mui/material/Paper';
 import Toolbar from '@mui/material/Toolbar';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
-import {red } from '@mui/material/colors'
+import { red, purple, green } from '@mui/material/colors'
 import useMediaQuery from '@mui/material/useMediaQuery';
 import Breadcrumbs from './components/Breadcrumbs';
+import Switch from '@mui/material/Switch';
+import Typography from '@mui/material/Typography';
+import { AuditHistory } from './components/AuditHistory/AuditHistory';
 
 function App() {
+  const [darkMode, setDarkMode] = useState(false);
+
   const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
 
-    const theme = useMemo(
-      () =>
-        createTheme({
-          palette: {
-            mode: prefersDarkMode ? 'dark' : 'light',
-            primary: {
-              main: red[500]
-            },
+  const theme = useMemo(
+    () =>
+      createTheme({
+        palette: {
+          mode: darkMode ? 'dark' : 'light',
+          primary: {
+            main: green[500]
           },
-        }),
-      [prefersDarkMode],
-    );
+        },
+      }),
+    [darkMode],
+  );
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline enableColorScheme/>
@@ -42,6 +47,8 @@ function App() {
         <Box sx={{ display: 'flex' }}>
           <Navigation />
           <Box sx={{ marginLeft: 8, maxWidth: 1000 }}>
+        <Typography variant="subtitle1">Dark Mode</Typography>
+        <Switch onChange={() => setDarkMode(!darkMode)} />
         <Breadcrumbs />
             <Route path="/" exact component={FlagsList} />
             <Route path="/flags/:id" component={Flag} />
@@ -51,6 +58,7 @@ function App() {
             <Route path="/audiences" exact component={AudiencesList} />
             <Route path="/attributes" exact component={AttributesList} />
             <Route path="/settings" component={Settings} />
+            <Route path="/history" component={AuditHistory} />
           </Box>
         </Box>
       </main>

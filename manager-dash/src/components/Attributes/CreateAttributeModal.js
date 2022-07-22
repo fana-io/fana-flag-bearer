@@ -15,8 +15,10 @@ import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
 import { smallModalStyle } from "../../utils/modalStyle";
 import validateAndSetKey from '../../utils/validateAndSetKey';
+import apiClient from "../../lib/apiClient";
+import { duplicateErrorMessage, generalErrorMessage } from "../../lib/messages";
 
-export const CreateAttributeModal = ({ isOpen, setFormOpen }) => {
+export const CreateAttributeModal = ({ isOpen, setFormOpen, refreshAtts }) => {
   const [selectedType, setSelectedType] = useState('');
   const [attributeKey, setAttributeKey] = useState('');
   const [keyError, setKeyError] = useState(false);
@@ -28,9 +30,22 @@ export const CreateAttributeModal = ({ isOpen, setFormOpen }) => {
     {value: "NUM", text: "Number"}, 
   ]
 
-  const handleSubmit = (e) => {
-    e.preventDefault()
-    // TODO: submit attribute to manager backend
+  const handleSubmit = async (e) => {
+    const newAttribute = {
+      key: attributeKey, attrType: selectedType
+    }
+    try {
+      await apiClient.createAttribute(newAttribute);
+      refreshAtts();
+      setFormOpen(false);
+    } catch (e) {
+      console.log(e);
+      if (e.response.status === 409) {
+        alert(duplicateErrorMessage);
+      } else {
+        alert(generalErrorMessage);
+      }
+    }
   }
 
   const onKeyInput = (e) => {

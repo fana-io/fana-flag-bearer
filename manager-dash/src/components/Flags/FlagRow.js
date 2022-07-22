@@ -12,7 +12,7 @@ export const FlagRow = ({ flag, refreshFlags }) => {
     <TableRow>
       <TableCell>
         <Link to={link}>
-          <MUILink>{flag.displayName}</MUILink>
+          <MUILink underline="hover" component="span">{flag.displayName}</MUILink>
         </Link>
       </TableCell>
       <TableCell>{flag.key}</TableCell>

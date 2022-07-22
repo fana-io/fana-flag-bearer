@@ -6,6 +6,7 @@ import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
+import { initializationErrorMessage } from '../../lib/messages';
 
 export const AudiencesList = () => {
   const [ready, setReady] = useState(false);
@@ -14,15 +15,24 @@ export const AudiencesList = () => {
   const [searchText, setSearchText] = useState('');
   const [formOpen, setFormOpen] = useState(false);
 
+  const fetchAudiences = async () => {
+    const a = await apiClient.getAudiences();
+    setAudiences(a);
+    return a;
+  }
+
   useEffect(() => {
-    const fetchAudiences = async () => {
-      const a = await apiClient.getAudiences();
-      // also get all attributes for the create form
-      setAudiences(a);
-      setDisplayedAudiences(a);
-      setReady(true)
+    const initialize = async () => {
+      try {
+        const a = await fetchAudiences();
+        setDisplayedAudiences(a);
+        setReady(true)
+      } catch (e) {
+        alert(initializationErrorMessage)
+      }
     }
-    fetchAudiences();
+
+    initialize();
   }, [])
 
   useEffect(() => {
@@ -54,7 +64,7 @@ export const AudiencesList = () => {
       <Grid item container xs={3} direction="column" alignItems="flex-end" justify="flex-end">
         <Button variant="outlined" onClick={() => setFormOpen(true)}>Create audience</Button>
       </Grid>
-      {formOpen && (<CreateAudienceModal isOpen={formOpen} setFormOpen={setFormOpen} />)}
+      {formOpen && (<CreateAudienceModal isOpen={formOpen} setFormOpen={setFormOpen} refreshAudiences={fetchAudiences} />)}
       <AudienceTable audiences={displayedAudiences} />
     </Grid>
   )

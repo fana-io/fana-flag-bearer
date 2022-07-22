@@ -14,6 +14,7 @@ import {
   Typography,
   Grid,
 } from '@mui/material';
+import { initializationErrorMessage } from '../../lib/messages';
 
 const testAttribute = {
   attribute: 'beta',
@@ -40,18 +41,24 @@ export const Attribute = () => {
 
   useEffect(() => setReady(true), [ready]);
 
-  // const fetchAttribute = useCallback(async () => {
-  //   const attr = await apiClient.getAttribute(attrId);
-  //   setAttribute(attr);
-  //   return attr;
-  // }, [attrId])
-  // useEffect(() => {
-  //   const initialize = async () => {
-  //     const attr = await fetchAttribute();
-  //     setReady(true);
-  //   }
-  //   initialize();
-  // }, [fetchAttribute])
+  const fetchAttribute = useCallback(async () => {
+    const a = await apiClient.getAttribute(attrId);
+    setAttribute(a);
+    return a;
+  }, [attrId]);
+
+  useEffect(() => {
+    const initialize = async () => {
+      try {
+        const a = await fetchAttribute();
+        setReady(true);
+      } catch (e) {
+        alert(initializationErrorMessage)
+      }
+    }
+    // uncomment this once the endpoint is ready
+    // initialize();
+  }, [fetchAttribute])
 
   const handleDelete = async () => {
     try {

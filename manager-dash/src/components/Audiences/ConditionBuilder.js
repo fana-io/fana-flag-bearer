@@ -12,26 +12,7 @@ import FormHelperText from "@mui/material/FormHelperText";
 import Button from "@mui/material/Button"
 import Typography from "@mui/material/Typography";
 import apiClient from "../../lib/apiClient";
-
-const operatorOptions = {
-  STR: [
-    { value: 'EQ', text: 'is equal to' },
-    { value: 'IN', text: 'is in' },
-    { value: 'STR_CONTAINS', text: 'contains' },
-    { value: 'STR_STARTS_WITH', text: 'starts with' },
-    { value: 'STR_ENDS_WITH', text: 'ends with' },
-  ],
-  BOOL: [
-    { value: 'EQ', text: 'is equal to' },
-  ],
-  NUM: [
-    { value: 'EQ', text: 'is equal to' },
-    { value: 'GT', text: '>' },
-    { value: 'LT', text: '<' },
-    { value: 'GT_EQ', text: '>=' },
-    { value: 'LT_EQ', text: '<=' },
-  ]
-}
+import { operatorOptionsByType } from "../../lib/formConstants";
 
 export const ConditionBuilder = ({ handleSaveCondition, closable = false, closeConditionForm }) => {
   const [attributeOptions, setAttributeOptions] = useState([]);
@@ -65,10 +46,10 @@ export const ConditionBuilder = ({ handleSaveCondition, closable = false, closeC
     if (!attribute) {
       setPossibleOperators([]);
     } else {
-      const currentType = attributeOptions.find(a => a.key === attribute).type;
+      const currentType = attributeOptions.find(a => a.key === attribute).attrType;
       // when attribute changes, change possible operators based on type
       setAttrType(currentType);
-      setPossibleOperators(operatorOptions[currentType]);
+      setPossibleOperators(operatorOptionsByType[currentType]);
     }
   }, [attribute, attributeOptions])
 
@@ -78,8 +59,8 @@ export const ConditionBuilder = ({ handleSaveCondition, closable = false, closeC
   }, [attrType])
 
   const handleSubmit = () => {
-    // if any of the fields are empty, deny
-    // if type is boolean and value isn't true or false, deny
+    const attributeID = attributeOptions.find(a => a.key === attribute).id;
+    handleSaveCondition({ attributeID, attribute, negate, operator, vals })
     if (closable) {
       closeConditionForm();
     } else {
@@ -89,7 +70,6 @@ export const ConditionBuilder = ({ handleSaveCondition, closable = false, closeC
       setOperator('');
       setVals('');
     }
-    handleSaveCondition({ attribute, negate, operator, vals })
   }
 
   return (
@@ -165,7 +145,7 @@ export const ConditionBuilder = ({ handleSaveCondition, closable = false, closeC
           <Checkbox checked={negate} onChange={() => setNegate(!negate)} />
         } label="Negate Condition" />
       </Stack>
-      <Button disabled={!readyToSubmit} variant="outlined" onClick={handleSubmit}>Save Condition</Button>
+      <Button disabled={!readyToSubmit} variant="outlined" onClick={handleSubmit}>{closable ? "Save Condition" : "Add Condition"}</Button>
       {closable ? (<Button variant="outlined" color="error" onClick={closeConditionForm}>Scrap Condition</Button>) : null}
     </Stack>
   )
