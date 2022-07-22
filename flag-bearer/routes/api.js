@@ -5,7 +5,7 @@ const { checkCache } = require('../controllers/cache');
 const { createFlagset } = require('../controllers/flagsetController');
 const { initializeServerSDK } = require('../controllers/serverSdkController');
 const { initializeClientSDK } = require('../controllers/clientSdkController');
-
+const { getData } = require('../utils/parseFlagData');
 // route to receive webhook from flag manager
 // also sends push event of disabled flags within createFlagset
 router.post('/flagset', validateFlagset, createFlagset);
@@ -25,5 +25,4 @@ router.get('/stream/:sdkType', (req, res, next) => {
 
 // receives server SDK initialization requests
 router.get(`/connect/serverInit`, validateServerInit, initializeServerSDK);
-
 module.exports = router;

@@ -1,9 +1,47 @@
 const { evaluateCondition } = require('./evaluateCondition')
 // const { allFlagData, testUser } = require('../seed-data')
-const { flagData } = require('../lib/flagData');
-const { sdkKeys, ...flags } = flagData.getFlagData()
+// const { flagData } = require('../lib/flagData');
+const { getRuleset } = require('./apiClient');
+const redis = require('redis');
+require("dotenv").config();
 
-// validate sdk Key
+const REDIS_PORT = process.env.REDIS_PORT || 6379;
+const REDIS_HOST = process.env.REDIS_HOST || 'localhost';
+// instantiating a connection for cache
+const redisClient = redis.createClient(
+  {
+    port: REDIS_PORT,
+    host: REDIS_HOST,
+  }
+);
+// connect to redis
+;(async () => {
+try {
+  await redisClient.connect();
+  
+  redisClient.on('connect', () => console.log(`Cache redis on port ${REDIS_PORT}`));
+  redisClient.on('error', (err) => console.error('Error: ' + err));
+} catch (err) { console.error(err)}
+})()
+
+// get Data from redis or Manager
+let sdkKeys;
+let flags;
+const getData = async () => {
+  sdkKeys = await redisClient.get('sdkKeys');
+  if (sdkKeys) {
+    flags = await redisClient.get('flags');
+    console.log('Data set from redis')
+  } else {
+    console.log('Need to fetch from Manager');
+    const { data } = await getRuleset();
+    sdkKeys = data.sdkKeys;
+    flags = data.flags;
+  }
+  // returning this for serverSDK
+  return { sdkKeys, flags }
+}
+
 const validSdkKey = (sdkKey) => {
   return sdkKeys[sdkKey];
 }
@@ -114,4 +152,5 @@ function evaluateFlags(userContext) {
 // console.log('NONE', evaluateFlags(testUserContext1))
 // console.log('=====')
 // console.log('beta & canada', evaluateFlags(testUserContext2))
-module.exports = { evaluateFlags, validSdkKey }
+// getData();
+module.exports = { evaluateFlags, validSdkKey, getData }
