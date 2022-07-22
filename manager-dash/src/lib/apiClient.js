@@ -43,8 +43,18 @@ const apiClient = {
     let { data } = await axios.get('/api/attributes');
     return data;
   },
-  createAttribute: async () => {
-
+  getAttribute: async (id) => {
+    let { data } = await axios.get(`/api/attributes/${id}`);
+    return data;
+  },
+  createAttribute: async (newAttr) => {
+    let { data } = await axios.post(`/api/attributes/`, newAttr)
+    return data
+    
+  },
+  deleteAttribute: async (id) => {
+    let { data } = await axios.delete(`/api/attributes/${id}`)
+    return data
   }
 }
 

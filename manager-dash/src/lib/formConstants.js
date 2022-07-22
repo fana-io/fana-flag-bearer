@@ -41,3 +41,9 @@ export  const attrTypeOptions = [
   {value: "NUM", text: "Number"}, 
   {value: "DATETIME", text: "Date/Timestamp"}
 ]
+
+export const attrTypeMapper = {
+  BOOL: 'Boolean',
+  STR: 'String',
+  NUM: 'Number',
+};

@@ -1,4 +1,5 @@
-// import './App.css';
+import './App.css';
+import {useMemo} from 'react'
 import { Navigation } from './components/Navigation';
 import { FlagsList } from './components/Flags/FlagsList';
 import { AudiencesList } from './components/Audiences/AudiencesList';
@@ -11,9 +12,30 @@ import { Settings } from './components/Settings';
 import Box from '@mui/system/Box';
 import Paper from '@mui/material/Paper';
 import Toolbar from '@mui/material/Toolbar';
+import { ThemeProvider, createTheme } from '@mui/material/styles';
+import CssBaseline from '@mui/material/CssBaseline';
+import {red } from '@mui/material/colors'
+import useMediaQuery from '@mui/material/useMediaQuery';
+
 
 function App() {
+  const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
+  
+    const theme = useMemo(
+      () =>
+        createTheme({
+          palette: {
+            mode: prefersDarkMode ? 'dark' : 'light',
+            primary: {
+              main: red[500]
+            },
+          },
+        }),
+      [prefersDarkMode],
+    );
   return (
+    <ThemeProvider theme={theme}>
+      <CssBaseline/>
     <Paper sx={{ width: '100%', overflow: 'hidden' }}>
       <main>
         <Toolbar />
@@ -25,11 +47,12 @@ function App() {
           <Route path="/attributes/:id" component={Attribute} />
           <Route path="/flags" exact component={FlagsList} />
           <Route path="/audiences" exact component={AudiencesList} />
-          <Route path="/attributes" component={AttributesList} />
+          <Route path="/attributes" exact component={AttributesList} />
           <Route path="/settings" component={Settings} />
         </Box>
       </main>
     </Paper>
+    </ThemeProvider>
   );
 }
 
