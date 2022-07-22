@@ -1,13 +1,20 @@
 require("dotenv").config();
 const express = require("express");
+const app = express();
 const cors = require("cors");
 const morgan = require("morgan");
 const routes = require("./routes/api");
-const ngrok = require('ngrok')
-const { getFlagset } = require('./controllers/flagsetController')
+const ClientsManager = require('../lib/clientsManager')
+const Subscriber = require('../lib/subscriber')
 
-const app = express();
 const PORT = process.env.PORT || 3001;
+const REDIS_PORT = process.env.REDIS_PORT || 6379;
+const REDIS_HOST = process.env.REDIS_HOST || 'localhost';
+
+// client manager manages SDK SSE connections 
+const manager = new ClientsManager(SDK_KEYS=['beta_sdk_0']) // TODO: needs to be fed sdk keys from manager
+// subscriber is subscribed to Redis message broker and forwards real-time messages
+const subscriber = new Subscriber(REDIS_PORT, REDIS_HOST, manager);
 
 app.use(cors());
 app.use(morgan("tiny"));
@@ -35,8 +42,6 @@ app.use((err, req, res, next) => {
   res.json({ error: err.message || 'An unknown error occured' });
 });
 
-// get data from Manager
-getFlagset();
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);

@@ -1,5 +1,5 @@
 const { body, header } = require('express-validator');
-const SDK_KEYS = ['test'] // TODO: should be fetched from cache
+const SDK_KEYS = ['test','beta_sdk_0'] // TODO: should be fetched from cache
 
 // validate POST body contains sdkkey and flags array
 exports.validateFlagset = [
