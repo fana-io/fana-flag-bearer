@@ -1,5 +1,5 @@
 const { validationResult } = require('express-validator');
-const { flagData } = require('../lib/flagData');
+const { flagData } = require('../lib/FlagData');
 const { getRuleset } = require('../utils/apiClient')
 
 const getFlagset = async () => {
