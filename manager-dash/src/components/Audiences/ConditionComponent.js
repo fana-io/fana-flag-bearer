@@ -52,22 +52,22 @@ export const ConditionComponent = ({ attributeOptions, handleSaveCondition, clos
     }
   }, [attribute, attributeOptions])
 
+  useEffect(() => {
+    setOperator('');
+    setTargetValue('');
+  }, [attrType])
+
   const handleSubmit = () => {
     // if any of the fields are empty, deny
     // if type is boolean and value isn't true or false, deny
-    let valToSubmit = targetValue;
 
-    if (attribute.length === 0 || operator === '' || valToSubmit.trim().length === 0) {
+    if (attribute.length === 0 || operator === '' || targetValue.trim().length === 0) {
       alert('Please fill out all condition fields')
       return;
     }
 
-    if (operator === 'IN') {
-      valToSubmit = targetValue.split(',').map(v => v.trim())
-    }
-
     closeConditionForm();
-    handleSaveCondition({ attribute, negate, operator, targetValue: valToSubmit })
+    handleSaveCondition({ attribute, negate, operator, targetValue })
   }
 
   return (
@@ -143,7 +143,8 @@ export const ConditionComponent = ({ attributeOptions, handleSaveCondition, clos
           <Checkbox checked={negate} onChange={() => setNegate(!negate)} />
         } label="Negate Condition" />
       </Stack>
-      <Button variant="outlined" onClick={ handleSubmit }>Save Condition</Button>
+      <Button variant="outlined" onClick={handleSubmit}>Save Condition</Button>
+      <Button variant="outlined" color="error" onClick={closeConditionForm}>Scrap Condition</Button>
     </Stack>
   )
 }

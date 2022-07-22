@@ -1,6 +1,6 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useParams } from "react-router-dom"
-import apiClient from "../../lib/ApiClient";
+import apiClient from "../../lib/apiClient";
 import { FlagAudience } from "./FlagAudience"
 import { FlagStatusToggle } from "./FlagStatusToggle";
 import Stack from '@mui/material/Stack';
@@ -10,7 +10,7 @@ import Box from "@mui/material/Box";
 import List from "@mui/material/List";
 import { AddAudienceToFlag } from "./AddAudienceToFlag";
 import Divider from "@mui/material/Divider";
-import { Button } from "@mui/material";
+import Button from "@mui/material/Button";
 import _ from 'lodash';
 
 export const Flag = () => {
@@ -20,7 +20,9 @@ export const Flag = () => {
   const [temporaryAudiences, setTemporaryAudiences] = useState([]);
   const [allAudiences, setAllAudiences] = useState([]);
   const [pendingChanges, setPendingChanges] = useState(false);
+  const [temporaryDisplayName, setTemporaryDisplayName] = useState([]);
 
+  console.log(temporaryAudiences);
   const removeAudience = (audienceKey) => {
     const updatedAudiences = temporaryAudiences.filter(a => {
       if (a.key === audienceKey) {
@@ -40,31 +42,49 @@ export const Flag = () => {
     setTemporaryAudiences(updatedAudiences);
   }
 
-  const submitEdit = () => {
+  const submitAudienceEdit = async () => {
     // api patch request with temporary fields
     // hardcoding status: false bc go will determine that it is a zero value, and won't update it
     // this patch is only for updating audiences, so that's okay
-    const patchedFlag = { ...flag, status: false, audiences: temporaryAudiences.map(a => a.key) }
-    console.log(`api patch request submitted with the following data`, patchedFlag)
+    const patchedFlag = {
+      displayName: flag.displayName,
+      audiences: temporaryAudiences.map(a => a.key)
+    }
+
+    console.log('sent this to manager:', patchedFlag)
+    await apiClient.editFlag(flag.id, patchedFlag)
+  }
+
+  const submitDisplayNameEdit = async () => {
+    const patchedFlag = {
+      displayName: temporaryDisplayName,
+      audiences: flag.audiences
+    }
+
+    await apiClient.editFlag(flag.id, patchedFlag)
+  }
+
+  const fetchFlag = useCallback(async () => {
+    const f = await apiClient.getFlag(flagId);
+    setFlag(f);
+    return f;
+  }, [flagId])
+
+  const fetchAudiences = async () => {
+    const a = await apiClient.getAudiences();
+    setAllAudiences(a);
   }
 
   useEffect(() => {
-    const fetchFlag = async () => {
-      const f = await apiClient.getFlag(flagId);
-      console.log('f', f);
-      setFlag(f);
-      setTemporaryAudiences(f.audiences);
+    const initialize = async () => {
+      const newFlag = await fetchFlag();
+      setTemporaryAudiences(newFlag.audiences);
+      setTemporaryDisplayName(newFlag.displayName);
+      fetchAudiences();
       setReady(true);
     }
-
-    const fetchAudiences = async () => {
-      const a = await apiClient.getAudiences();
-      setAllAudiences(a);
-    }
-
-    fetchFlag();
-    fetchAudiences();
-  }, [flagId])
+    initialize();
+  }, [fetchFlag])
 
   useEffect(() => {
     // when temporaryAudiences changes, see if it matches the actual audiences
@@ -83,11 +103,11 @@ export const Flag = () => {
     return <>Loading...</>
   }
   return (
-    <Box container spacing={1} sx={{
+    <Box container="true" spacing={1} sx={{
       marginLeft: 8,
       maxWidth: 1000
     }}>
-      <Stack container spacing={2}>
+      <Stack container="true" spacing={2}>
         <Typography variant="h3">Flag Details</Typography>
         <Stack>
           <Typography variant="caption">Title</Typography>
@@ -99,23 +119,25 @@ export const Flag = () => {
         </Stack>
         <Stack>
           <InputLabel id="flag-toggle-label">Enabled</InputLabel>
-          <FlagStatusToggle flag={flag} labelId="flag-toggle-label" />
+          <FlagStatusToggle flag={flag} labelId="flag-toggle-label" refreshFlags={fetchFlag} />
         </Stack>
         <Typography variant="h4">Targeted Audiences</Typography>
         <Stack
-          container
+          container="true"
           divider={<Divider orientation="vertical" flexItem />} 
           spacing={10}
           direction="row"
         >
-          <List style={{ width: 350 }}>
-            {temporaryAudiences.map(audience => {
-              return (<FlagAudience key={audience.key} audience={audience} removeAudience={removeAudience} />)
-            })}
-          </List>
+          <Stack>
+            <List style={{ width: 350 }}>
+              {temporaryAudiences.map(audience => {
+                return (<FlagAudience key={audience.key} audience={audience} removeAudience={removeAudience} />)
+              })}
+            </List>
+            <Button disabled={!pendingChanges} variant="outlined" onClick={submitAudienceEdit}>Save Audiences</Button>
+          </Stack>
           <AddAudienceToFlag allAudiences={allAudiences} addAudience={addAudience} currentAppliedAudiences={temporaryAudiences} />
         </Stack>
-        <Button disabled={!pendingChanges} variant="outlined" onClick={submitEdit}>Save Audiences</Button>
       </Stack>
     </Box>
   )

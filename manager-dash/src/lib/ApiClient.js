@@ -9,11 +9,17 @@ const apiClient = {
     let { data } = await axios.get(`/api/flags/${id}`);
     return data;
   },
-  createFlag: async () => {
-
+  createFlag: async (newFlag) => {
+    let { data } = await axios.post(`/api/flags`, newFlag);
+    console.log(data);
+    return data;
   },
-  editFlag: async (key, updatedFields) => {
-    let { data } = await axios.patch('/api/flags/' + key, updatedFields);
+  toggleFlag: async (id, newStatusObj) => {
+    await axios.patch(`/api/flags/${id}/toggle`, newStatusObj)
+  },
+  editFlag: async (id, updatedFields) => {
+    let { data } = await axios.patch('/api/flags/' + id, updatedFields);
+    console.log(data);
     return data;
   },
   deleteFlag: async () => {

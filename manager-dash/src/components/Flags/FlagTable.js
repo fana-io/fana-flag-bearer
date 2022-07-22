@@ -6,7 +6,7 @@ import TableCell from "@mui/material/TableCell";
 import TableBody from "@mui/material/TableBody"
 import TableRow from "@mui/material/TableRow";
 
-export const FlagTable = ({ flags }) => {
+export const FlagTable = ({ flags, refreshFlags }) => {
   return (
     <TableContainer>
       <Table stickyHeader>
@@ -21,7 +21,7 @@ export const FlagTable = ({ flags }) => {
         </TableHead>
         <TableBody>
           {flags.map(flag => {
-            return (<FlagRow key={flag.key} flag={flag} />)
+            return (<FlagRow key={flag.key} flag={flag} refreshFlags={refreshFlags} />)
           })}
         </TableBody>
       </Table>

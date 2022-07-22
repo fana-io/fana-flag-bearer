@@ -13,11 +13,10 @@ import FormHelperText from '@mui/material/FormHelperText';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
-import { modalStyle } from "../../utils/modalStyle";
+import { smallModalStyle } from "../../utils/modalStyle";
 import validateAndSetKey from '../../utils/validateAndSetKey';
 
 export const CreateAttributeModal = ({ isOpen, setFormOpen }) => {
-  const [displayName, setDisplayName] = useState('');
   const [selectedType, setSelectedType] = useState('');
   const [attributeKey, setAttributeKey] = useState('');
   const [keyError, setKeyError] = useState(false);
@@ -50,19 +49,10 @@ export const CreateAttributeModal = ({ isOpen, setFormOpen }) => {
       }}
     >
     <Fade in={isOpen}>
-      <Box sx={modalStyle}>
+      <Box sx={smallModalStyle}>
         <Stack container spacing={2}>
           <Stack>
             <Typography variant="h5">Create a new attribute</Typography>
-          </Stack>
-          <Stack>
-            <TextField required 
-              id="outlined-basic" 
-              label="Attribute Name" 
-              variant="outlined" 
-              value={displayName}
-              onChange={(e) => setDisplayName(e.target.value)} 
-            />
           </Stack>
           <Stack>
             <TextField required 
@@ -72,6 +62,7 @@ export const CreateAttributeModal = ({ isOpen, setFormOpen }) => {
               variant="outlined"
               value={attributeKey}
               onChange={onKeyInput}
+              onBlur={() => setKeyError(false)}
             />
           <FormHelperText>Alphanumeric and underscores only. This cannot be changed after creation</FormHelperText>
           </Stack>
@@ -89,7 +80,7 @@ export const CreateAttributeModal = ({ isOpen, setFormOpen }) => {
             })}
           </Select>
         </FormControl>
-          <Button variant="outlined" onClick={handleSubmit}>Create</Button>
+          <Button disabled={attributeKey.length === 0 || selectedType.length === 0} variant="outlined" onClick={handleSubmit}>Create</Button>
           <FormHelperText>Attributes cannot be edited after creation</FormHelperText>
         </Stack>
       </Box>

@@ -1,7 +1,10 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom"
-import apiClient from "../../lib/ApiClient";
+import apiClient from "../../lib/apiClient";
 import { AudienceCondition } from "./AudienceCondition";
+import Stack from '@mui/material/Stack';
+import Typography from '@mui/material/Typography';
+import Box from "@mui/material/Box";
 
 export const Audience = () => {
   const audienceId = useParams().id;
@@ -23,16 +26,27 @@ export const Audience = () => {
     return <>Loading...</>
   }
   return (
-    <div>
-      <h1>Audience Details</h1>
-      <h2>Name: {audience.displayName}</h2>
-      <h3>Key: {audience.key}</h3>
-      <h2>Conditions:</h2>
-      <ul>
-        {audience.conditions.map(condition => {
-          return (<AudienceCondition condition={condition} />)
-        })}
-      </ul>
-    </div>
+    <Box container="true" spacing={1} sx={{
+      marginLeft: 8,
+      maxWidth: 1000
+    }}>
+      <Stack container="true" spacing={2}>
+        <Typography variant="h3">Audience Details</Typography>
+        <Stack>
+          <Typography variant="caption">Title</Typography>
+          <Typography variant="subtitle1">{audience.displayName}</Typography>
+        </Stack>
+        <Stack>
+          <Typography variant="caption">Key</Typography>
+          <Typography variant="subtitle1">{audience.key}</Typography>
+        </Stack>
+        <h2>Conditions:</h2>
+        <ul>
+          {audience.conditions.map((condition, idx) => {
+            return (<AudienceCondition key={idx} condition={condition} />)
+          })}
+        </ul>
+      </Stack>
+    </Box>
   )
 }

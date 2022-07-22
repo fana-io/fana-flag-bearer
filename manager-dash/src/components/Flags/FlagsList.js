@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react';
-import apiClient from '../../lib/ApiClient';
+import { useCallback, useEffect, useState } from 'react';
+import apiClient from '../../lib/apiClient';
 import { CreateFlagModal } from './CreateFlagModal';
 import { FlagTable } from './FlagTable';
 import Button from '@mui/material/Button';
@@ -17,15 +17,15 @@ export const FlagsList = () => {
   const [searchText, setSearchText] = useState('');
   const [enabledOnly, setEnabledOnly] = useState(false);
 
+  const fetchFlags = async () => {
+    const f = await apiClient.getFlags();
+    setFlags(f);
+    setDisplayedFlags(f);
+  }
+
   useEffect(() => {
-    const fetchFlags = async () => {
-      const f = await apiClient.getFlags();
-      // also fetch audience list to use for the CreateFlagForm (should this be in a different effect hook?)
-      setFlags(f);
-      setDisplayedFlags(f);
+      fetchFlags();
       setReady(true)
-    }
-    fetchFlags();
   }, [])
 
   useEffect(() => {
@@ -68,8 +68,8 @@ export const FlagsList = () => {
       <Grid item container xs={3} direction="column" alignItems="flex-end" justify="flex-end">
         <Button variant="outlined" onClick={() => setFormOpen(true)}>Create flag</Button>
       </Grid>
-      <CreateFlagModal isOpen={formOpen} setFormOpen={setFormOpen} />
-      <FlagTable flags={displayedFlags} />
+      {formOpen && (<CreateFlagModal isOpen={formOpen} setFormOpen={setFormOpen} refreshFlags={fetchFlags} />)}
+      <FlagTable flags={displayedFlags} refreshFlags={fetchFlags} />
     </Grid>
   )
 }

@@ -1,6 +1,6 @@
 import { AudienceTable } from './AudienceTable';
 import { useEffect, useState } from 'react';
-import apiClient from '../../lib/ApiClient';
+import apiClient from '../../lib/apiClient';
 import { CreateAudienceModal } from './CreateAudienceModal';
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
@@ -57,7 +57,7 @@ export const AudiencesList = () => {
       <Grid item container xs={3} direction="column" alignItems="flex-end" justify="flex-end">
         <Button variant="outlined" onClick={() => setFormOpen(true)}>Create audience</Button>
       </Grid>
-      <CreateAudienceModal isOpen={formOpen} setFormOpen={setFormOpen} />
+      {formOpen && (<CreateAudienceModal isOpen={formOpen} setFormOpen={setFormOpen} />)}
       <AudienceTable audiences={displayedAudiences} />
     </Grid>
   )

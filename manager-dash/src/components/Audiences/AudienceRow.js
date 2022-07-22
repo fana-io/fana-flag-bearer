@@ -4,7 +4,7 @@ import TableRow from "@mui/material/TableRow"
 import TableCell from "@mui/material/TableCell";
 
 export const AudienceRow = ({ audience }) => {
-  const link = "/audiences/" + audience.ID;
+  const link = "/audiences/" + audience.id;
   return (
     <TableRow>
       <TableCell><Link to={link}>{audience.displayName}</Link></TableCell>

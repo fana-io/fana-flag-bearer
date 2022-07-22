@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { CreateAttributeModal } from "./CreateAttributeModal"
 import { AttributeTable } from './AttributeTable';
-import apiClient from '../../lib/ApiClient';
+import apiClient from '../../lib/apiClient';
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 import TextField from '@mui/material/TextField';
@@ -26,7 +26,7 @@ export const AttributesList = () => {
   useEffect(() => {
     const lcSearchText = searchText.toLowerCase();
     const filteredAttributes = attributes.filter(a => {
-      return (a.displayName.toLowerCase().includes(lcSearchText) || a.key.toLowerCase().includes(lcSearchText))
+      return (a.type.toLowerCase().includes(lcSearchText) || a.key.toLowerCase().includes(lcSearchText))
     })
     setDisplayedAttributes(filteredAttributes);
   }, [searchText, attributes])
@@ -55,7 +55,7 @@ export const AttributesList = () => {
       <Grid item container xs={3} direction="column" alignItems="flex-end" justify="flex-end">
         <Button variant="outlined" onClick={() => setFormOpen(true)}>Create attribute</Button>
       </Grid>
-      <CreateAttributeModal isOpen={formOpen} setFormOpen={setFormOpen} />
+      {formOpen && (<CreateAttributeModal isOpen={formOpen} setFormOpen={setFormOpen} />)}
       <AttributeTable attributes={displayedAttributes} />
     </Grid>
   );

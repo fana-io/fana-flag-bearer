@@ -5,12 +5,11 @@ import DeleteIcon from "@mui/icons-material/Delete"
 import { Link } from "react-router-dom"
 
 export const FlagAudience = ({ audience, removeAudience }) => {
-  const link = "/audiences/" + audience.ID;
-  console.log('audience', audience)
+  const link = "/audiences/" + audience.id;
   return (
     <ListItem divider
       secondaryAction={
-        <IconButton edge="end" aria-label="delete" onClick={() => removeAudience(audience.key)} >
+        <IconButton edge="end" onClick={() => removeAudience(audience.key)} >
           <DeleteIcon/>
         </IconButton>
       }

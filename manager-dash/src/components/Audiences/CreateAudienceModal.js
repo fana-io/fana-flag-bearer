@@ -8,17 +8,17 @@ import FormHelperText from '@mui/material/FormHelperText';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
-import apiClient from '../../lib/ApiClient';
-import { modalStyle } from '../../utils/modalStyle';
+import apiClient from '../../lib/apiClient';
+import { bigModalStyle } from '../../utils/modalStyle';
 import validateAndSetKey from '../../utils/validateAndSetKey';
 import { ConditionComponent } from './ConditionComponent';
-import List from '@mui/material/List';
+import Grid from '@mui/material/Grid';
 import ListItem from '@mui/material/ListItem';
 import Select from '@mui/material/Select';
 import IconButton from '@mui/material/IconButton';
 import DeleteIcon from '@mui/icons-material/Delete';
 import MenuItem from '@mui/material/MenuItem';
-
+import Paper from '@mui/material/Paper'
 const operators = {
   EQ: '=',
   IN: 'is in',
@@ -39,6 +39,7 @@ export const CreateAudienceModal = ({ isOpen, setFormOpen }) => {
   const [conditionFieldActive, setConditionFieldActive] = useState(false);
   const [conditions, setConditions] = useState([]);
   const [keyError, setKeyError] = useState(false);
+  const [readyToSubmit, setReadyToSubmit] = useState(false);
 
   useEffect(() => {
     const fetchAttributes = async () => {
@@ -49,6 +50,15 @@ export const CreateAudienceModal = ({ isOpen, setFormOpen }) => {
     fetchAttributes();
   }, [])
 
+  useEffect(() => {
+    if (displayName.trim().length === 0 ||
+        audienceKey.trim().length === 0 ||
+        conditionFieldActive) {
+        setReadyToSubmit(false);
+    } else {
+      setReadyToSubmit(true);
+    }
+  }, [displayName, audienceKey, conditionFieldActive, setReadyToSubmit])
   const onKeyInput = (e) => {
     validateAndSetKey(e.target.value, setAudienceKey, setKeyError);
   }
@@ -68,13 +78,20 @@ export const CreateAudienceModal = ({ isOpen, setFormOpen }) => {
   }
 
   const handleSubmit = (e) => {
+    const submission = {
+      displayName,
+      key: audienceKey,
+      combination,
+      conditions
+    }
+    console.log(submission);
     e.preventDefault();
     // TODO: submit to manager backend
   };
 
   return (
     <Modal
-      style={{ overflow: 'scroll' }}
+      style={{ overflowY: 'scroll', height: '100%', display: 'block' }}
       open={isOpen}
       onClose={() => setFormOpen(false)}
       closeAfterTransition
@@ -84,12 +101,10 @@ export const CreateAudienceModal = ({ isOpen, setFormOpen }) => {
       }}
     >
       <Fade in={isOpen}>
-        <Box sx={modalStyle}>
-          <Stack container spacing={2}>
-            <Stack>
-              <Typography variant="h5">Create a new audience</Typography>
-            </Stack>
-            <Stack>
+        <Box sx={bigModalStyle}>
+          <Typography variant="h5">Create a new audience</Typography>
+          <Stack container spacing={2} direction="row">
+            <Stack style={{ width: "50%"}}>
               <TextField required 
                 label="Audience Name" 
                 variant="outlined" 
@@ -97,16 +112,19 @@ export const CreateAudienceModal = ({ isOpen, setFormOpen }) => {
                 onChange={(e) => setDisplayName(e.target.value)} 
               />
             </Stack>
-            <Stack>
+            <Stack style={{ width: "50%" }}>
               <TextField required 
                 error={keyError}
                 label="Audience Key" 
                 variant="outlined"
                 value={audienceKey}
                 onChange={onKeyInput}
+                onBlur={() => setKeyError(false)}
               />
             <FormHelperText>Alphanumeric and underscores only. This cannot be changed after creation</FormHelperText>
             </Stack>
+          </Stack>
+          <Stack spacing={2}>
             <Typography variant="h6">Conditions</Typography>
             <Typography variant="body1">
               User must meet
@@ -121,25 +139,29 @@ export const CreateAudienceModal = ({ isOpen, setFormOpen }) => {
               </Select>
               of the conditions to qualify for this audience
             </Typography>
-            <List>
+            <Grid container spacing={2}>
               {conditions.map((c, idx) => {
                 return (
-                <ListItem divider
-                  secondaryAction={
-                    <IconButton edge="end" aria-label="delete" onClick={() => removeCondition(idx)} >
-                      <DeleteIcon/>
-                    </IconButton>
-                  }
-                >
-                  {`${c.attribute} ${c.negate ? "NOT" : ""} ${operators[c.operator]} ${c.targetValue}`}
-                </ListItem>)
+                  <Grid item xs={5}>
+                    <Paper style={{ overflow: 'scroll' }} elevation={3}>
+                      <ListItem divider
+                        secondaryAction={
+                          <IconButton edge="end" aria-label="delete" onClick={() => removeCondition(idx)} >
+                            <DeleteIcon/>
+                          </IconButton>
+                        }
+                      >
+                        {`${c.attribute} ${c.negate ? "NOT" : ""} ${operators[c.operator]} ${c.targetValue}`}
+                      </ListItem>
+                      </Paper>
+                  </Grid>)
               })}
-            </List>
+            </Grid>
             {conditionFieldActive ? 
               <ConditionComponent attributeOptions={attributes} handleSaveCondition={handleSaveCondition} closeConditionForm={closeConditionForm} /> :
               <Button variant="outlined" onClick={() => setConditionFieldActive(true)}>Add Condition</Button>
             }
-            <Button disabled={conditionFieldActive} variant="outlined" onClick={handleSubmit}>Create Audience</Button>
+            <Button disabled={!readyToSubmit} variant="outlined" onClick={handleSubmit}>Create Audience</Button>
           </Stack>
         </Box>
       </Fade>

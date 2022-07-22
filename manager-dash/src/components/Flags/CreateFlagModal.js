@@ -14,11 +14,11 @@ import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
 import Chip from '@mui/material/Chip';
-import apiClient from '../../lib/ApiClient';
+import apiClient from '../../lib/apiClient';
 import validateAndSetKey from '../../utils/validateAndSetKey';
-import { modalStyle } from '../../utils/modalStyle';
+import { smallModalStyle } from '../../utils/modalStyle';
 
-export const CreateFlagModal = ({isOpen, setFormOpen}) => {
+export const CreateFlagModal = ({isOpen, setFormOpen, refreshFlags}) => {
   const [audiences, setAudiences] = useState([]);
   const [displayName, setDisplayName] = useState('');
   const [flagKey, setFlagKey] = useState('');
@@ -28,7 +28,6 @@ export const CreateFlagModal = ({isOpen, setFormOpen}) => {
   useEffect(() => {
     const fetchAudiences = async () => {
       const a = await apiClient.getAudiences();
-      console.log('fetch audiences')
       setAudiences(a);
     }
     fetchAudiences();
@@ -38,9 +37,19 @@ export const CreateFlagModal = ({isOpen, setFormOpen}) => {
     validateAndSetKey(e.target.value, setFlagKey, setKeyError);
   }
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    // TODO: submit to manager backend
+  const handleSubmit = async (e) => {
+    const submission = {
+      key: flagKey,
+      displayName,
+      audiences: selectedAudiences
+    }
+    try {
+      await apiClient.createFlag(submission);
+      setFormOpen(false);
+      refreshFlags();
+    } catch (e) {
+      alert('Something has gone wrong, please try again later')
+    }
   };
 
 
@@ -56,7 +65,7 @@ export const CreateFlagModal = ({isOpen, setFormOpen}) => {
       }}
     >
     <Fade in={isOpen}>
-      <Box sx={modalStyle}>
+      <Box sx={smallModalStyle}>
         <Stack container spacing={2}>
           <Stack>
             <Typography variant="h5">Create a new flag</Typography>
@@ -78,6 +87,7 @@ export const CreateFlagModal = ({isOpen, setFormOpen}) => {
               variant="outlined"
               value={flagKey}
               onChange={onKeyInput}
+              onBlur={() => setKeyError(false)}
             />
           <FormHelperText>Alphanumeric and underscores only. This cannot be changed after creation</FormHelperText>
           </Stack>
@@ -102,7 +112,7 @@ export const CreateFlagModal = ({isOpen, setFormOpen}) => {
             </Select>
             <FormHelperText>This flag will serve to ANY selected audience</FormHelperText>
           </FormControl>
-          <Button variant="outlined" onClick={handleSubmit}>Create</Button>
+          <Button disabled={displayName.length === 0 || flagKey.length === 0} variant="outlined" onClick={handleSubmit}>Create</Button>
         </Stack>
       </Box>
     </Fade>
