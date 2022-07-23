@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { useParams } from "react-router-dom"
+import { useHistory, useParams } from "react-router-dom"
 import apiClient from "../../lib/apiClient";
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
@@ -13,12 +13,14 @@ import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import { ConditionBuilder } from "./ConditionBuilder";
 import { SingleCondition } from "./SingleCondition";
-import { generalErrorMessage, initializationErrorMessage } from "../../lib/messages";
+import { deletedEntityMessageCreator, generalErrorMessage, initializationErrorMessage } from "../../lib/messages";
 import { SuccessAlert } from "../SuccessAlert";
 import { WarningAlert } from "../WarningAlert";
+import DeleteIcon from '@mui/icons-material/Delete';
 
 export const Audience = () => {
   const audienceId = useParams().id;
+  const history = useHistory();
   const [ready, setReady] = useState(false);
   const [audience, setAudience] = useState();
   const [pendingChanges, setPendingChanges] = useState(false);
@@ -47,6 +49,18 @@ export const Audience = () => {
 
   const addCondition = (newCondition) => {
     setTemporaryConditions(temporaryConditions.concat(newCondition));
+  }
+
+  const handleDelete = async () => {
+    if (window.confirm('Are you sure you want to delete this flag?')) {
+      try {
+        await apiClient.deleteAudience(audience.id);
+        history.push("/audiences")
+        alert(deletedEntityMessageCreator('audience', audience.key))
+      } catch (e) {
+        alert(generalErrorMessage);
+      }
+    }
   }
 
   const submitConditionEdit = async () => {
@@ -132,6 +146,7 @@ export const Audience = () => {
         <Typography variant="h3">Audience Details</Typography>
         <Stack>
           <Typography variant="caption">Title</Typography>
+          <Stack direction="row" justifyContent="space-between">
           {editingDisplayName ? (
             <Stack direction="row" spacing={2}>
               <TextField
@@ -150,6 +165,15 @@ export const Audience = () => {
               <Button variant="outlined" onClick={() => setEditingDisplayName(true)}>Edit</Button>
             </Stack>
             )}
+            <Button
+              variant="outlined"
+              onClick={handleDelete}
+              startIcon={<DeleteIcon />}
+              color="error"
+              >
+              Delete attribute
+            </Button>
+          </Stack>
         </Stack>
         <Stack>
           <Typography variant="caption">Key</Typography>

@@ -18,11 +18,11 @@ const apiClient = {
     return data;
   },
   editFlag: async (id, updatedFields) => {
-    let { data } = await axios.patch('/api/flags/' + id, updatedFields);
+    let { data } = await axios.patch(`/api/flags/${id}`, updatedFields);
     return data;
   },
   deleteFlag: async (id) => {
-    let { data } = await axios.delete('/api/flags/' + id);
+    let { data } = await axios.delete(`/api/flags/${id}`);
     return data;
   },
   getAudiences: async () => {
@@ -47,7 +47,11 @@ const apiClient = {
     return data;
   },
   editAudience: async (id, updatedFields) => {
-    let { data } = await axios.patch('/api/audiences/' + id, updatedFields);
+    let { data } = await axios.patch(`/api/audiences/${id}`, updatedFields);
+    return data;
+  },
+  deleteAudience: async (id) => {
+    let { data } = await axios.delete(`/api/audiences/${id}`);
     return data;
   },
   getAttributes: async () => {

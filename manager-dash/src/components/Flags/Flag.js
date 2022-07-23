@@ -1,5 +1,5 @@
 import { useEffect, useState, useCallback } from "react";
-import { useParams } from "react-router-dom"
+import { useHistory, useParams } from "react-router-dom"
 import apiClient from "../../lib/apiClient";
 import { FlagAudience } from "./FlagAudience"
 import { FlagStatusToggle } from "./FlagStatusToggle";
@@ -13,12 +13,14 @@ import Divider from "@mui/material/Divider";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import _ from 'lodash';
-import { generalErrorMessage, initializationErrorMessage } from "../../lib/messages";
+import { deletedEntityMessageCreator, generalErrorMessage, initializationErrorMessage } from "../../lib/messages";
 import { SuccessAlert } from "../SuccessAlert";
 import { WarningAlert } from "../WarningAlert";
+import DeleteIcon from '@mui/icons-material/Delete';
 
 export const Flag = () => {
   const flagId = useParams().id;
+  const history = useHistory();
   const [ready, setReady] = useState(false);
   const [flag, setFlag] = useState();
   const [temporaryAudiences, setTemporaryAudiences] = useState([]);
@@ -86,6 +88,17 @@ export const Flag = () => {
     }
   }
 
+  const handleDelete = async () => {
+    if (window.confirm('Are you sure you want to delete this flag?')) {
+      try {
+        await apiClient.deleteFlag(flag.id);
+        history.push("/flags")
+        alert(deletedEntityMessageCreator('flag', flag.key))
+      } catch (e) {
+        alert(generalErrorMessage);
+      }
+    }
+  }
   const fetchFlag = useCallback(async () => {
     const f = await apiClient.getFlag(flagId);
     setFlag(f);
@@ -130,6 +143,10 @@ export const Flag = () => {
   if (!ready) {
     return <>Loading...</>
   }
+
+  if (flag.deletedAt) {
+    return 
+  }
   return (
     <Box container="true" spacing={1}>
       {titleUpdated && (<SuccessAlert text="Title has been updated." successStateSetter={setTitleUpdated} />)}
@@ -140,6 +157,7 @@ export const Flag = () => {
         <Typography variant="h3">Flag Details</Typography>
         <Stack>
           <Typography variant="caption">Title</Typography>
+          <Stack direction="row" justifyContent="space-between">
           {editingDisplayName ? (
             <Stack direction="row" spacing={2}>
               <TextField
@@ -158,6 +176,15 @@ export const Flag = () => {
               <Button variant="outlined" onClick={() => setEditingDisplayName(true)}>Edit</Button>
             </Stack>
             )}
+            <Button
+              variant="outlined"
+              onClick={handleDelete}
+              startIcon={<DeleteIcon />}
+              color="error"
+              >
+              Delete attribute
+            </Button>
+          </Stack>
         </Stack>
         <Stack>
           <Typography variant="caption">Key</Typography>
@@ -171,7 +198,7 @@ export const Flag = () => {
         <Typography variant="body1">This flag will serve to ANY targeted audience</Typography>
         <Stack
           container="true"
-          divider={<Divider orientation="vertical" flexItem />} 
+          divider={<Divider orientation="vertical" flexItem />}
           spacing={10}
           direction="row"
         >
