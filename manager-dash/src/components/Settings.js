@@ -28,8 +28,8 @@ export const Settings = () => {
     // get request to regenerate sdk key, expect the sdk key back
     // const newSdkKey = await apiClient.regenerateSdkKey();
     if (accept) {
-      const newSdkKey="new_sdk_key";
-      setSdkKey(newSdkKey)
+      const data = await apiClient.regenSdkKey();
+      setSdkKey(data.key)
       setCopied(false);
     }
   }

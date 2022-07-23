@@ -77,6 +77,10 @@ const apiClient = {
   getSdkKey: async () => {
     let { data } = await axios.get(`/api/sdkkeys`);
     return data;
+  },
+  regenSdkKey: async () => {
+    let { data } = await axios.post(`/api/sdkkeys/production`);
+    return data;
   }
 }
 
