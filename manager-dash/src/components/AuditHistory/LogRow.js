@@ -16,7 +16,7 @@ export const LogRow = ({ log }) => {
         </Link>
       </TableCell>
       <TableCell>{log.action}</TableCell>
-      <TableCell>{moment(log.createdAt).format('MMMM Do YYYY, h:mm:ss a')}</TableCell>
+      <TableCell>{moment(log.created_at).format('MMMM Do YYYY, h:mm:ss a')}</TableCell>
     </TableRow>
   )
 }

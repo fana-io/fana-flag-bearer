@@ -72,8 +72,19 @@ export const ConditionBuilder = ({ handleSaveCondition, closable = false, closeC
     }
   }
 
+  const validateInput = (value) => {
+    if (attrType === 'NUM') {
+      const re = /^([0-9]?\.?[0-9]*|\.[0-9]?)$/
+      if (re.test(value)) {
+        setVals(value);
+      }
+    } else {
+      setVals(value);
+    }
+  }
+
   return (
-    <Stack container spacing={2}>
+    <Stack container="true" spacing={2}>
       <Typography variant="h6">New Condition</Typography>
       <Stack>
         <FormControl>
@@ -116,7 +127,7 @@ export const ConditionBuilder = ({ handleSaveCondition, closable = false, closeC
                 variant="outlined"
                 label="Condition Value"
                 value={vals}
-                onChange={(e) => setVals(e.target.value)}
+                onChange={(e) => validateInput(e.target.value)}
               />
               {operator === "IN" ? <FormHelperText>Enter your values separated by commas</FormHelperText> : null}
             </Stack>

@@ -30,6 +30,15 @@ const apiClient = {
   },
   getAudience: async(id) => {
     let { data } = await axios.get(`/api/audiences/${id}`);
+    // this route sends it back with an "Attribute" field that we don't need
+    // it messes with the value comparison with the temporary conditions in the Audience component
+    // so we remove it to avoid that. In case we need access to more detailed attribute info, 
+    // we're not adjusting the route
+    data.conditions = data.conditions.map(c => {
+      const { Attribute, ...remainingFields } = c;
+      return remainingFields;
+    })
+
     return data;
   },
   createAudience: async (newAudience) => {
@@ -57,51 +66,7 @@ const apiClient = {
     return data
   },
   getLogs: async () => {
-    // let { data } = await axios.get(`/api/auditLogs`);
-    let data = {
-      flags: [
-        {
-          createdAt: new Date('December 17, 1995 03:24:00'),
-          id: 1,
-          key: 'beta-header',
-          action: 'Created'
-        },
-        {
-          createdAt: new Date('December 18, 1995 03:24:00'),
-          id: 1,
-          key: 'beta-header',
-          action: 'Toggled on'
-        },
-        {
-          createdAt: new Date('December 17, 1995 05:24:00'),
-          id: 2,
-          key: 'beta-processor',
-          action: 'Created'
-        }
-      ],
-      audiences: [
-        {
-          createdAt: new Date('December 17, 1994 03:24:00'),
-          id: 1,
-          key: 'beta-testers',
-          action: 'Created'
-        },
-        {
-          createdAt: new Date('December 17, 1999 03:24:00'),
-          id: 1,
-          key: 'beta-testers',
-          action: 'Conditions updated'
-        }
-      ], 
-      attributes: [
-        {
-          createdAt: new Date('March 17, 1995 03:24:00'),
-          id: 1,
-          key: 'beta',
-          action: 'Created'
-        }
-      ]
-    }
+    let { data } = await axios.get(`/api/auditlogs`);
     return data;
   }
 }

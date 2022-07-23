@@ -18,7 +18,7 @@ import { SingleCondition } from './SingleCondition';
 import apiClient from '../../lib/apiClient';
 import { duplicateErrorMessage, generalErrorMessage } from '../../lib/messages';
 
-export const CreateAudienceModal = ({ isOpen, setFormOpen, refreshAudiences }) => {
+export const CreateAudienceModal = ({ isOpen, setFormOpen, refreshAudiences, successStateSetter }) => {
   const [displayName, setDisplayName] = useState('');
   const [audienceKey, setAudienceKey] = useState('');
   const [combination, setCombination] = useState('ANY');
@@ -56,18 +56,25 @@ export const CreateAudienceModal = ({ isOpen, setFormOpen, refreshAudiences }) =
   }
 
   const handleSubmit = async (e) => {
+    const condsWithoutAttKey = conditions.map(c => {
+      const { attribute, ...otherFields } = c;
+      return otherFields;
+    })
+
     const submission = {
       displayName,
       key: audienceKey,
       combination,
-      conditions
+      conditions: condsWithoutAttKey
     }
+
     try {
       await apiClient.createAudience(submission);
       setFormOpen(false);
       refreshAudiences();
+      successStateSetter(true);
     } catch (e) {
-      if (e.status.response === 409) {
+      if (e.response.status === 422) {
         alert(duplicateErrorMessage);
       } else {
         alert(generalErrorMessage);
@@ -89,7 +96,7 @@ export const CreateAudienceModal = ({ isOpen, setFormOpen, refreshAudiences }) =
       <Fade in={isOpen}>
         <Box sx={bigModalStyle}>
           <Typography variant="h5">Create a new audience</Typography>
-          <Stack container spacing={2} direction="row">
+          <Stack container="true" spacing={2} direction="row">
             <Stack style={{ width: "50%"}}>
               <TextField required 
                 label="Audience Name" 
@@ -112,23 +119,23 @@ export const CreateAudienceModal = ({ isOpen, setFormOpen, refreshAudiences }) =
           </Stack>
           <Stack spacing={2}>
             <Typography variant="h6">Conditions</Typography>
-            <Typography variant="body1">
-              User must meet
-              <Select
-              variant="standard"
-              value={combination}
-              style={{ marginLeft: 6, marginRight: 6}}
-              onChange={(e) => setCombination(e.target.value)}
-              >
-                <MenuItem value="ANY">ANY</MenuItem>
-                <MenuItem value="ALL">ALL</MenuItem>
-              </Select>
-              of the conditions to qualify for this audience
-            </Typography>
+            <Stack direction="row">
+              <Typography variant="body1">User must meet</Typography>
+                <Select
+                variant="standard"
+                value={combination}
+                style={{ marginLeft: 6, marginRight: 6}}
+                onChange={(e) => setCombination(e.target.value)}
+                >
+                  <MenuItem value="ANY">ANY</MenuItem>
+                  <MenuItem value="ALL">ALL</MenuItem>
+                </Select>
+              <Typography variant="body1">of the conditions to qualify for this audience</Typography>
+            </Stack>
             <Grid container spacing={2}>
               {conditions.map((c, idx) => {
                 return (
-                  <SingleCondition idx={idx} condition={c} handleRemove={removeCondition} />
+                  <SingleCondition key={idx} idx={idx} condition={c} handleRemove={removeCondition} />
                 )
               })}
             </Grid>

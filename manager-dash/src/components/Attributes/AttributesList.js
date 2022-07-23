@@ -7,6 +7,7 @@ import Typography from '@mui/material/Typography';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import { initializationErrorMessage } from '../../lib/messages';
+import { SuccessAlert } from "../SuccessAlert";
 
 export const AttributesList = () => {
   const [ready, setReady] = useState(false);
@@ -14,6 +15,7 @@ export const AttributesList = () => {
   const [displayedAttributes, setDisplayedAttributes] = useState([]);
   const [searchText, setSearchText] = useState('');
   const [formOpen, setFormOpen] = useState(false);
+  const [attributeCreated, setAttributeCreated] = useState(false);
 
   const fetchAttributes = async () => {
     const a = await apiClient.getAttributes();
@@ -51,6 +53,7 @@ export const AttributesList = () => {
       <Grid item xs={12}>
         <Typography variant="h3">Attributes</Typography>
       </Grid>
+      {attributeCreated && (<SuccessAlert text="Attribute has been created." successStateSetter={setAttributeCreated} />)}
       <Grid item xs={8}>
         <TextField
           id="outlined-basic"
@@ -63,7 +66,7 @@ export const AttributesList = () => {
       <Grid item container xs={3} direction="column" alignItems="flex-end" justify="flex-end">
         <Button variant="outlined" onClick={() => setFormOpen(true)}>Create attribute</Button>
       </Grid>
-      {formOpen && (<CreateAttributeModal isOpen={formOpen} setFormOpen={setFormOpen} refreshAtts={fetchAttributes} />)}
+      {formOpen && (<CreateAttributeModal successStateSetter={setAttributeCreated} isOpen={formOpen} setFormOpen={setFormOpen} refreshAtts={fetchAttributes} />)}
       <AttributeTable attributes={displayedAttributes} />
     </Grid>
   );

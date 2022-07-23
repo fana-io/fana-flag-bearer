@@ -22,8 +22,7 @@ export const SingleCondition = ({condition, handleRemove, idx}) => {
             <IconButton edge="end" aria-label="delete" onClick={() => handleRemove(idx)} >
               <DeleteIcon/>
             </IconButton>
-          }
-        >
+          }>
           {conditionString}
         </ListItem>
       </Paper>

@@ -19,7 +19,7 @@ import validateAndSetKey from '../../utils/validateAndSetKey';
 import { smallModalStyle } from '../../utils/modalStyle';
 import { duplicateErrorMessage, generalErrorMessage } from '../../lib/messages';
 
-export const CreateFlagModal = ({isOpen, setFormOpen, refreshFlags}) => {
+export const CreateFlagModal = ({isOpen, setFormOpen, refreshFlags, successStateSetter}) => {
   const [audiences, setAudiences] = useState([]);
   const [displayName, setDisplayName] = useState('');
   const [flagKey, setFlagKey] = useState('');
@@ -48,8 +48,9 @@ export const CreateFlagModal = ({isOpen, setFormOpen, refreshFlags}) => {
       await apiClient.createFlag(submission);
       setFormOpen(false);
       refreshFlags();
+      successStateSetter(true);
     } catch (e) {
-      if (e.status.response === 409) {
+      if (e.response.status === 422) {
         alert(duplicateErrorMessage);
       } else {
         alert(generalErrorMessage);

@@ -14,6 +14,8 @@ import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import _ from 'lodash';
 import { generalErrorMessage, initializationErrorMessage } from "../../lib/messages";
+import { SuccessAlert } from "../SuccessAlert";
+import { WarningAlert } from "../WarningAlert";
 
 export const Flag = () => {
   const flagId = useParams().id;
@@ -24,6 +26,15 @@ export const Flag = () => {
   const [pendingChanges, setPendingChanges] = useState(false);
   const [temporaryDisplayName, setTemporaryDisplayName] = useState([]);
   const [editingDisplayName, setEditingDisplayName] = useState(false);
+  const [titleUpdated, setTitleUpdated] = useState(false);
+  const [audiencesUpdated, setAudiencesUpdated] = useState(false);
+  const [flagToggled, setFlagToggled] = useState(false);
+
+  const closeAllAlerts = () => {
+    setFlagToggled(false);
+    setAudiencesUpdated(false);
+    setTitleUpdated(false);
+  }
 
   const removeAudience = (audienceKey) => {
     const updatedAudiences = temporaryAudiences.filter(a => {
@@ -53,6 +64,8 @@ export const Flag = () => {
       await apiClient.editFlag(flag.id, patchedFlag)
       let f = await fetchFlag();
       setTemporaryAudiences(f.audiences);
+      closeAllAlerts();
+      setAudiencesUpdated(true);
     } catch (e) {
       alert(generalErrorMessage)
     }
@@ -67,6 +80,8 @@ export const Flag = () => {
       await apiClient.editFlag(flag.id, patchedFlag);
       fetchFlag();
       setEditingDisplayName(false);
+      closeAllAlerts();
+      setTitleUpdated(true);
     } catch(e) {
       alert(generalErrorMessage)
     }
@@ -118,6 +133,10 @@ export const Flag = () => {
   }
   return (
     <Box container="true" spacing={1}>
+      {titleUpdated && (<SuccessAlert text="Title has been updated." successStateSetter={setTitleUpdated} />)}
+      {audiencesUpdated && (<SuccessAlert text="Targeted audiences have been updated." successStateSetter={setAudiencesUpdated} />)}
+      {flagToggled && (<SuccessAlert text="Flag has been toggled." successStateSetter={setFlagToggled} />)}
+      {pendingChanges && (<WarningAlert text="Changes are not saved until you click on 'Save Audiences'." />)}
       <Stack container="true" spacing={2}>
         <Typography variant="h3">Flag Details</Typography>
         <Stack>
@@ -147,9 +166,10 @@ export const Flag = () => {
         </Stack>
         <Stack>
           <InputLabel id="flag-toggle-label">Enabled</InputLabel>
-          <FlagStatusToggle flag={flag} labelId="flag-toggle-label" refreshFlags={fetchFlag} />
+          <FlagStatusToggle successStateSetter={setFlagToggled} flag={flag} labelId="flag-toggle-label" refreshFlags={fetchFlag} />
         </Stack>
         <Typography variant="h4">Targeted Audiences</Typography>
+        <Typography variant="body1">This flag will serve to ANY targeted audience</Typography>
         <Stack
           container="true"
           divider={<Divider orientation="vertical" flexItem />} 

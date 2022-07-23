@@ -9,6 +9,7 @@ import Grid from '@mui/material/Grid';
 import Checkbox from '@mui/material/Checkbox';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import { initializationErrorMessage } from '../../lib/messages';
+import { SuccessAlert } from '../SuccessAlert';
 
 export const FlagsList = () => {
   const [ready, setReady] = useState(false);
@@ -17,6 +18,8 @@ export const FlagsList = () => {
   const [formOpen, setFormOpen] = useState(false);
   const [searchText, setSearchText] = useState('');
   const [enabledOnly, setEnabledOnly] = useState(false);
+  const [flagCreated, setFlagCreated] = useState(false);
+  const [flagToggled, setFlagToggled] = useState(false);
 
   const fetchFlags = async () => {
     const f = await apiClient.getFlags();
@@ -58,6 +61,8 @@ export const FlagsList = () => {
       <Grid item xs={12}>
         <Typography variant="h3">Flags</Typography>
       </Grid>
+      {flagCreated && (<SuccessAlert text="Flag has been created." successStateSetter={setFlagCreated} />)}
+      {flagToggled && (<SuccessAlert text="Flag has been toggled." successStateSetter={setFlagToggled} />)}
       <Grid item xs={4}>
         <TextField
           id="outlined-basic"
@@ -75,8 +80,8 @@ export const FlagsList = () => {
       <Grid item container xs={3} direction="column" alignItems="flex-end" justify="flex-end">
         <Button variant="outlined" onClick={() => setFormOpen(true)}>Create flag</Button>
       </Grid>
-      {formOpen && (<CreateFlagModal isOpen={formOpen} setFormOpen={setFormOpen} refreshFlags={fetchFlags} />)}
-      <FlagTable flags={displayedFlags} refreshFlags={fetchFlags} />
+      {formOpen && (<CreateFlagModal successStateSetter={setFlagCreated} isOpen={formOpen} setFormOpen={setFormOpen} refreshFlags={fetchFlags} />)}
+      <FlagTable flags={displayedFlags} refreshFlags={fetchFlags} successStateSetter={setFlagToggled} />
     </Grid>
   )
 }

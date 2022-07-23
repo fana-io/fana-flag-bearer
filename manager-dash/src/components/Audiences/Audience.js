@@ -14,6 +14,8 @@ import MenuItem from "@mui/material/MenuItem";
 import { ConditionBuilder } from "./ConditionBuilder";
 import { SingleCondition } from "./SingleCondition";
 import { generalErrorMessage, initializationErrorMessage } from "../../lib/messages";
+import { SuccessAlert } from "../SuccessAlert";
+import { WarningAlert } from "../WarningAlert";
 
 export const Audience = () => {
   const audienceId = useParams().id;
@@ -24,6 +26,13 @@ export const Audience = () => {
   const [temporaryDisplayName, setTemporaryDisplayName] = useState('');
   const [editingDisplayName, setEditingDisplayName] = useState(false);
   const [temporaryCombination, setTemporaryCombination] = useState('');
+  const [titleUpdated, setTitleUpdated] = useState(false);
+  const [conditionsUpdated, setConditionsUpdated] = useState(false);
+
+  const closeAllAlerts = () => {
+    setConditionsUpdated(false);
+    setTitleUpdated(false);
+  }
 
   const removeCondition = (removedConditionIdx) => {
     const updatedConditions = temporaryConditions.filter((c, idx) => {
@@ -41,14 +50,21 @@ export const Audience = () => {
   }
 
   const submitConditionEdit = async () => {
+    const condsWithoutAttKey = temporaryConditions.map(c => {
+      const { attribute, ...otherFields } = c;
+      return otherFields;
+    })
+
     const patchedAudience = {
       combine: temporaryCombination,
-      conditions: temporaryConditions
+      conditions: condsWithoutAttKey
     }
 
     try {
       await apiClient.editAudience(audience.id, patchedAudience);
       fetchAudience();
+      closeAllAlerts();
+      setConditionsUpdated(true);
     } catch(e) {
       alert(generalErrorMessage);
     }
@@ -63,6 +79,8 @@ export const Audience = () => {
       await apiClient.editAudience(audience.id, patchedAudience);
       fetchAudience();
       setEditingDisplayName(false);
+      closeAllAlerts();
+      setTitleUpdated(true);
     } catch(e) {
       alert(generalErrorMessage)
     }
@@ -107,6 +125,9 @@ export const Audience = () => {
   }
   return (
     <Box container="true" spacing={1}>
+      {titleUpdated && (<SuccessAlert text="Title has been updated." successStateSetter={setTitleUpdated} />)}
+      {conditionsUpdated && (<SuccessAlert text="Conditions have been updated." successStateSetter={setConditionsUpdated} />)}
+      {pendingChanges && (<WarningAlert text="Changes are not saved until you click on 'Save Conditions'." />)}
       <Stack container="true" spacing={2}>
         <Typography variant="h3">Audience Details</Typography>
         <Stack>
@@ -135,19 +156,19 @@ export const Audience = () => {
           <Typography variant="subtitle1">{audience.key}</Typography>
         </Stack>
         <Typography variant="h4">Conditions</Typography>
-        <Typography variant="body1">
-              User must meet
-              <Select
-              variant="standard"
-              value={temporaryCombination}
-              style={{ marginLeft: 6, marginRight: 6}}
-              onChange={(e) => setTemporaryCombination(e.target.value)}
-              >
-                <MenuItem value="ANY">ANY</MenuItem>
-                <MenuItem value="ALL">ALL</MenuItem>
-              </Select>
-              of the conditions to qualify for this audience
-            </Typography>
+        <Stack direction="row">
+          <Typography variant="body1">User must meet</Typography>
+          <Select
+            variant="standard"
+            value={temporaryCombination}
+            style={{ marginLeft: 6, marginRight: 6}}
+            onChange={(e) => setTemporaryCombination(e.target.value)}
+            >
+              <MenuItem value="ANY">ANY</MenuItem>
+              <MenuItem value="ALL">ALL</MenuItem>
+          </Select>
+          <Typography variant="body1">of the conditions to qualify for this audience</Typography>
+        </Stack>
         <Stack
           container="true"
           divider={<Divider orientation="vertical" flexItem />}

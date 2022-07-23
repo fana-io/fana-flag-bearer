@@ -17,8 +17,6 @@ import CssBaseline from '@mui/material/CssBaseline';
 import { red, purple, green } from '@mui/material/colors'
 import useMediaQuery from '@mui/material/useMediaQuery';
 import Breadcrumbs from './components/Breadcrumbs';
-import Switch from '@mui/material/Switch';
-import Typography from '@mui/material/Typography';
 import { AuditHistory } from './components/AuditHistory/AuditHistory';
 
 function App() {
@@ -45,10 +43,8 @@ function App() {
       <main>
         <Toolbar />
         <Box sx={{ display: 'flex' }}>
-          <Navigation />
+          <Navigation darkModeToggle={() => setDarkMode(!darkMode)} />
           <Box sx={{ marginLeft: 8, maxWidth: 1000 }}>
-        <Typography variant="subtitle1">Dark Mode</Typography>
-        <Switch onChange={() => setDarkMode(!darkMode)} />
         <Breadcrumbs />
             <Route path="/" exact component={FlagsList} />
             <Route path="/flags/:id" component={Flag} />

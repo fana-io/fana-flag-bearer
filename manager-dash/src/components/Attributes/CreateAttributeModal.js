@@ -18,7 +18,7 @@ import validateAndSetKey from '../../utils/validateAndSetKey';
 import apiClient from "../../lib/apiClient";
 import { duplicateErrorMessage, generalErrorMessage } from "../../lib/messages";
 
-export const CreateAttributeModal = ({ isOpen, setFormOpen, refreshAtts }) => {
+export const CreateAttributeModal = ({ isOpen, setFormOpen, refreshAtts, successStateSetter }) => {
   const [selectedType, setSelectedType] = useState('');
   const [attributeKey, setAttributeKey] = useState('');
   const [keyError, setKeyError] = useState(false);
@@ -38,9 +38,10 @@ export const CreateAttributeModal = ({ isOpen, setFormOpen, refreshAtts }) => {
       await apiClient.createAttribute(newAttribute);
       refreshAtts();
       setFormOpen(false);
+      successStateSetter(true);
     } catch (e) {
       console.log(e);
-      if (e.response.status === 409) {
+      if (e.response.status === 422) {
         alert(duplicateErrorMessage);
       } else {
         alert(generalErrorMessage);
@@ -65,7 +66,7 @@ export const CreateAttributeModal = ({ isOpen, setFormOpen, refreshAtts }) => {
     >
     <Fade in={isOpen}>
       <Box sx={smallModalStyle}>
-        <Stack container spacing={2}>
+        <Stack container="true" spacing={2}>
           <Stack>
             <Typography variant="h5">Create a new attribute</Typography>
           </Stack>

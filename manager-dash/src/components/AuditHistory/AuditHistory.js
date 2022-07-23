@@ -10,43 +10,67 @@ import apiClient from "../../lib/apiClient";
 import { LogRow } from "./LogRow";
 import IconButton from "@mui/material/IconButton";
 import SortIcon from "@mui/icons-material/Sort";
+import { initializationErrorMessage } from "../../lib/messages";
+import Grid from "@mui/material/Grid";
+import TextField from "@mui/material/TextField";
 
 export const AuditHistory = () => {
   const [logs, setLogs] = useState([]);
+  const [displayedLogs, setDisplayedLogs] = useState([]);
   const [ready, setReady] = useState(false);
   const [newestFirst, setNewestFirst] = useState(false);
+  const [searchText, setSearchText] = useState('');
 
   const sortLogs = useCallback((logs) => {
     if (newestFirst) {
-      return logs.sort((a, b) => (a.createdAt < b.createdAt) ? 1 : -1)
+      return logs.sort((a, b) => (a.created_at < b.created_at) ? 1 : -1)
     } else {
-      return logs.sort((a, b) => (a.createdAt > b.createdAt) ? 1 : -1)
+      return logs.sort((a, b) => (a.created_at > b.created_at) ? 1 : -1)
     }
   }, [newestFirst])
 
   const fetchLogs = useCallback(async () => {
     const l = await apiClient.getLogs();
-    const flagLogs = l.flags.map(f => {
-      return {...f, type: 'flags'};
+    const flagLogs = l.flagLogs.map(f => {
+      return {...f, type: 'flags', logID: `flag${f.logID}`};
     });
-    const audienceLogs = l.audiences.map(a => {
-      return {...a, type: 'audiences'};
+    const audienceLogs = l.audienceLogs.map(a => {
+      return {...a, type: 'audiences', logID: `audience${a.logID}`};
     });
-    const attributeLogs = l.attributes.map(a => {
-      return {...a, type: 'attributes'};
+    const attributeLogs = l.attributeLogs.map(a => {
+      return {...a, type: 'attributes', logID: `attribute${a.logID}`};
     })
     const compiledLogs = flagLogs.concat(audienceLogs, attributeLogs);
+    setLogs(compiledLogs);
 
-    setLogs(sortLogs(compiledLogs));
-  }, [sortLogs])
+    return compiledLogs;
+  }, [])
 
   useEffect(() => {
     const initialize = async () => {
-      await fetchLogs();
-      setReady(true);
+      try {
+        const l = await fetchLogs();
+        console.log('initializing', l)
+        setDisplayedLogs(l);
+        setReady(true);
+      } catch (e) {
+        alert(initializationErrorMessage)
+      }
     }
     initialize();
   }, [fetchLogs])
+
+  useEffect(() => {
+    console.log('logs', logs)
+    const lcSearchText = searchText.toLowerCase();
+    const filteredLogs = logs.filter(l => {
+      console.log('this log', l)
+      return (l.type.toLowerCase().includes(lcSearchText) ||
+              l.key.toLowerCase().includes(lcSearchText) ||
+              l.action.toLowerCase().includes(lcSearchText))
+    })
+    setDisplayedLogs(sortLogs(filteredLogs));
+  }, [searchText, logs, sortLogs])
 
   if (!ready) {
     return (<>Loading...</>)
@@ -55,6 +79,15 @@ export const AuditHistory = () => {
   return (
     <Box container="true" spacing={1}>
       <Typography variant="h3">Audit History</Typography>
+      <Grid item xs={4}>
+        <TextField
+          id="outlined-basic"
+          label="Search logs"
+          variant="outlined"
+          value={searchText}
+          onChange={(e) => setSearchText(e.target.value)}
+        />
+      </Grid>
       <TableContainer>
       <Table stickyHeader>
         <TableHead>
@@ -71,9 +104,8 @@ export const AuditHistory = () => {
           </TableRow>
         </TableHead>
         <TableBody>
-          {logs.map(log => {
-            const logIdentifier = String(log.id) + log.type + log.createdAt;
-            return (<LogRow key={logIdentifier} log={log} />)
+          {displayedLogs.map(log => {
+            return (<LogRow key={log.logID} log={log} />)
           })}
         </TableBody>
       </Table>

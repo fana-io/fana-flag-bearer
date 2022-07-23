@@ -12,8 +12,11 @@ import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import { Link } from "react-router-dom"
 import Toolbar from "@mui/material/Toolbar";
 import MUILink from '@mui/material/Link';
+import Switch from "@mui/material/Switch";
+import InputLabel from "@mui/material/InputLabel";
+import Stack from '@mui/material/Stack';
 
-export const Navigation = () => {
+export const Navigation = ({ darkModeToggle }) => {
   const drawerWidth = 200;
   const pages = [
     { name: 'Flags', url: '/flags', icon: <FlagIcon />}, 
@@ -40,20 +43,22 @@ export const Navigation = () => {
         <List>
           {pages.map(page => {
             return (
-              <Link key={page.name} to={page.url}>
-                <MUILink underline="none">
-                  <ListItem disablePadding>
-                    <ListItemButton>
-                      <ListItemIcon>
-                        {page.icon}
-                      </ListItemIcon>
-                      <ListItemText primary={page.name} />
-                    </ListItemButton>
-                  </ListItem>
-                </MUILink>
-              </Link>
+              <MUILink component={Link} key={page.name} to={page.url} underline="none">
+                <ListItem disablePadding>
+                  <ListItemButton>
+                    <ListItemIcon>
+                      {page.icon}
+                    </ListItemIcon>
+                    <ListItemText primary={page.name} />
+                  </ListItemButton>
+                </ListItem>
+              </MUILink>
             )
           })}
+          <Stack direction="column" alignItems="center">
+            <InputLabel>Dark Mode</InputLabel>
+            <Switch onChange={darkModeToggle} />
+          </Stack>
         </List>
       </Drawer>
   )
