@@ -18,6 +18,7 @@ import { red, purple, green } from '@mui/material/colors'
 import useMediaQuery from '@mui/material/useMediaQuery';
 import Breadcrumbs from './components/Breadcrumbs';
 import { AuditHistory } from './components/AuditHistory/AuditHistory';
+import { EntityNotFoundPage } from './components/EntityNotFoundPage';
 
 function App() {
   const [darkMode, setDarkMode] = useState(false);
@@ -55,6 +56,7 @@ function App() {
             <Route path="/attributes" exact component={AttributesList} />
             <Route path="/settings" component={Settings} />
             <Route path="/history" component={AuditHistory} />
+            <Route path="/error" component={EntityNotFoundPage} />
           </Box>
         </Box>
       </main>

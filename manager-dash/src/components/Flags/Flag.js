@@ -11,12 +11,13 @@ import List from "@mui/material/List";
 import { AddAudienceToFlag } from "./AddAudienceToFlag";
 import Divider from "@mui/material/Divider";
 import Button from "@mui/material/Button";
-import TextField from "@mui/material/TextField";
 import _ from 'lodash';
 import { deletedEntityMessageCreator, generalErrorMessage, initializationErrorMessage } from "../../lib/messages";
 import { SuccessAlert } from "../SuccessAlert";
 import { WarningAlert } from "../WarningAlert";
 import DeleteIcon from '@mui/icons-material/Delete';
+import { EntityNotFoundPage } from "../EntityNotFoundPage";
+import { DisplayName } from "../Shared/DisplayName";
 
 export const Flag = () => {
   const flagId = useParams().id;
@@ -26,11 +27,10 @@ export const Flag = () => {
   const [temporaryAudiences, setTemporaryAudiences] = useState([]);
   const [allAudiences, setAllAudiences] = useState([]);
   const [pendingChanges, setPendingChanges] = useState(false);
-  const [temporaryDisplayName, setTemporaryDisplayName] = useState([]);
-  const [editingDisplayName, setEditingDisplayName] = useState(false);
   const [titleUpdated, setTitleUpdated] = useState(false);
   const [audiencesUpdated, setAudiencesUpdated] = useState(false);
   const [flagToggled, setFlagToggled] = useState(false);
+  const [loadError, setLoadError] = useState(false);
 
   const closeAllAlerts = () => {
     setFlagToggled(false);
@@ -72,15 +72,14 @@ export const Flag = () => {
     }
   }
 
-  const submitDisplayNameEdit = async () => {
+  const submitDisplayNameEdit = async (newDisplayName) => {
     const patchedFlag = {
-      displayName: temporaryDisplayName,
+      displayName: newDisplayName,
     }
 
     try {
       await apiClient.editFlag(flag.id, patchedFlag);
       fetchFlag();
-      setEditingDisplayName(false);
       closeAllAlerts();
       setTitleUpdated(true);
     } catch(e) {
@@ -99,6 +98,7 @@ export const Flag = () => {
       }
     }
   }
+
   const fetchFlag = useCallback(async () => {
     const f = await apiClient.getFlag(flagId);
     setFlag(f);
@@ -115,11 +115,14 @@ export const Flag = () => {
       try {
         const f = await fetchFlag();
         setTemporaryAudiences(f.audiences);
-        setTemporaryDisplayName(f.displayName);
         fetchAudiences();
         setReady(true);
       } catch (e) {
-        alert(initializationErrorMessage)
+        if (e.response.status === 404) {
+          setLoadError(true);
+        } else {
+          alert(initializationErrorMessage)
+        }
       }
     }
     initialize();
@@ -140,13 +143,14 @@ export const Flag = () => {
     }
   }, [temporaryAudiences, ready, flag?.audiences])
 
+  if (loadError) {
+    return <EntityNotFoundPage />
+  }
+
   if (!ready) {
     return <>Loading...</>
   }
 
-  if (flag.deletedAt) {
-    return 
-  }
   return (
     <Box container="true" spacing={1}>
       {titleUpdated && (<SuccessAlert text="Title has been updated." successStateSetter={setTitleUpdated} />)}
@@ -158,32 +162,10 @@ export const Flag = () => {
         <Stack>
           <Typography variant="caption">Title</Typography>
           <Stack direction="row" justifyContent="space-between">
-          {editingDisplayName ? (
-            <Stack direction="row" spacing={2}>
-              <TextField
-                id="outlined-basic"
-                label="Edit flag title"
-                variant="outlined"
-                value={temporaryDisplayName}
-                onChange={(e) => setTemporaryDisplayName(e.target.value)}
-              />
-              <Button variant="outlined" disabled={temporaryDisplayName.trim().length === 0} onClick={submitDisplayNameEdit}>Save</Button>
-              <Button variant="outlined" color="error" onClick={() => setEditingDisplayName(false)}>Cancel</Button>
-            </Stack>
-          ) : (
-            <Stack direction="row" spacing={2}>
-              <Typography variant="subtitle1">{flag.displayName}</Typography>
-              <Button variant="outlined" onClick={() => setEditingDisplayName(true)}>Edit</Button>
-            </Stack>
-            )}
-            <Button
-              variant="outlined"
-              onClick={handleDelete}
-              startIcon={<DeleteIcon />}
-              color="error"
-              >
-              Delete flag
-            </Button>
+          <DisplayName entity={flag} submitDisplayNameEdit={submitDisplayNameEdit} />
+          <Button variant="outlined" onClick={handleDelete} startIcon={<DeleteIcon />} color="error">
+            Delete flag
+          </Button>
           </Stack>
         </Stack>
         <Stack>

@@ -15,6 +15,7 @@ import {
   Grid,
 } from '@mui/material';
 import { initializationErrorMessage } from '../../lib/messages';
+import { EntityNotFoundPage } from '../EntityNotFoundPage';
 
 const testAttribute = {
   attribute: 'beta',
@@ -38,6 +39,8 @@ export const Attribute = () => {
   const attrId = useParams().id;
   const [ready, setReady] = useState(false);
   const [attribute, setAttribute] = useState(testAttribute);
+  const [loadError, setLoadError] = useState(false);
+
   const history = useHistory();
 
   useEffect(() => setReady(true), [ready]);
@@ -54,7 +57,11 @@ export const Attribute = () => {
         const a = await fetchAttribute(attrId);
         setReady(true);
       } catch (e) {
-        alert(initializationErrorMessage)
+        if (e.response.status === 404) {
+          setLoadError(true);
+        } else {
+          alert(initializationErrorMessage)
+        }
       }
     }
     // uncomment this once the endpoint is ready
@@ -79,6 +86,10 @@ export const Attribute = () => {
     }
   }
 
+  if (loadError) {
+    return <EntityNotFoundPage />
+  }
+  
   if (!ready) {
     return <>Loading...</>;
   }

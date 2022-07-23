@@ -4,12 +4,10 @@ import Fade from '@mui/material/Fade';
 import Backdrop from '@mui/material/Backdrop';
 import Box from '@mui/material/Box'
 import TextField from '@mui/material/TextField';
-import FormHelperText from '@mui/material/FormHelperText';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
 import { bigModalStyle } from '../../utils/modalStyle';
-import validateAndSetKey from '../../utils/validateAndSetKey';
 import { ConditionBuilder } from './ConditionBuilder';
 import Grid from '@mui/material/Grid';
 import Select from '@mui/material/Select';
@@ -17,6 +15,8 @@ import MenuItem from '@mui/material/MenuItem';
 import { SingleCondition } from './SingleCondition';
 import apiClient from '../../lib/apiClient';
 import { duplicateErrorMessage, generalErrorMessage } from '../../lib/messages';
+import { KeyInput } from '../Shared/KeyInput';
+import { DisplayNameInput } from '../Shared/DisplayNameInput';
 
 export const CreateAudienceModal = ({ isOpen, setFormOpen, refreshAudiences, successStateSetter }) => {
   const [displayName, setDisplayName] = useState('');
@@ -24,7 +24,6 @@ export const CreateAudienceModal = ({ isOpen, setFormOpen, refreshAudiences, suc
   const [combination, setCombination] = useState('ANY');
   const [conditionFieldActive, setConditionFieldActive] = useState(false);
   const [conditions, setConditions] = useState([]);
-  const [keyError, setKeyError] = useState(false);
   const [readyToSubmit, setReadyToSubmit] = useState(false);
 
   useEffect(() => {
@@ -36,10 +35,6 @@ export const CreateAudienceModal = ({ isOpen, setFormOpen, refreshAudiences, suc
       setReadyToSubmit(true);
     }
   }, [displayName, audienceKey, conditionFieldActive, setReadyToSubmit])
-
-  const onKeyInput = (e) => {
-    validateAndSetKey(e.target.value, setAudienceKey, setKeyError);
-  }
 
   const closeConditionForm = () => {
     setConditionFieldActive(false);
@@ -98,24 +93,9 @@ export const CreateAudienceModal = ({ isOpen, setFormOpen, refreshAudiences, suc
           <Typography variant="h5">Create a new audience</Typography>
           <Stack container="true" spacing={2} direction="row">
             <Stack style={{ width: "50%"}}>
-              <TextField required 
-                label="Audience Name" 
-                variant="outlined" 
-                value={displayName}
-                onChange={(e) => setDisplayName(e.target.value)} 
-              />
+              <DisplayNameInput currentVal={displayName} currentValSetter={setDisplayName} />
             </Stack>
-            <Stack style={{ width: "50%" }}>
-              <TextField required 
-                error={keyError}
-                label="Audience Key" 
-                variant="outlined"
-                value={audienceKey}
-                onChange={onKeyInput}
-                onBlur={() => setKeyError(false)}
-              />
-            <FormHelperText>Alphanumeric and underscores only. This cannot be changed after creation</FormHelperText>
-            </Stack>
+            <KeyInput currentVal={audienceKey} currentValSetter={setAudienceKey} />
           </Stack>
           <Stack spacing={2}>
             <Typography variant="h6">Conditions</Typography>

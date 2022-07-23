@@ -14,14 +14,13 @@ import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
 import { smallModalStyle } from "../../utils/modalStyle";
-import validateAndSetKey from '../../utils/validateAndSetKey';
 import apiClient from "../../lib/apiClient";
 import { duplicateErrorMessage, generalErrorMessage } from "../../lib/messages";
+import { KeyInput } from "../Shared/KeyInput";
 
 export const CreateAttributeModal = ({ isOpen, setFormOpen, refreshAtts, successStateSetter }) => {
   const [selectedType, setSelectedType] = useState('');
   const [attributeKey, setAttributeKey] = useState('');
-  const [keyError, setKeyError] = useState(false);
 
   // TODO: import dynamic list of attribute types from manager
   const attrTypeOptions = [
@@ -49,10 +48,6 @@ export const CreateAttributeModal = ({ isOpen, setFormOpen, refreshAtts, success
     }
   }
 
-  const onKeyInput = (e) => {
-    validateAndSetKey(e.target.value, setAttributeKey, setKeyError);
-  }
-
   return (
     <Modal
       style={{ overflow: 'scroll' }}
@@ -70,18 +65,7 @@ export const CreateAttributeModal = ({ isOpen, setFormOpen, refreshAtts, success
           <Stack>
             <Typography variant="h5">Create a new attribute</Typography>
           </Stack>
-          <Stack>
-            <TextField required 
-              error={keyError}
-              id="outlined-basic" 
-              label="Attribute Key" 
-              variant="outlined"
-              value={attributeKey}
-              onChange={onKeyInput}
-              onBlur={() => setKeyError(false)}
-            />
-          <FormHelperText>Alphanumeric and underscores only. This cannot be changed after creation</FormHelperText>
-          </Stack>
+          <KeyInput currentVal={attributeKey} currentValSetter={setAttributeKey} />
         <FormControl sx={{ minWidth: 300 }}>
           <InputLabel id="type-dropdown-label">Select Data Type</InputLabel>
           <Select

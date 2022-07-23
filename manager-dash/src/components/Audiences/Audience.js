@@ -4,19 +4,14 @@ import apiClient from "../../lib/apiClient";
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import Box from "@mui/material/Box";
-import Divider from "@mui/material/Divider";
-import List from "@mui/material/List";
 import Button from "@mui/material/Button";
-import _ from "lodash";
-import TextField from "@mui/material/TextField";
-import Select from "@mui/material/Select";
-import MenuItem from "@mui/material/MenuItem";
-import { ConditionBuilder } from "./ConditionBuilder";
-import { SingleCondition } from "./SingleCondition";
 import { deletedEntityMessageCreator, generalErrorMessage, initializationErrorMessage } from "../../lib/messages";
 import { SuccessAlert } from "../SuccessAlert";
 import { WarningAlert } from "../WarningAlert";
 import DeleteIcon from '@mui/icons-material/Delete';
+import { EntityNotFoundPage } from "../EntityNotFoundPage";
+import { DisplayName } from "../Shared/DisplayName";
+import { SingleViewConditions } from "./SingleViewConditions";
 
 export const Audience = () => {
   const audienceId = useParams().id;
@@ -24,31 +19,13 @@ export const Audience = () => {
   const [ready, setReady] = useState(false);
   const [audience, setAudience] = useState();
   const [pendingChanges, setPendingChanges] = useState(false);
-  const [temporaryConditions, setTemporaryConditions] = useState([]);
-  const [temporaryDisplayName, setTemporaryDisplayName] = useState('');
-  const [editingDisplayName, setEditingDisplayName] = useState(false);
-  const [temporaryCombination, setTemporaryCombination] = useState('');
   const [titleUpdated, setTitleUpdated] = useState(false);
   const [conditionsUpdated, setConditionsUpdated] = useState(false);
+  const [loadError, setLoadError] = useState(false);
 
   const closeAllAlerts = () => {
     setConditionsUpdated(false);
     setTitleUpdated(false);
-  }
-
-  const removeCondition = (removedConditionIdx) => {
-    const updatedConditions = temporaryConditions.filter((c, idx) => {
-      if (idx === removedConditionIdx) {
-        return false;
-      }
-      return true;
-    })
-
-    setTemporaryConditions(updatedConditions);
-  }
-
-  const addCondition = (newCondition) => {
-    setTemporaryConditions(temporaryConditions.concat(newCondition));
   }
 
   const handleDelete = async () => {
@@ -68,17 +45,7 @@ export const Audience = () => {
     }
   }
 
-  const submitConditionEdit = async () => {
-    const condsWithoutAttKey = temporaryConditions.map(c => {
-      const { attribute, ...otherFields } = c;
-      return otherFields;
-    })
-
-    const patchedAudience = {
-      combine: temporaryCombination,
-      conditions: condsWithoutAttKey
-    }
-
+  const submitConditionEdit = async (patchedAudience) => {
     try {
       await apiClient.editAudience(audience.id, patchedAudience);
       fetchAudience();
@@ -89,15 +56,14 @@ export const Audience = () => {
     }
   }
 
-  const submitDisplayNameEdit = async () => {
+  const submitDisplayNameEdit = async (newDisplayName) => {
     const patchedAudience = {
-      displayName: temporaryDisplayName,
+      displayName: newDisplayName,
     }
 
     try {
       await apiClient.editAudience(audience.id, patchedAudience);
       fetchAudience();
-      setEditingDisplayName(false);
       closeAllAlerts();
       setTitleUpdated(true);
     } catch(e) {
@@ -115,33 +81,27 @@ export const Audience = () => {
     const initialize = async () => {
       try {
         const a = await fetchAudience()
-        setTemporaryConditions(a.conditions);
-        setTemporaryDisplayName(a.displayName);
-        setTemporaryCombination(a.combine);
         setReady(true);
       } catch (e) {
-        alert(initializationErrorMessage)
+        if (e.response.status === 404) {
+          setLoadError(true);
+        } else {
+          alert(initializationErrorMessage)
+        }
       }
     }
 
     initialize();
   }, [fetchAudience])
 
-  useEffect(() => {
-    // when temporaryAudiences changes, see if it matches the actual audiences
-    if (ready) {
-      if (!_.isEqual(audience.conditions, temporaryConditions) || temporaryCombination !== audience.combine) {
-        setPendingChanges(true);
-      } else {
-        setPendingChanges(false);
-      }
-    }
-  }, [temporaryConditions, ready, audience?.conditions, temporaryCombination, audience?.combine])
-
+  if (loadError) {
+    return <EntityNotFoundPage />
+  }
 
   if (!ready) {
     return <>Loading...</>
   }
+
   return (
     <Box container="true" spacing={1}>
       {titleUpdated && (<SuccessAlert text="Title has been updated." successStateSetter={setTitleUpdated} />)}
@@ -152,30 +112,8 @@ export const Audience = () => {
         <Stack>
           <Typography variant="caption">Title</Typography>
           <Stack direction="row" justifyContent="space-between">
-          {editingDisplayName ? (
-            <Stack direction="row" spacing={2}>
-              <TextField
-                id="outlined-basic"
-                label="Edit audience title"
-                variant="outlined"
-                value={temporaryDisplayName}
-                onChange={(e) => setTemporaryDisplayName(e.target.value)}
-              />
-              <Button variant="outlined" disabled={temporaryDisplayName.trim().length === 0} onClick={submitDisplayNameEdit}>Save</Button>
-              <Button variant="outlined" color="error" onClick={() => setEditingDisplayName(false)}>Cancel</Button>
-            </Stack>
-          ) : (
-            <Stack direction="row" spacing={2}>
-              <Typography variant="subtitle1">{audience.displayName}</Typography>
-              <Button variant="outlined" onClick={() => setEditingDisplayName(true)}>Edit</Button>
-            </Stack>
-            )}
-            <Button
-              variant="outlined"
-              onClick={handleDelete}
-              startIcon={<DeleteIcon />}
-              color="error"
-              >
+            <DisplayName entity={audience} submitDisplayNameEdit={submitDisplayNameEdit} />
+            <Button variant="outlined" onClick={handleDelete} startIcon={<DeleteIcon />} color="error">
               Delete audience
             </Button>
           </Stack>
@@ -184,38 +122,7 @@ export const Audience = () => {
           <Typography variant="caption">Key</Typography>
           <Typography variant="subtitle1">{audience.key}</Typography>
         </Stack>
-        <Typography variant="h4">Conditions</Typography>
-        <Stack direction="row">
-          <Typography variant="body1">User must meet</Typography>
-          <Select
-            variant="standard"
-            value={temporaryCombination}
-            style={{ marginLeft: 6, marginRight: 6}}
-            onChange={(e) => setTemporaryCombination(e.target.value)}
-            >
-              <MenuItem value="ANY">ANY</MenuItem>
-              <MenuItem value="ALL">ALL</MenuItem>
-          </Select>
-          <Typography variant="body1">of the conditions to qualify for this audience</Typography>
-        </Stack>
-        <Stack
-          container="true"
-          divider={<Divider orientation="vertical" flexItem />}
-          spacing={10}
-          direction="row"
-        >
-          <Stack>
-            <List style={{ width: 350 }}>
-              {temporaryConditions.map((condition, idx) => {
-                return (<SingleCondition key={idx} idx={idx} condition={condition} handleRemove={removeCondition} />)
-              })}
-            </List>
-            <Button disabled={!pendingChanges} variant="outlined" onClick={submitConditionEdit}>Save Conditions</Button>
-          </Stack>
-          <Stack>
-          <ConditionBuilder closable={false} handleSaveCondition={addCondition} />
-          </Stack>
-        </Stack>
+        <SingleViewConditions conditions={audience.conditions} combination={audience.combine} pendingChanges={pendingChanges} setPendingChanges={setPendingChanges} submitConditionEdit={submitConditionEdit} />
       </Stack>
     </Box>
   )

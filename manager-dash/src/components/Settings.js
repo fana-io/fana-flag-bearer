@@ -3,15 +3,22 @@ import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
 import { useEffect, useState } from 'react';
 import apiClient from '../lib/apiClient';
+import { initializationErrorMessage } from '../lib/messages';
 
 export const Settings = () => {
   const [sdkKey, setSdkKey] = useState('');
   const [copied, setCopied] = useState(false);
+  const [ready, setReady] = useState(false);
 
   useEffect(() => {
     const fetchSdkKey = async () => {
-      const keys = await apiClient.getSdkKey();
-      setSdkKey(keys[0].key);
+      try {
+        const keys = await apiClient.getSdkKey();
+        setSdkKey(keys[0].key);
+        setReady(true);
+      } catch (e) {
+        alert(initializationErrorMessage)
+      }
     }
     fetchSdkKey()
   }, [])
@@ -30,6 +37,10 @@ export const Settings = () => {
   const copyKeyToClipboard = () => {
     navigator.clipboard.writeText(sdkKey);
     setCopied(true);
+  }
+
+  if (!ready) {
+    return <>Loading...</>
   }
 
   return (
