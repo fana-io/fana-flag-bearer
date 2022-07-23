@@ -182,7 +182,7 @@ export const Flag = () => {
               startIcon={<DeleteIcon />}
               color="error"
               >
-              Delete attribute
+              Delete flag
             </Button>
           </Stack>
         </Stack>

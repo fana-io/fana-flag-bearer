@@ -52,13 +52,18 @@ export const Audience = () => {
   }
 
   const handleDelete = async () => {
-    if (window.confirm('Are you sure you want to delete this flag?')) {
-      try {
-        await apiClient.deleteAudience(audience.id);
-        history.push("/audiences")
-        alert(deletedEntityMessageCreator('audience', audience.key))
-      } catch (e) {
-        alert(generalErrorMessage);
+    const flagCount = audience.flags.length;
+    if (flagCount > 0) {
+      alert(`This audience is being used in ${flagCount} flag${flagCount > 1 ? 's' : ''}. Please remove before deleting.`)
+    } else {
+      if (window.confirm('Are you sure you want to delete this audience?')) {
+        try {
+          await apiClient.deleteAudience(audience.id);
+          history.push("/audiences")
+          alert(deletedEntityMessageCreator('audience', audience.key))
+        } catch (e) {
+          alert(generalErrorMessage);
+        }
       }
     }
   }
@@ -171,7 +176,7 @@ export const Audience = () => {
               startIcon={<DeleteIcon />}
               color="error"
               >
-              Delete attribute
+              Delete audience
             </Button>
           </Stack>
         </Stack>
