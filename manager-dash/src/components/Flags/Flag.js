@@ -51,7 +51,6 @@ export const Flag = () => {
   const addAudience = (audienceKey) => {
     const addedAudience = allAudiences.find(a => a.key === audienceKey)
     const updatedAudiences = temporaryAudiences.concat(addedAudience);
-    console.log('updated audiences', updatedAudiences)
     setTemporaryAudiences(updatedAudiences);
   }
 
@@ -118,8 +117,6 @@ export const Flag = () => {
     if (ready) {
       const tempKeys = temporaryAudiences.map(a => a.key).sort();
       const appliedKeys = flag.audiences.map(a => a.key).sort()
-      console.log(tempKeys);
-      console.log(appliedKeys);
       if (!_.isEqual(tempKeys, appliedKeys)) {
         setPendingChanges(true);
       } else {

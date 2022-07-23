@@ -50,7 +50,6 @@ export const AuditHistory = () => {
     const initialize = async () => {
       try {
         const l = await fetchLogs();
-        console.log('initializing', l)
         setDisplayedLogs(l);
         setReady(true);
       } catch (e) {
@@ -61,10 +60,8 @@ export const AuditHistory = () => {
   }, [fetchLogs])
 
   useEffect(() => {
-    console.log('logs', logs)
     const lcSearchText = searchText.toLowerCase();
     const filteredLogs = logs.filter(l => {
-      console.log('this log', l)
       return (l.type.toLowerCase().includes(lcSearchText) ||
               l.key.toLowerCase().includes(lcSearchText) ||
               l.action.toLowerCase().includes(lcSearchText))

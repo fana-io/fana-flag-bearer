@@ -14,7 +14,8 @@ const apiClient = {
     return data;
   },
   toggleFlag: async (id, newStatusObj) => {
-    await axios.patch(`/api/flags/${id}/toggle`, newStatusObj)
+    let { data } = await axios.patch(`/api/flags/${id}/toggle`, newStatusObj)
+    return data;
   },
   editFlag: async (id, updatedFields) => {
     let { data } = await axios.patch('/api/flags/' + id, updatedFields);

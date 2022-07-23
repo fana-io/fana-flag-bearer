@@ -15,8 +15,10 @@ import MUILink from '@mui/material/Link';
 import Switch from "@mui/material/Switch";
 import InputLabel from "@mui/material/InputLabel";
 import Stack from '@mui/material/Stack';
+import logo from '../images/logo.png';
 
 export const Navigation = ({ darkModeToggle }) => {
+  console.log(logo);
   const drawerWidth = 200;
   const pages = [
     { name: 'Flags', url: '/flags', icon: <FlagIcon />}, 
@@ -39,6 +41,7 @@ export const Navigation = ({ darkModeToggle }) => {
         variant="permanent"
         anchor="left"
       >
+        <img src={logo} alt="logo" style={{ width: '75%', marginLeft: 'auto', marginRight: 'auto' }}/>
         <Toolbar/>
         <List>
           {pages.map(page => {
@@ -55,11 +58,11 @@ export const Navigation = ({ darkModeToggle }) => {
               </MUILink>
             )
           })}
-          <Stack direction="column" alignItems="center">
-            <InputLabel>Dark Mode</InputLabel>
-            <Switch onChange={darkModeToggle} />
-          </Stack>
-        </List>
-      </Drawer>
+        <Stack direction="column" alignItems="center">
+          <InputLabel>Dark Mode</InputLabel>
+          <Switch onChange={darkModeToggle} />
+        </Stack>
+      </List>
+    </Drawer>
   )
 }
