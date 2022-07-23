@@ -69,6 +69,10 @@ const apiClient = {
   getLogs: async () => {
     let { data } = await axios.get(`/api/auditlogs`);
     return data;
+  },
+  getSdkKey: async () => {
+    let { data } = await axios.get(`/api/sdkkeys`);
+    return data;
   }
 }
 

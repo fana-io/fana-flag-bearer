@@ -13,13 +13,30 @@ import SortIcon from "@mui/icons-material/Sort";
 import { initializationErrorMessage } from "../../lib/messages";
 import Grid from "@mui/material/Grid";
 import TextField from "@mui/material/TextField";
+import TableFooter from "@mui/material/TableFooter";
+import TablePagination from "@mui/material/TablePagination";
 
 export const AuditHistory = () => {
   const [logs, setLogs] = useState([]);
   const [displayedLogs, setDisplayedLogs] = useState([]);
   const [ready, setReady] = useState(false);
-  const [newestFirst, setNewestFirst] = useState(false);
+  const [newestFirst, setNewestFirst] = useState(true);
   const [searchText, setSearchText] = useState('');
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
+
+  // Avoid a layout jump when reaching the last page with empty rows.
+  const emptyRows =
+    page > 0 ? Math.max(0, (1 + page) * rowsPerPage - displayedLogs.length) : 0;
+
+  const handleChangePage = (e, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (e) => {
+    setRowsPerPage(parseInt(e.target.value, 10));
+    setPage(0);
+  };
 
   const sortLogs = useCallback((logs) => {
     if (newestFirst) {
@@ -101,10 +118,45 @@ export const AuditHistory = () => {
           </TableRow>
         </TableHead>
         <TableBody>
-          {displayedLogs.map(log => {
-            return (<LogRow key={log.logID} log={log} />)
-          })}
+        {(rowsPerPage > 0
+              ? displayedLogs.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+              : displayedLogs
+            ).map(log => {
+              return (<LogRow key={log.logID} log={log} />)
+            })}
+        {emptyRows > 0 && (
+          <TableRow style={{ height: 53 * emptyRows }}>
+            <TableCell colSpan={4} />
+          </TableRow>
+        )}
         </TableBody>
+        <TableFooter>
+          <TableRow>
+            <TablePagination
+              count={displayedLogs.length}
+              rowsPerPage={rowsPerPage}
+              page={page}
+              onPageChange={handleChangePage}
+              onRowsPerPageChange={handleChangeRowsPerPage}
+              rowsPerPageOptions={[10, 20, 30]}
+              labelRowsPerPage={<span>Rows:</span>}
+              labelDisplayedRows={({ page }) => {
+                return `Page: ${page + 1}`;
+              }}
+              backIconButtonProps={{
+                color: "secondary"
+              }}
+              nextIconButtonProps={{ color: "secondary" }}
+              SelectProps={{
+                inputProps: {
+                  "aria-label": "page number"
+                }
+              }}
+              showFirstButton={true}
+              showLastButton={true}
+            />
+          </TableRow>
+        </TableFooter>
       </Table>
     </TableContainer>
     </Box>

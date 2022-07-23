@@ -1,11 +1,21 @@
 import { Typography } from '@mui/material';
 import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import apiClient from '../lib/apiClient';
 
 export const Settings = () => {
-  const [sdkKey, setSdkKey] = useState('beta_sdk_0');
+  const [sdkKey, setSdkKey] = useState('');
   const [copied, setCopied] = useState(false);
+
+  useEffect(() => {
+    const fetchSdkKey = async () => {
+      const keys = await apiClient.getSdkKey();
+      setSdkKey(keys[0].key);
+    }
+    fetchSdkKey()
+  }, [])
+
   const regenerateKey = async () => {
     const accept = window.confirm('This will invalidate your current SDK key. Are you sure you want to regenerate?');
     // get request to regenerate sdk key, expect the sdk key back
