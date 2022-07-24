@@ -1,18 +1,35 @@
 import { Typography } from '@mui/material';
 import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import apiClient from '../lib/apiClient';
+import { initializationErrorMessage } from '../lib/messages';
 
 export const Settings = () => {
-  const [sdkKey, setSdkKey] = useState('beta_sdk_0');
+  const [sdkKey, setSdkKey] = useState('');
   const [copied, setCopied] = useState(false);
+  const [ready, setReady] = useState(false);
+
+  useEffect(() => {
+    const fetchSdkKey = async () => {
+      try {
+        const keys = await apiClient.getSdkKey();
+        setSdkKey(keys[0].key);
+        setReady(true);
+      } catch (e) {
+        alert(initializationErrorMessage)
+      }
+    }
+    fetchSdkKey()
+  }, [])
+
   const regenerateKey = async () => {
     const accept = window.confirm('This will invalidate your current SDK key. Are you sure you want to regenerate?');
     // get request to regenerate sdk key, expect the sdk key back
     // const newSdkKey = await apiClient.regenerateSdkKey();
     if (accept) {
-      const newSdkKey="new_sdk_key";
-      setSdkKey(newSdkKey)
+      const data = await apiClient.regenSdkKey();
+      setSdkKey(data.key)
       setCopied(false);
     }
   }
@@ -20,6 +37,10 @@ export const Settings = () => {
   const copyKeyToClipboard = () => {
     navigator.clipboard.writeText(sdkKey);
     setCopied(true);
+  }
+
+  if (!ready) {
+    return <>Loading...</>
   }
 
   return (

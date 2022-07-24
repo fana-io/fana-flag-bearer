@@ -32,6 +32,26 @@ export const operatorOptions = [
   { value: 'LT_EQ', text: '<=' },
 ];
 
+export const operatorOptionsByType = {
+  STR: [
+    { value: 'EQ', text: 'is equal to' },
+    { value: 'IN', text: 'is in' },
+    { value: 'STR_CONTAINS', text: 'contains' },
+    { value: 'STR_STARTS_WITH', text: 'starts with' },
+    { value: 'STR_ENDS_WITH', text: 'ends with' },
+  ],
+  BOOL: [
+    { value: 'EQ', text: 'is equal to' },
+  ],
+  NUM: [
+    { value: 'EQ', text: 'is equal to' },
+    { value: 'GT', text: '>' },
+    { value: 'LT', text: '<' },
+    { value: 'GT_EQ', text: '>=' },
+    { value: 'LT_EQ', text: '<=' },
+  ]
+}
+
 
 // TODO: import dynamic list of attribute types from manager
 export  const attrTypeOptions = [

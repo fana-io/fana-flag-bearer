@@ -7,11 +7,11 @@ export const AttributeAudience = ({ audience }) => {
   return (
     <ListItem divider>
       <ListItemText>
-        <Link underline="hover">
         <RouterLink to={link} >
+        <Link underline="hover" component={'span'}>
           {audience.displayName}
-          </RouterLink>
         </Link>
+          </RouterLink>
       </ListItemText>
     </ListItem>
   );
