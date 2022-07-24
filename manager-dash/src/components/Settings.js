@@ -31,6 +31,7 @@ export const Settings = () => {
       const data = await apiClient.regenSdkKey();
       setSdkKey(data.key)
       setCopied(false);
+      alert('New SDK Key issued.')
     }
   }
 
