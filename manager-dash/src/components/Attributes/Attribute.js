@@ -38,6 +38,8 @@ export const Attribute = () => {
   const [ready, setReady] = useState(false);
   const [attribute, setAttribute] = useState(testAttribute);
 
+  console.log('attribute:', attribute);
+
   useEffect(() => setReady(true), [ready]);
 
   // const fetchAttribute = useCallback(async () => {
@@ -45,12 +47,15 @@ export const Attribute = () => {
   //   setAttribute(attr);
   //   return attr;
   // }, [attrId])
+
   // useEffect(() => {
   //   const initialize = async () => {
-  //     const attr = await fetchAttribute();
+  //     await fetchAttribute();
   //     setReady(true);
   //   }
-  //   initialize();
+  //   try {
+  //     initialize();
+  //   } catch (err) { console.error(err);}
   // }, [fetchAttribute])
 
   const handleDelete = async () => {
@@ -66,38 +71,22 @@ export const Attribute = () => {
   }
 
   return (
-    // <Box
-    //   container="true"
-    //   spacing={2}
-    //   sx={{
-    //     marginLeft: 8,
-    //     maxWidth: 1000,
-    //   }}
-    // >
-    <Grid container>
-      <Stack container="true" spacing={3}>
-        <Typography variant="h3">Attribute Details</Typography>
-
-        <Grid item xs={10}>
-          <Stack>
-            <Typography variant="caption">Title</Typography>
-            <Typography variant="subtitle1">{attribute.attribute}</Typography>
-          </Stack>
-          <Stack>
-            <Typography variant="caption">Type</Typography>
-            <Typography variant="subtitle1">
-              {attrTypeMapper[attribute.type]}
-            </Typography>
-          </Stack>
+    <Stack spacing={4}>
+      <Grid container>
+        {/* <Stack container="true" spacing={3}> */}
+        <Grid item xs={12}>
+          <Typography variant="h3">Attribute Details</Typography>
         </Grid>
-        <Grid
-          item
-          xs={2}
-          direction="column"
-          alignItems="flex-end"
-          justify="flex-end"
-          container
-        >
+
+        <Grid item xs={8}>
+          <Typography variant="caption">Title</Typography>
+          <Typography variant="subtitle1">{attribute.attribute}</Typography>
+          <Typography variant="caption">Type</Typography>
+          <Typography variant="subtitle1">
+            {attrTypeMapper[attribute.type]}
+          </Typography>
+        </Grid>
+        <Grid item justifyContent="flex-end">
           <Button
             variant="outlined"
             onClick={handleDelete}
@@ -107,30 +96,19 @@ export const Attribute = () => {
             Delete attribute
           </Button>
         </Grid>
-
-        {/* Related Audiences */}
-        <Stack container="true">
-          <Typography variant="h4">Related Audiences</Typography>
-          <Typography variant="subtitle2">
-            List of audiences that reference this attribute
-          </Typography>
-        </Stack>
-        <Stack
-          container="true"
-          divider={<Divider orientation="vertical" flexItem />}
-          spacing={10}
-          direction="row"
-        >
-          <Stack>
-            <List style={{ width: 350 }}>
-              {attribute.audiences.map((aud) => {
-                return <AttributeAudience key={aud.id} audience={aud} />;
-              })}
-            </List>
-          </Stack>
-        </Stack>
+      </Grid>
+      {/* Related Audiences */}
+      <Stack>
+        <Typography variant="h4">Related Audiences</Typography>
+        <Typography variant="subtitle2">
+          List of audiences that reference this attribute{' '}
+        </Typography>
       </Stack>
-    </Grid>
-    // </Box>
+      <List style={{ width: 350 }}>
+        {attribute.audiences.map((aud) => {
+          return <AttributeAudience key={aud.id} audience={aud} />;
+        })}
+      </List>
+    </Stack>
   );
 };

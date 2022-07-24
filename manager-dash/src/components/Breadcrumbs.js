@@ -1,26 +1,23 @@
 import * as React from 'react';
-import { Breadcrumbs as MUIBreadcrumbs } from '@mui/material';
+import { Breadcrumbs as MUIBreadcrumbs, Typography } from '@mui/material';
 import Link from '@mui/material/Link';
 import { withRouter } from 'react-router-dom';
 
-function handleClick(event) {
-  event.preventDefault();
-  console.info('You clicked a breadcrumb.');
-}
+// function handleClick(event) {
+//   event.preventDefault();
+//   console.info('You clicked a breadcrumb.');
+// }
 
 const Breadcrumbs = (props) => {
   const {
     history,
     location: { pathname },
-    to,
-    open
   } = props;
-  console.log(`ROUTER PROPS: \n history: ${history}\n to: ${to}\n open: ${open} \n`);
   const pathnames = pathname.split('/').filter((x) => x); // remove empty strings from split
   console.log(pathnames);
 
   return (
-    <div role="presentation" onClick={handleClick}>
+    <div role="presentation">
       <MUIBreadcrumbs aria-label="breadcrumb">
         <Link
           underline="hover"
@@ -28,27 +25,25 @@ const Breadcrumbs = (props) => {
           href="/"
           onClick={() => history.push('/')}
         >
-          Flags
+          Home
         </Link>
         {pathnames.map((name, index) => {
-          return (
+          const routeTo = `${pathnames.slice(0, index + 1).join('/')}`;
+          const isLast = index === pathnames.length - 1;
+          const casedName = name[0].toUpperCase() + name.slice(1)
+
+          return isLast ? (
+            <Typography> {casedName}</Typography>
+          ) : (
             <Link
               underline="hover"
               color="inherit"
-              onClick={() => history.push('/')}
+              onClick={() => history.push(routeTo)}
             >
-              {name}
+              {casedName}
             </Link>
           );
         })}
-        {/* <Link
-          underline="hover"
-          color="text.primary"
-          href="/material-ui/react-breadcrumbs/"
-          aria-current="page"
-        >
-          Breadcrumbs
-        </Link> */}
       </MUIBreadcrumbs>
     </div>
   );

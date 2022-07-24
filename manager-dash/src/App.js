@@ -42,7 +42,7 @@ function App() {
         <Box sx={{ display: 'flex' }}>
           <Navigation />
           <Box sx={{ marginLeft: 8, maxWidth: 1000 }}>
-        <Breadcrumbs />
+        {/* <Breadcrumbs /> */}
             <Route path="/" exact component={FlagsList} />
             <Route path="/flags/:id" component={Flag} />
             <Route path="/audiences/:id" component={Audience} />

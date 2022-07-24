@@ -14,6 +14,8 @@ export const AttributesList = () => {
   const [searchText, setSearchText] = useState('');
   const [formOpen, setFormOpen] = useState(false);
 
+  console.log('attributes', attributes);
+
   useEffect(() => {
     const init = async () => {
       const attributes = await apiClient.getAttributes();
@@ -26,7 +28,7 @@ export const AttributesList = () => {
   useEffect(() => {
     const lcSearchText = searchText.toLowerCase();
     const filteredAttributes = attributes.filter(a => {
-      return (a.type.toLowerCase().includes(lcSearchText) || a.key.toLowerCase().includes(lcSearchText))
+      return (a.attrType.toLowerCase().includes(lcSearchText) || a.key.toLowerCase().includes(lcSearchText))
     })
     setDisplayedAttributes(filteredAttributes);
   }, [searchText, attributes])
