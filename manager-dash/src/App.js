@@ -14,7 +14,7 @@ import Paper from '@mui/material/Paper';
 import Toolbar from '@mui/material/Toolbar';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
-import { red, purple, green } from '@mui/material/colors'
+import { green } from '@mui/material/colors'
 import useMediaQuery from '@mui/material/useMediaQuery';
 import Breadcrumbs from './components/Breadcrumbs';
 import { AuditHistory } from './components/AuditHistory/AuditHistory';
@@ -47,7 +47,7 @@ function App() {
         <Box sx={{ display: 'flex' }}>
           <Navigation darkModeToggle={() => setDarkMode(!darkMode)} />
           <Box sx={{ marginLeft: 8, maxWidth: 1000 }}>
-        <Breadcrumbs />
+        {/* <Breadcrumbs /> */}
             <Route path="/" exact component={FlagsList} />
             <Route path="/flags/:id" component={Flag} />
             <Route path="/audiences/:id" component={Audience} />

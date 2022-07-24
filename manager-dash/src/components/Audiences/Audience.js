@@ -1,10 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { useHistory, useParams } from "react-router-dom"
 import apiClient from "../../lib/apiClient";
-import Stack from '@mui/material/Stack';
-import Typography from '@mui/material/Typography';
-import Box from "@mui/material/Box";
-import Button from "@mui/material/Button";
 import { deletedEntityMessageCreator, generalErrorMessage, initializationErrorMessage } from "../../lib/messages";
 import { SuccessAlert } from "../SuccessAlert";
 import { WarningAlert } from "../WarningAlert";
@@ -12,6 +8,8 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import { EntityNotFoundPage } from "../EntityNotFoundPage";
 import { DisplayName } from "../Shared/DisplayName";
 import { SingleViewConditions } from "./SingleViewConditions";
+import { RelatedEntityList } from "../Shared/RelatedEntityList";
+import { List, Box, Button, Typography, Stack } from "@mui/material";
 
 export const Audience = () => {
   const audienceId = useParams().id;
@@ -22,6 +20,9 @@ export const Audience = () => {
   const [titleUpdated, setTitleUpdated] = useState(false);
   const [conditionsUpdated, setConditionsUpdated] = useState(false);
   const [loadError, setLoadError] = useState(false);
+
+  console.log('audience', audience
+  )
 
   const closeAllAlerts = () => {
     setConditionsUpdated(false);
@@ -123,6 +124,17 @@ export const Audience = () => {
           <Typography variant="subtitle1">{audience.key}</Typography>
         </Stack>
         <SingleViewConditions conditions={audience.conditions} combination={audience.combine} pendingChanges={pendingChanges} setPendingChanges={setPendingChanges} submitConditionEdit={submitConditionEdit} />
+        <Stack>
+          <Typography variant="h4">Related Flags</Typography>
+          <Typography variant="subtitle2">
+          List of flags that reference this audience{' '}
+        </Typography>
+      </Stack>
+      <List style={{ width: 350 }}>
+        {audience.flags.map(flag => 
+          (<RelatedEntityList key={flag.id} entity={flag} entityName={'flags'} />)
+        )}
+      </List>
       </Stack>
     </Box>
   )
