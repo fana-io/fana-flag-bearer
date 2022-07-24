@@ -40,15 +40,15 @@ export const FlagsList = () => {
     initialize();
   }, [])
 
-    const searchFilterCriteria = useCallback((searchText) => {
-    return (flag) => {
-      if (enabledOnly && !flag.status) {
-        return false
-      }
-      return (flag.displayName.toLowerCase().includes(searchText) ||
-              flag.key.toLowerCase().includes(searchText))
+  const searchFilterCriteria = useCallback((searchText) => {
+  return (flag) => {
+    if (enabledOnly && !flag.status) {
+      return false
     }
-  }, [])
+    return (flag.displayName.toLowerCase().includes(searchText) ||
+            flag.key.toLowerCase().includes(searchText))
+    }
+  }, [enabledOnly])
 
   if (!ready) {
     return <>Loading...</>

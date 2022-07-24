@@ -21,12 +21,13 @@ import { AuditHistory } from './components/AuditHistory/AuditHistory';
 import { EntityNotFoundPage } from './components/EntityNotFoundPage';
 
 function App() {
-  const [darkMode, setDarkMode] = useState(false);
-
   const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
+  const [darkMode, setDarkMode] = useState(prefersDarkMode);
 
-  const theme = useMemo(
-    () =>
+
+  const theme = 
+  // useMemo(
+    // () =>
       createTheme({
         palette: {
           mode: darkMode ? 'dark' : 'light',
@@ -34,9 +35,9 @@ function App() {
             main: green[500]
           },
         },
-      }),
-    [darkMode],
-  );
+      })
+  //   [darkMode],
+  // );
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline enableColorScheme/>
