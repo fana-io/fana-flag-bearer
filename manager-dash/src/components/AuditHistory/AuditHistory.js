@@ -12,18 +12,23 @@ import IconButton from "@mui/material/IconButton";
 import SortIcon from "@mui/icons-material/Sort";
 import { initializationErrorMessage } from "../../lib/messages";
 import Grid from "@mui/material/Grid";
-import TextField from "@mui/material/TextField";
 import TableFooter from "@mui/material/TableFooter";
 import TablePagination from "@mui/material/TablePagination";
+import { SearchBox } from "../Shared/SearchBox";
 
 export const AuditHistory = () => {
   const [logs, setLogs] = useState([]);
   const [displayedLogs, setDisplayedLogs] = useState([]);
   const [ready, setReady] = useState(false);
   const [newestFirst, setNewestFirst] = useState(true);
-  const [searchText, setSearchText] = useState('');
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
+
+  useEffect(() => {
+    if (displayedLogs.length <= rowsPerPage * page) {
+      setPage(0);
+    }
+  }, [displayedLogs, rowsPerPage, page])
 
   // Avoid a layout jump when reaching the last page with empty rows.
   const emptyRows =
@@ -76,15 +81,13 @@ export const AuditHistory = () => {
     initialize();
   }, [fetchLogs])
 
-  useEffect(() => {
-    const lcSearchText = searchText.toLowerCase();
-    const filteredLogs = logs.filter(l => {
-      return (l.type.toLowerCase().includes(lcSearchText) ||
-              l.key.toLowerCase().includes(lcSearchText) ||
-              l.action.toLowerCase().includes(lcSearchText))
-    })
-    setDisplayedLogs(sortLogs(filteredLogs));
-  }, [searchText, logs, sortLogs])
+  const searchFilterCriteria = useCallback((searchText) => {
+    return (log) => {
+      return (log.type.toLowerCase().includes(searchText) ||
+              log.key.toLowerCase().includes(searchText) ||
+              log.action.toLowerCase().includes(searchText))
+    }
+  }, [])
 
   if (!ready) {
     return (<>Loading...</>)
@@ -94,33 +97,27 @@ export const AuditHistory = () => {
     <Box container="true" spacing={1}>
       <Typography variant="h3">Audit History</Typography>
       <Grid item xs={4}>
-        <TextField
-          id="outlined-basic"
-          label="Search logs"
-          variant="outlined"
-          value={searchText}
-          onChange={(e) => setSearchText(e.target.value)}
-        />
+        <SearchBox entities={logs} displayedSetter={setDisplayedLogs} filterCriteria={searchFilterCriteria} />
       </Grid>
       <TableContainer>
       <Table stickyHeader>
         <TableHead>
           <TableRow>
-            <TableCell>Entity Type</TableCell>
-            <TableCell>Entity Key</TableCell>
-            <TableCell style={{ width: 300 }}>Event</TableCell>
+            <TableCell width={200}>Entity Type</TableCell>
+            <TableCell width={200}>Entity Key</TableCell>
+            <TableCell width={200}>Event</TableCell>
             <TableCell>
               Date
               <IconButton onClick={() => setNewestFirst(!newestFirst)} >
-                <SortIcon />  
+                <SortIcon />
               </IconButton>
             </TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
         {(rowsPerPage > 0
-              ? displayedLogs.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-              : displayedLogs
+              ? sortLogs(displayedLogs).slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+              : sortLogs(displayedLogs)
             ).map(log => {
               return (<LogRow key={log.logID} log={log} />)
             })}

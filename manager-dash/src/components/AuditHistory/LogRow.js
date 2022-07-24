@@ -15,7 +15,7 @@ export const LogRow = ({ log }) => {
           <MUILink underline="hover" component="span">{log.key}</MUILink>
         </Link>
       </TableCell>
-      <TableCell>{`${log.type.slice(0, -1)} ${log.key} was ${log.action}`}</TableCell>
+      <TableCell>{log.action}</TableCell>
       <TableCell>{moment(log.created_at).format('MMMM Do YYYY, h:mm:ss a')}</TableCell>
     </TableRow>
   )
