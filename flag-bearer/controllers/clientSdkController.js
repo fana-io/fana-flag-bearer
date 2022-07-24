@@ -11,7 +11,7 @@ const initializeClientSDK = (req, res) => {
     if (!validSdkKey(sdkKey)) {
       return res.status(400).send({ error: 'Invalid SDK key.' });
     }
-
+    
     const userFlagEvals = evaluateFlags(userContext);
     // populateCacheForUser(req.body.sdkKey, userId, userFlagEvals);
     return res.json(userFlagEvals);
