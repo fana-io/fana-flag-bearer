@@ -4,25 +4,26 @@ import Fade from '@mui/material/Fade';
 import Backdrop from '@mui/material/Backdrop';
 import Box from '@mui/material/Box'
 import TextField from '@mui/material/TextField';
-import FormHelperText from '@mui/material/FormHelperText';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
 import { bigModalStyle } from '../../utils/modalStyle';
-import validateAndSetKey from '../../utils/validateAndSetKey';
 import { ConditionBuilder } from './ConditionBuilder';
 import Grid from '@mui/material/Grid';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import { SingleCondition } from './SingleCondition';
+import apiClient from '../../lib/apiClient';
+import { duplicateErrorMessage, generalErrorMessage } from '../../lib/messages';
+import { KeyInput } from '../Shared/KeyInput';
+import { DisplayNameInput } from '../Shared/DisplayNameInput';
 
-export const CreateAudienceModal = ({ isOpen, setFormOpen }) => {
+export const CreateAudienceModal = ({ isOpen, setFormOpen, refreshAudiences, successStateSetter }) => {
   const [displayName, setDisplayName] = useState('');
   const [audienceKey, setAudienceKey] = useState('');
   const [combination, setCombination] = useState('ANY');
   const [conditionFieldActive, setConditionFieldActive] = useState(false);
   const [conditions, setConditions] = useState([]);
-  const [keyError, setKeyError] = useState(false);
   const [readyToSubmit, setReadyToSubmit] = useState(false);
 
   useEffect(() => {
@@ -34,10 +35,6 @@ export const CreateAudienceModal = ({ isOpen, setFormOpen }) => {
       setReadyToSubmit(true);
     }
   }, [displayName, audienceKey, conditionFieldActive, setReadyToSubmit])
-  
-  const onKeyInput = (e) => {
-    validateAndSetKey(e.target.value, setAudienceKey, setKeyError);
-  }
 
   const closeConditionForm = () => {
     setConditionFieldActive(false);
@@ -53,16 +50,31 @@ export const CreateAudienceModal = ({ isOpen, setFormOpen }) => {
     setConditions(conditions.concat(condition));
   }
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
+    const condsWithoutAttKey = conditions.map(c => {
+      const { attribute, ...otherFields } = c;
+      return otherFields;
+    })
+
     const submission = {
       displayName,
       key: audienceKey,
       combination,
-      conditions
+      conditions: condsWithoutAttKey
     }
-    console.log(submission);
-    e.preventDefault();
-    // TODO: submit to manager backend
+
+    try {
+      await apiClient.createAudience(submission);
+      setFormOpen(false);
+      refreshAudiences();
+      successStateSetter(true);
+    } catch (e) {
+      if (e.response.status === 422) {
+        alert(duplicateErrorMessage);
+      } else {
+        alert(generalErrorMessage);
+      }
+    }
   };
 
   return (
@@ -79,46 +91,31 @@ export const CreateAudienceModal = ({ isOpen, setFormOpen }) => {
       <Fade in={isOpen}>
         <Box sx={bigModalStyle}>
           <Typography variant="h5">Create a new audience</Typography>
-          <Stack container spacing={2} direction="row">
+          <Stack container="true" spacing={2} direction="row">
             <Stack style={{ width: "50%"}}>
-              <TextField required 
-                label="Audience Name" 
-                variant="outlined" 
-                value={displayName}
-                onChange={(e) => setDisplayName(e.target.value)} 
-              />
+              <DisplayNameInput currentVal={displayName} currentValSetter={setDisplayName} />
             </Stack>
-            <Stack style={{ width: "50%" }}>
-              <TextField required 
-                error={keyError}
-                label="Audience Key" 
-                variant="outlined"
-                value={audienceKey}
-                onChange={onKeyInput}
-                onBlur={() => setKeyError(false)}
-              />
-            <FormHelperText>Alphanumeric and underscores only. This cannot be changed after creation</FormHelperText>
-            </Stack>
+            <KeyInput currentVal={audienceKey} currentValSetter={setAudienceKey} />
           </Stack>
           <Stack spacing={2}>
             <Typography variant="h6">Conditions</Typography>
-            <Typography variant="body1">
-              User must meet
-              <Select
-              variant="standard"
-              value={combination}
-              style={{ marginLeft: 6, marginRight: 6}}
-              onChange={(e) => setCombination(e.target.value)}
-              >
-                <MenuItem value="ANY">ANY</MenuItem>
-                <MenuItem value="ALL">ALL</MenuItem>
-              </Select>
-              of the conditions to qualify for this audience
-            </Typography>
+            <Stack direction="row">
+              <Typography variant="body1">User must meet</Typography>
+                <Select
+                variant="standard"
+                value={combination}
+                style={{ marginLeft: 6, marginRight: 6}}
+                onChange={(e) => setCombination(e.target.value)}
+                >
+                  <MenuItem value="ANY">ANY</MenuItem>
+                  <MenuItem value="ALL">ALL</MenuItem>
+                </Select>
+              <Typography variant="body1">of the conditions to qualify for this audience</Typography>
+            </Stack>
             <Grid container spacing={2}>
               {conditions.map((c, idx) => {
                 return (
-                  <SingleCondition idx={idx} condition={c} handleRemove={removeCondition} />
+                  <SingleCondition key={idx} idx={idx} condition={c} handleRemove={removeCondition} />
                 )
               })}
             </Grid>

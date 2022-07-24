@@ -1,5 +1,5 @@
 import './App.css';
-import {useMemo} from 'react'
+import {useMemo, useState} from 'react'
 import { Navigation } from './components/Navigation';
 import { FlagsList } from './components/Flags/FlagsList';
 import { AudiencesList } from './components/Audiences/AudiencesList';
@@ -14,25 +14,28 @@ import Paper from '@mui/material/Paper';
 import Toolbar from '@mui/material/Toolbar';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
-import {red } from '@mui/material/colors'
+import { green } from '@mui/material/colors'
 import useMediaQuery from '@mui/material/useMediaQuery';
 import Breadcrumbs from './components/Breadcrumbs';
+import { AuditHistory } from './components/AuditHistory/AuditHistory';
+import { EntityNotFoundPage } from './components/EntityNotFoundPage';
 
 function App() {
   const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
+  const [darkMode, setDarkMode] = useState(prefersDarkMode);
 
-    const theme = useMemo(
-      () =>
-        createTheme({
-          palette: {
-            mode: prefersDarkMode ? 'dark' : 'light',
-            primary: {
-              main: red[500]
-            },
+  const theme = useMemo(
+    () =>
+      createTheme({
+        palette: {
+          mode: darkMode ? 'dark' : 'light',
+          primary: {
+            main: green[500]
           },
-        }),
-      [prefersDarkMode],
-    );
+        },
+      }),
+    [darkMode],
+  );
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline enableColorScheme/>
@@ -40,7 +43,7 @@ function App() {
       <main>
         <Toolbar />
         <Box sx={{ display: 'flex' }}>
-          <Navigation />
+          <Navigation darkModeToggle={() => setDarkMode(!darkMode)} />
           <Box sx={{ marginLeft: 8, maxWidth: 1000 }}>
         {/* <Breadcrumbs /> */}
             <Route path="/" exact component={FlagsList} />
@@ -51,6 +54,8 @@ function App() {
             <Route path="/audiences" exact component={AudiencesList} />
             <Route path="/attributes" exact component={AttributesList} />
             <Route path="/settings" component={Settings} />
+            <Route path="/history" component={AuditHistory} />
+            <Route path="/error" component={EntityNotFoundPage} />
           </Box>
         </Box>
       </main>

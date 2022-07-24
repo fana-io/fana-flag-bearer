@@ -1,37 +1,49 @@
 import { AudienceTable } from './AudienceTable';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback} from 'react';
 import apiClient from '../../lib/apiClient';
 import { CreateAudienceModal } from './CreateAudienceModal';
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
-import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
+import { initializationErrorMessage } from '../../lib/messages';
+import { SuccessAlert } from '../SuccessAlert';
+import { SearchBox } from '../Shared/SearchBox';
 
 export const AudiencesList = () => {
   const [ready, setReady] = useState(false);
   const [audiences, setAudiences] = useState([]);
   const [displayedAudiences, setDisplayedAudiences] = useState([]);
-  const [searchText, setSearchText] = useState('');
   const [formOpen, setFormOpen] = useState(false);
+  const [audienceCreated, setAudienceCreated] = useState(false);
+
+  const fetchAudiences = async () => {
+    const a = await apiClient.getAudiences();
+    setAudiences(a);
+    return a;
+  }
+
+  console.log('audiences in audlist', audiences)
 
   useEffect(() => {
-    const fetchAudiences = async () => {
-      const a = await apiClient.getAudiences();
-      // also get all attributes for the create form
-      setAudiences(a);
-      setDisplayedAudiences(a);
-      setReady(true)
+    const initialize = async () => {
+      try {
+        const a = await fetchAudiences();
+        setDisplayedAudiences(a);
+        setReady(true)
+      } catch (e) {
+        alert(initializationErrorMessage)
+      }
     }
-    fetchAudiences();
+
+    initialize();
   }, [])
 
-  useEffect(() => {
-    const lcSearchText = searchText.toLowerCase();
-    const filteredAudiences = audiences.filter(a => {
-      return (a.displayName.toLowerCase().includes(lcSearchText) || a.key.toLowerCase().includes(lcSearchText))
-    })
-    setDisplayedAudiences(filteredAudiences);
-  }, [searchText, audiences])
+  const searchFilterCriteria = useCallback((searchText) => {
+    return (audience) => {
+      return (audience.displayName.toLowerCase().includes(searchText) ||
+              audience.key.toLowerCase().includes(searchText))
+    }
+  }, []);
 
   if (!ready) {
     return <>Loading...</>
@@ -42,19 +54,14 @@ export const AudiencesList = () => {
       <Grid item xs={12}>
         <Typography variant="h3">Audiences</Typography>
       </Grid>
+      {audienceCreated && (<SuccessAlert text="Audience has been created." successStateSetter={setAudienceCreated} />)}
       <Grid item xs={8}>
-        <TextField
-          id="outlined-basic"
-          label="Search audiences"
-          variant="outlined"
-          value={searchText}
-          onChange={(e) => setSearchText(e.target.value)}
-        />
+        <SearchBox entities={audiences} displayedSetter={setDisplayedAudiences} filterCriteria={searchFilterCriteria} />
       </Grid>
       <Grid item container xs={3} direction="column" alignItems="flex-end" justify="flex-end">
         <Button variant="outlined" onClick={() => setFormOpen(true)}>Create audience</Button>
       </Grid>
-      {formOpen && (<CreateAudienceModal isOpen={formOpen} setFormOpen={setFormOpen} />)}
+      {formOpen && (<CreateAudienceModal isOpen={formOpen} setFormOpen={setFormOpen} refreshAudiences={fetchAudiences} successStateSetter={setAudienceCreated} />)}
       <AudienceTable audiences={displayedAudiences} />
     </Grid>
   )

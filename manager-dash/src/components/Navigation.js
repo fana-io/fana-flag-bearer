@@ -8,15 +8,23 @@ import FlagIcon from "@mui/icons-material/Flag";
 import GroupsIcon from "@mui/icons-material/Groups";
 import AttributionIcon from "@mui/icons-material/Attribution";
 import SettingsIcon from "@mui/icons-material/Settings";
+import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import { Link } from "react-router-dom"
 import Toolbar from "@mui/material/Toolbar";
+import MUILink from '@mui/material/Link';
+import Switch from "@mui/material/Switch";
+import InputLabel from "@mui/material/InputLabel";
+import Stack from '@mui/material/Stack';
+import logo from '../images/logo.png';
 
-export const Navigation = () => {
+export const Navigation = ({ darkModeToggle }) => {
+  console.log(logo);
   const drawerWidth = 200;
   const pages = [
     { name: 'Flags', url: '/flags', icon: <FlagIcon />}, 
     { name: 'Audiences', url: '/audiences', icon: <GroupsIcon />}, 
-    { name: 'Attributes', url: '/attributes', icon: <AttributionIcon />}, 
+    { name: 'Attributes', url: '/attributes', icon: <AttributionIcon />},
+    { name: 'History', url: '/history', icon: <AccessTimeIcon />},
     { name: 'Settings', url: '/settings', icon: <SettingsIcon />}
   ];
 
@@ -33,11 +41,12 @@ export const Navigation = () => {
         variant="permanent"
         anchor="left"
       >
+        <img src={logo} alt="logo" style={{ width: '75%', marginLeft: 'auto', marginRight: 'auto' }}/>
         <Toolbar/>
         <List>
           {pages.map(page => {
             return (
-              <Link key={page.name} to={page.url}>
+              <MUILink component={Link} key={page.name} to={page.url} underline="none">
                 <ListItem disablePadding>
                   <ListItemButton>
                     <ListItemIcon>
@@ -46,10 +55,14 @@ export const Navigation = () => {
                     <ListItemText primary={page.name} />
                   </ListItemButton>
                 </ListItem>
-              </Link>
+              </MUILink>
             )
           })}
-        </List>
-      </Drawer>
+        <Stack direction="column" alignItems="center">
+          <InputLabel>Dark Mode</InputLabel>
+          <Switch onChange={darkModeToggle} />
+        </Stack>
+      </List>
+    </Drawer>
   )
 }

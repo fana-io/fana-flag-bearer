@@ -17,12 +17,14 @@ import Chip from '@mui/material/Chip';
 import apiClient from '../../lib/apiClient';
 import validateAndSetKey from '../../utils/validateAndSetKey';
 import { smallModalStyle } from '../../utils/modalStyle';
+import { duplicateErrorMessage, generalErrorMessage } from '../../lib/messages';
+import { KeyInput } from '../Shared/KeyInput';
+import { DisplayNameInput } from '../Shared/DisplayNameInput';
 
-export const CreateFlagModal = ({isOpen, setFormOpen, refreshFlags}) => {
+export const CreateFlagModal = ({isOpen, setFormOpen, refreshFlags, successStateSetter}) => {
   const [audiences, setAudiences] = useState([]);
   const [displayName, setDisplayName] = useState('');
   const [flagKey, setFlagKey] = useState('');
-  const [keyError, setKeyError] = useState(false);
   const [selectedAudiences, setSelectedAudiences] = useState([]);
 
   useEffect(() => {
@@ -32,10 +34,6 @@ export const CreateFlagModal = ({isOpen, setFormOpen, refreshFlags}) => {
     }
     fetchAudiences();
   }, [])
-
-  const onKeyInput = (e) => {
-    validateAndSetKey(e.target.value, setFlagKey, setKeyError);
-  }
 
   const handleSubmit = async (e) => {
     const submission = {
@@ -47,8 +45,13 @@ export const CreateFlagModal = ({isOpen, setFormOpen, refreshFlags}) => {
       await apiClient.createFlag(submission);
       setFormOpen(false);
       refreshFlags();
+      successStateSetter(true);
     } catch (e) {
-      alert('Something has gone wrong, please try again later')
+      if (e.response.status === 422) {
+        alert(duplicateErrorMessage);
+      } else {
+        alert(generalErrorMessage);
+      }
     }
   };
 
@@ -67,30 +70,9 @@ export const CreateFlagModal = ({isOpen, setFormOpen, refreshFlags}) => {
     <Fade in={isOpen}>
       <Box sx={smallModalStyle}>
         <Stack container spacing={2}>
-          <Stack>
-            <Typography variant="h5">Create a new flag</Typography>
-          </Stack>
-          <Stack>
-            <TextField required 
-              id="outlined-basic" 
-              label="Flag Name" 
-              variant="outlined" 
-              value={displayName}
-              onChange={(e) => setDisplayName(e.target.value)} 
-            />
-          </Stack>
-          <Stack>
-            <TextField required 
-              error={keyError}
-              id="outlined-basic" 
-              label="Flag Key" 
-              variant="outlined"
-              value={flagKey}
-              onChange={onKeyInput}
-              onBlur={() => setKeyError(false)}
-            />
-          <FormHelperText>Alphanumeric and underscores only. This cannot be changed after creation</FormHelperText>
-          </Stack>
+          <Typography variant="h5">Create a new flag</Typography>
+          <DisplayNameInput currentVal={displayName} currentValSetter={setDisplayName} />
+          <KeyInput currentVal={flagKey} currentValSetter={setFlagKey} />
           <Typography variant="h6">Targeted Audiences</Typography>
           <FormControl sx={{ minWidth: 300 }}>
             <InputLabel id="audience-dropdown-label">Select Audiences</InputLabel>

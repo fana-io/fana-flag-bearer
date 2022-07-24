@@ -1,70 +1,71 @@
-import { useParams } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router-dom';
 import { useEffect, useState, useCallback } from 'react';
 import apiClient from '../../lib/apiClient';
 import { attrTypeMapper } from '../../lib/formConstants';
-import { AttributeAudience } from './AttributeAudience';
 import DeleteIcon from '@mui/icons-material/Delete';
-
 import {
-  Box,
-  Button,
-  Stack,
-  List,
-  Divider,
-  Typography,
-  Grid,
-} from '@mui/material';
-
-const testAttribute = {
-  attribute: 'beta',
-  type: 'BOOL',
-  createdAt: new Date(),
-  audiences: [
-    {
-      displayName: 'Beta Testers',
-      key: 'beta-testers',
-      id: 1,
-    },
-    {
-      displayName: 'Millenial Men',
-      key: 'millenial-men',
-      id: 2,
-    },
-  ],
-};
+  deletedEntityMessageCreator,
+  generalErrorMessage,
+} from '../../lib/messages';
+import { Button, Stack, List, Typography, Grid } from '@mui/material';
+import { initializationErrorMessage } from '../../lib/messages';
+import { EntityNotFoundPage } from '../EntityNotFoundPage';
+import { RelatedEntityList } from '../Shared/RelatedEntityList';
 
 export const Attribute = () => {
   const attrId = useParams().id;
   const [ready, setReady] = useState(false);
-  const [attribute, setAttribute] = useState(testAttribute);
+  const [attribute, setAttribute] = useState();
+  const [loadError, setLoadError] = useState(false);
 
-  console.log('attribute:', attribute);
+  const history = useHistory();
 
-  useEffect(() => setReady(true), [ready]);
+  const fetchAttribute = useCallback(async () => {
+    const attr = await apiClient.getAttribute(attrId);
+    setAttribute(attr);
+    return attr;
+  }, [attrId]);
 
-  // const fetchAttribute = useCallback(async () => {
-  //   const attr = await apiClient.getAttribute(attrId);
-  //   setAttribute(attr);
-  //   return attr;
-  // }, [attrId])
-
-  // useEffect(() => {
-  //   const initialize = async () => {
-  //     await fetchAttribute();
-  //     setReady(true);
-  //   }
-  //   try {
-  //     initialize();
-  //   } catch (err) { console.error(err);}
-  // }, [fetchAttribute])
+  useEffect(() => {
+    const initialize = async () => {
+      try {
+        await fetchAttribute(attrId);
+        setReady(true);
+      } catch (e) {
+        if (e.response.status === 404) {
+          setLoadError(true);
+        } else {
+          alert(initializationErrorMessage);
+        }
+      }
+    };
+    initialize();
+  }, [fetchAttribute, attrId]);
 
   const handleDelete = async () => {
-    try {
-      const response = await apiClient.deleteAttribute(attrId);
-    } catch (err) {
-      console.error();
+    const audienceCount = attribute.audiences.length;
+    if (audienceCount > 0) {
+      alert(
+        `This attribute is being used in ${audienceCount} audience${
+          audienceCount > 1 ? 's' : ''
+        }. Please remove before deleting.`
+      );
+    } else {
+      if (window.confirm('Are you sure you want to delete this attribute?')) {
+        try {
+          await apiClient.deleteAudience(attribute.id);
+          history.push('/attributes');
+          alert(deletedEntityMessageCreator('attribute', attribute.key));
+        } catch (e) {
+          alert(generalErrorMessage);
+        }
+      }
     }
   };
+
+  if (loadError) {
+    return <EntityNotFoundPage />;
+  }
 
   if (!ready) {
     return <>Loading...</>;
@@ -73,7 +74,6 @@ export const Attribute = () => {
   return (
     <Stack spacing={4}>
       <Grid container>
-        {/* <Stack container="true" spacing={3}> */}
         <Grid item xs={12}>
           <Typography variant="h3">Attribute Details</Typography>
         </Grid>
@@ -105,9 +105,13 @@ export const Attribute = () => {
         </Typography>
       </Stack>
       <List style={{ width: 350 }}>
-        {attribute.audiences.map((aud) => {
-          return <AttributeAudience key={aud.id} audience={aud} />;
-        })}
+        {attribute.audiences.map((aud) => (
+          <RelatedEntityList
+            key={aud.id}
+            entity={aud}
+            entityName={'audiences'}
+          />
+        ))}
       </List>
     </Stack>
   );
