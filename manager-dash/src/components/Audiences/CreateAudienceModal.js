@@ -1,22 +1,21 @@
+import apiClient from '../../lib/apiClient';
+import { duplicateErrorMessage, generalErrorMessage } from '../../lib/messages';
+import { bigModalStyle } from '../../utils/modalStyle';
 import { useState, useEffect } from 'react';
+import { SingleCondition } from './SingleCondition';
+import { KeyInput } from '../Shared/KeyInput';
+import { DisplayNameInput } from '../Shared/DisplayNameInput';
+import { ConditionBuilder } from './ConditionBuilder';
 import Modal from '@mui/material/Modal';
 import Fade from '@mui/material/Fade';
 import Backdrop from '@mui/material/Backdrop';
 import Box from '@mui/material/Box'
-import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
-import { bigModalStyle } from '../../utils/modalStyle';
-import { ConditionBuilder } from './ConditionBuilder';
 import Grid from '@mui/material/Grid';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
-import { SingleCondition } from './SingleCondition';
-import apiClient from '../../lib/apiClient';
-import { duplicateErrorMessage, generalErrorMessage } from '../../lib/messages';
-import { KeyInput } from '../Shared/KeyInput';
-import { DisplayNameInput } from '../Shared/DisplayNameInput';
 
 export const CreateAudienceModal = ({ isOpen, setFormOpen, refreshAudiences, successStateSetter }) => {
   const [displayName, setDisplayName] = useState('');

@@ -1,13 +1,13 @@
+import apiClient from '../../lib/apiClient';
+import { initializationErrorMessage } from '../../lib/messages';
 import { useEffect, useState, useCallback } from 'react';
 import { CreateAttributeModal } from "./CreateAttributeModal"
 import { AttributeTable } from './AttributeTable';
-import apiClient from '../../lib/apiClient';
+import { SuccessAlert } from "../SuccessAlert";
+import { SearchBox } from '../Shared/SearchBox';
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
-import { initializationErrorMessage } from '../../lib/messages';
-import { SuccessAlert } from "../SuccessAlert";
-import { SearchBox } from '../Shared/SearchBox';
 
 export const AttributesList = () => {
   const [ready, setReady] = useState(false);

@@ -10,7 +10,9 @@ class ClientsManager {
       Connection: 'keep-alive',
       'Cache-Control': 'no-cache',
     };
-    this.sdkKeys = sdkKeys; // list of valid sdk keys from Clients Manager
+    this.sdkKeys = sdkKeys; // TODO: is this a list or object? list of valid sdk keys from Clients Manager
+
+    console.log('cm keys', this.sdkKeys)
     this.subscriptionTypes = SUBSCRIPTION_TYPES
     this.retryTimeout = SEC_TO_RETRY
   }
@@ -32,7 +34,7 @@ class ClientsManager {
   validateParams(sdkType, sdkKey) {
     const validType = this.subscriptionTypes.includes(sdkType);
     const validKey = this.sdkKeys.includes(sdkKey);
-    console.log('validators', validType, validKey);
+    console.log('CM validator:', validType, validKey);
 
     if (validType && validKey) return { valid: true };
 

@@ -1,9 +1,9 @@
-import { Typography } from '@mui/material';
-import Stack from '@mui/material/Stack';
-import Button from '@mui/material/Button';
-import { useEffect, useState } from 'react';
 import apiClient from '../lib/apiClient';
 import { initializationErrorMessage } from '../lib/messages';
+import { useEffect, useState } from 'react';
+import Typography from '@mui/material/Typography';
+import Stack from '@mui/material/Stack';
+import Button from '@mui/material/Button';
 
 export const Settings = () => {
   const [sdkKey, setSdkKey] = useState('');

@@ -43,7 +43,7 @@ let operandMapper = {
 const convertAttributeType = (attributeValue, op) => {
   switch (op) {
     // EQ will always compare 1:1
-    case "EQ":
+    case 'EQ':
       attributeValue = attributeValue[0];
       // string, do nothing
       // boolean, number convert
@@ -54,29 +54,36 @@ const convertAttributeType = (attributeValue, op) => {
       }
       break;
     // following cases will always be just a single number
-    case "GT":
-    case "LT":
-    case "LT_EQ":
-    case "GT_EQ":
+    case 'GT':
+    case 'LT':
+    case 'LT_EQ':
+    case 'GT_EQ':
       attributeValue = attributeValue[0];
       return Number(attributeValue);
     // following cases won't be multiple values
-    case "STR_CONTAINS":
-    case "STR_ENDS_WITH":
-    case "STR_STARTS_WITH":
+    case 'STR_CONTAINS':
+    case 'STR_ENDS_WITH':
+    case 'STR_STARTS_WITH':
       attributeValue = attributeValue[0];
-      break;      
+      break;
   }
   return attributeValue;
-}
+};
 
 // for one attribute
 const evaluateCondition = (userContext, condition) => {
+  console.log('evaluation', userContext, condition);
   const op = condition.operator;
   const attribute = condition.attribute;
   // cast targetValue type based on operator and candidateValue type
   const targetValue = convertAttributeType(condition.vals, op);
   const candidateValue = userContext[attribute];
+  console.log('user context', userContext);
+  console.log('attribute', attribute);
+  console.log('target type:', typeof targetValue);
+  console.log('attribute type:', typeof attribute);
+  console.log('target value', targetValue);
+  console.log('candiateValue', candidateValue);
   let result;
   // if attribute not provided in userContext, always false regardless of negate
   if (!userContext.hasOwnProperty(attribute)) return false;

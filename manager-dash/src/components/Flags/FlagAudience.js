@@ -1,8 +1,8 @@
+import { Link } from "react-router-dom"
 import ListItemText from "@mui/material/ListItemText";
 import ListItem from "@mui/material/ListItem";
 import IconButton from "@mui/material/IconButton";
 import DeleteIcon from "@mui/icons-material/Delete"
-import { Link } from "react-router-dom"
 
 export const FlagAudience = ({ audience, removeAudience }) => {
   const link = "/audiences/" + audience.id;

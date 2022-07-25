@@ -1,7 +1,9 @@
+import apiClient from "../../lib/apiClient";
+import { operatorOptionsByType } from "../../lib/formConstants";
+import { useState, useEffect } from "react";
 import OutlinedInput from "@mui/material/OutlinedInput";
 import Select from "@mui/material/Select";
 import FormControl from "@mui/material/FormControl";
-import { useState, useEffect } from "react";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import Checkbox from "@mui/material/Checkbox";
@@ -11,8 +13,6 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import FormHelperText from "@mui/material/FormHelperText";
 import Button from "@mui/material/Button"
 import Typography from "@mui/material/Typography";
-import apiClient from "../../lib/apiClient";
-import { operatorOptionsByType } from "../../lib/formConstants";
 
 export const ConditionBuilder = ({ handleSaveCondition, closable = false, closeConditionForm }) => {
   const [attributeOptions, setAttributeOptions] = useState([]);

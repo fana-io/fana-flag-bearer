@@ -1,10 +1,10 @@
+import { AttributeRow } from "./AttributeRow"
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
-import TableContainer from "@mui/material/TableContainer";
 import Table from "@mui/material/Table"
-import { AttributeRow } from "./AttributeRow"
+import TableContainer from "@mui/material/TableContainer";
 
 export const AttributeTable = ({ attributes }) => {
   return (

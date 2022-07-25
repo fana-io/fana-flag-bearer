@@ -3,6 +3,7 @@ import moment from "moment";
 import TableRow from "@mui/material/TableRow"
 import TableCell from "@mui/material/TableCell";
 import MUILink from '@mui/material/Link';
+
 export const AudienceRow = ({ audience }) => {
   const link = "/audiences/" + audience.id;
   return (

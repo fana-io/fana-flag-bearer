@@ -4,18 +4,7 @@ const app = express();
 const cors = require("cors");
 const morgan = require("morgan");
 const routes = require("./routes/api");
-const ClientsManager = require('./lib/ClientsManager')
-const Subscriber = require('./lib/Subscriber')
-const redis = require('redis');
-
 const PORT = process.env.PORT || 3001;
-const REDIS_PORT = process.env.REDIS_PORT || 6379;
-const REDIS_HOST = process.env.REDIS_HOST || 'localhost';
-
-// client manager manages SDK SSE connections 
-const manager = new ClientsManager(SDK_KEYS=['beta_sdk_0']) // TODO: needs to be fed sdk keys from manager
-// subscriber is subscribed to Redis message broker and forwards real-time messages
-const subscriber = new Subscriber(REDIS_PORT, REDIS_HOST, manager);
 
 app.use(cors());
 app.use(morgan("tiny"));

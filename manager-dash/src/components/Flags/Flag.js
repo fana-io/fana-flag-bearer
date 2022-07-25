@@ -1,16 +1,9 @@
+import apiClient from '../../lib/apiClient';
 import { useEffect, useState, useCallback } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
-import apiClient from '../../lib/apiClient';
 import { FlagAudience } from './FlagAudience';
 import { FlagStatusToggle } from './FlagStatusToggle';
-import Stack from '@mui/material/Stack';
-import Typography from '@mui/material/Typography';
-import InputLabel from '@mui/material/InputLabel';
-import Box from '@mui/material/Box';
-import List from '@mui/material/List';
 import { AddAudienceToFlag } from './AddAudienceToFlag';
-import Divider from '@mui/material/Divider';
-import Button from '@mui/material/Button';
 import _ from 'lodash';
 import {
   deletedEntityMessageCreator,
@@ -19,9 +12,16 @@ import {
 } from '../../lib/messages';
 import { SuccessAlert } from '../SuccessAlert';
 import { WarningAlert } from '../WarningAlert';
-import DeleteIcon from '@mui/icons-material/Delete';
 import { EntityNotFoundPage } from '../EntityNotFoundPage';
 import { DisplayName } from '../Shared/DisplayName';
+import DeleteIcon from '@mui/icons-material/Delete';
+import Divider from '@mui/material/Divider';
+import Button from '@mui/material/Button';
+import Typography from '@mui/material/Typography';
+import InputLabel from '@mui/material/InputLabel';
+import Box from '@mui/material/Box';
+import List from '@mui/material/List';
+import Stack from '@mui/material/Stack';
 
 export const Flag = () => {
   const flagId = useParams().id;
@@ -69,6 +69,7 @@ export const Flag = () => {
       await apiClient.editFlag(flag.id, patchedFlag);
       let f = await fetchFlag();
       setTemporaryAudiences(f.audiences);
+      fetchAudiences();
       closeAllAlerts();
       setAudiencesUpdated(true);
     } catch (e) {
@@ -183,16 +184,8 @@ export const Flag = () => {
         <Stack>
           <Typography variant="caption">Title</Typography>
           <Stack direction="row" justifyContent="space-between">
-            <DisplayName
-              entity={flag}
-              submitDisplayNameEdit={submitDisplayNameEdit}
-            />
-            <Button
-              variant="outlined"
-              onClick={handleDelete}
-              startIcon={<DeleteIcon />}
-              color="error"
-            >
+            <DisplayName entity={flag} submitDisplayNameEdit={submitDisplayNameEdit} />
+            <Button variant="outlined" onClick={handleDelete} startIcon={<DeleteIcon />} color="error">
               Delete flag
             </Button>
           </Stack>
@@ -210,8 +203,9 @@ export const Flag = () => {
             refreshFlags={fetchFlag}
           />
         </Stack>
+        <Divider variant="middle" />
         <Typography variant="h4">Targeted Audiences</Typography>
-        <Typography variant="body1">
+        <Typography variant="subtitle2">
           This flag will serve to ANY targeted audience
         </Typography>
         <Stack
