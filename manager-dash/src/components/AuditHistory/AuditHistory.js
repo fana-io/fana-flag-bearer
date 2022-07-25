@@ -1,3 +1,8 @@
+import apiClient from "../../lib/apiClient";
+import { initializationErrorMessage } from "../../lib/messages";
+import { useEffect, useState, useCallback } from "react"
+import { LogRow } from "./LogRow";
+import { SearchBox } from "../Shared/SearchBox";
 import { Typography, Box } from "@mui/material";
 import Table from "@mui/material/Table";
 import TableCell from "@mui/material/TableCell";
@@ -5,16 +10,11 @@ import TableContainer from "@mui/material/TableContainer";
 import TableRow from "@mui/material/TableRow";
 import TableBody from "@mui/material/TableBody";
 import TableHead from "@mui/material/TableHead";
-import { useEffect, useState, useCallback } from "react"
-import apiClient from "../../lib/apiClient";
-import { LogRow } from "./LogRow";
 import IconButton from "@mui/material/IconButton";
 import SortIcon from "@mui/icons-material/Sort";
-import { initializationErrorMessage } from "../../lib/messages";
 import Grid from "@mui/material/Grid";
 import TableFooter from "@mui/material/TableFooter";
 import TablePagination from "@mui/material/TablePagination";
-import { SearchBox } from "../Shared/SearchBox";
 
 export const AuditHistory = () => {
   const [logs, setLogs] = useState([]);

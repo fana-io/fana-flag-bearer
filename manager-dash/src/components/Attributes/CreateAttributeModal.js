@@ -1,11 +1,14 @@
+import apiClient from "../../lib/apiClient";
+import { duplicateErrorMessage, generalErrorMessage } from "../../lib/messages";
 import { useState } from "react"
+import { smallModalStyle } from "../../utils/modalStyle";
+import { KeyInput } from "../Shared/KeyInput";
 import Modal from '@mui/material/Modal';
 import Fade from '@mui/material/Fade';
 import Backdrop from '@mui/material/Backdrop';
 import Box from '@mui/material/Box'
 import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
-import TextField from '@mui/material/TextField';
 import OutlinedInput from '@mui/material/OutlinedInput';
 import InputLabel from '@mui/material/InputLabel';
 import FormControl from '@mui/material/FormControl';
@@ -13,10 +16,6 @@ import FormHelperText from '@mui/material/FormHelperText';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
-import { smallModalStyle } from "../../utils/modalStyle";
-import apiClient from "../../lib/apiClient";
-import { duplicateErrorMessage, generalErrorMessage } from "../../lib/messages";
-import { KeyInput } from "../Shared/KeyInput";
 
 export const CreateAttributeModal = ({ isOpen, setFormOpen, refreshAtts, successStateSetter }) => {
   const [selectedType, setSelectedType] = useState('');

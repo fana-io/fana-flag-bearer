@@ -1,16 +1,20 @@
-import { useCallback, useEffect, useState } from "react";
-import { useHistory, useParams } from "react-router-dom"
 import apiClient from "../../lib/apiClient";
 import { deletedEntityMessageCreator, generalErrorMessage, initializationErrorMessage } from "../../lib/messages";
+import { useCallback, useEffect, useState } from "react";
+import { useHistory, useParams } from "react-router-dom"
 import { SuccessAlert } from "../SuccessAlert";
 import { WarningAlert } from "../WarningAlert";
-import DeleteIcon from '@mui/icons-material/Delete';
 import { EntityNotFoundPage } from "../EntityNotFoundPage";
 import { DisplayName } from "../Shared/DisplayName";
 import { SingleViewConditions } from "./SingleViewConditions";
 import { RelatedEntityList } from "../Shared/RelatedEntityList";
-import { List, Box, Button, Typography, Stack } from "@mui/material";
-
+import DeleteIcon from '@mui/icons-material/Delete';
+import List from "@mui/material/List";
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import Typography from "@mui/material/Typography";
+import Stack from "@mui/material/Stack";
+import Divider from "@mui/material/Divider";
 export const Audience = () => {
   const audienceId = useParams().id;
   const history = useHistory();
@@ -123,18 +127,20 @@ export const Audience = () => {
           <Typography variant="caption">Key</Typography>
           <Typography variant="subtitle1">{audience.key}</Typography>
         </Stack>
+        <Divider variant="middle" />
         <SingleViewConditions conditions={audience.conditions} combination={audience.combine} pendingChanges={pendingChanges} setPendingChanges={setPendingChanges} submitConditionEdit={submitConditionEdit} />
+        <Divider variant="middle" />
         <Stack>
           <Typography variant="h4">Related Flags</Typography>
           <Typography variant="subtitle2">
           List of flags that reference this audience{' '}
         </Typography>
-      </Stack>
-      <List style={{ width: 350 }}>
-        {audience.flags.map(flag => 
-          (<RelatedEntityList key={flag.id} entity={flag} entityName={'flags'} />)
-        )}
-      </List>
+        <List style={{ width: 350 }}>
+          {audience.flags.map(flag => 
+            (<RelatedEntityList key={flag.id} entity={flag} entityName={'flags'} />)
+            )}
+        </List>
+        </Stack>
       </Stack>
     </Box>
   )

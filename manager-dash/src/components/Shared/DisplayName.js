@@ -1,8 +1,8 @@
+import { useState } from "react";
 import Stack from "@mui/material/Stack";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
-import { useState } from "react";
 
 export const DisplayName = ({ entity, submitDisplayNameEdit }) => {
   const [temporaryDisplayName, setTemporaryDisplayName] = useState(entity.displayName)

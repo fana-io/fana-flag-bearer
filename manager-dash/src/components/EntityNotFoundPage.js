@@ -1,7 +1,7 @@
-import Typography from "@mui/material/Typography";
 import { useHistory } from "react-router-dom";
+import Typography from "@mui/material/Typography";
 import Stack from "@mui/material/Stack";
-import { Button } from "@mui/material";
+import Button from "@mui/material/Button";
 
 export const EntityNotFoundPage = () => {
   const history = useHistory();

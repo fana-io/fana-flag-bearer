@@ -1,5 +1,8 @@
-import { useCallback, useEffect, useState } from 'react';
 import apiClient from '../../lib/apiClient';
+import { initializationErrorMessage } from '../../lib/messages';
+import { SuccessAlert } from '../SuccessAlert';
+import { SearchBox } from '../Shared/SearchBox';
+import { useCallback, useEffect, useState } from 'react';
 import { CreateFlagModal } from './CreateFlagModal';
 import { FlagTable } from './FlagTable';
 import Button from '@mui/material/Button';
@@ -7,9 +10,6 @@ import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Grid';
 import Checkbox from '@mui/material/Checkbox';
 import FormControlLabel from '@mui/material/FormControlLabel';
-import { initializationErrorMessage } from '../../lib/messages';
-import { SuccessAlert } from '../SuccessAlert';
-import { SearchBox } from '../Shared/SearchBox';
 
 export const FlagsList = () => {
   const [ready, setReady] = useState(false);

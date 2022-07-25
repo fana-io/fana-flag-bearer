@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom"
+import logo from '../images/logo.png';
 import ListItemButton from "@mui/material/ListItemButton";
 import Drawer from "@mui/material/Drawer";
 import List from "@mui/material/List"
@@ -9,15 +11,13 @@ import GroupsIcon from "@mui/icons-material/Groups";
 import AttributionIcon from "@mui/icons-material/Attribution";
 import SettingsIcon from "@mui/icons-material/Settings";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
-import { Link } from "react-router-dom"
 import Toolbar from "@mui/material/Toolbar";
 import MUILink from '@mui/material/Link';
 import Switch from "@mui/material/Switch";
 import InputLabel from "@mui/material/InputLabel";
 import Stack from '@mui/material/Stack';
-import logo from '../images/logo.png';
 
-export const Navigation = ({ darkModeToggle }) => {
+export const Navigation = ({ darkModeOn, darkModeToggle }) => {
   console.log(logo);
   const drawerWidth = 200;
   const pages = [
@@ -60,7 +60,7 @@ export const Navigation = ({ darkModeToggle }) => {
           })}
         <Stack direction="column" alignItems="center">
           <InputLabel>Dark Mode</InputLabel>
-          <Switch onChange={darkModeToggle} />
+          <Switch checked={darkModeOn} onChange={darkModeToggle} />
         </Stack>
       </List>
     </Drawer>
