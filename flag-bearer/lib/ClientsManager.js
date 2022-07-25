@@ -1,5 +1,6 @@
 const MINIMUM_ID_LENGTH = 30;
-const SEC_TO_RETRY = 7000; // recommended ms to wait in-between failed SSE connection attempts
+// recommended ms to wait in-between failed SSE connection attempts
+const SEC_TO_RETRY = 7000; 
 const SUBSCRIPTION_TYPES = ['server', 'client'];
 
 class ClientsManager {
@@ -10,9 +11,7 @@ class ClientsManager {
       Connection: 'keep-alive',
       'Cache-Control': 'no-cache',
     };
-    this.sdkKeys = sdkKeys; // TODO: is this a list or object? list of valid sdk keys from Clients Manager
-
-    console.log('cm keys', this.sdkKeys)
+    this.sdkKeys = sdkKeys; // hashmap of sdkKeys
     this.subscriptionTypes = SUBSCRIPTION_TYPES
     this.retryTimeout = SEC_TO_RETRY
   }
@@ -33,7 +32,7 @@ class ClientsManager {
 
   validateParams(sdkType, sdkKey) {
     const validType = this.subscriptionTypes.includes(sdkType);
-    const validKey = this.sdkKeys.includes(sdkKey);
+    const validKey = this.sdkKeys[sdkKey];
     console.log('CM validator:', validType, validKey);
 
     if (validType && validKey) return { valid: true };

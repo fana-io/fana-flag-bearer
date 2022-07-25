@@ -1,4 +1,5 @@
 const { evaluateCondition } = require('./evaluateCondition')
+const {cache} = require('../services/services')
 
 // evaluate audience conditions based on user attributes
 function evaluateAudience(audienceContext, userContext) {
@@ -32,9 +33,9 @@ function evaluateFlags(userContext) {
   const audienceEvals = {};
   // const userAudienceEvals = evaluateAudiences(sdkInstance, userContext);
   // Evaluate each flag
-  for (const flag in flags) {
+  for (const flag in cache.flags) {
     let evaluation = false;
-    const { status, ...audiences} = flags[flag]
+    const { status, ...audiences} = cache.flags[flag]
     const audienceKeys = Object.keys(audiences)
     if (status && audienceKeys.length == 0)  {
       // flags without any audience targeting apply to everyone
@@ -48,7 +49,7 @@ function evaluateFlags(userContext) {
           break; // return early as soon as one audience satisfied
         } else if (!audienceEvals.hasOwnProperty(audience)) {
           // if audience eval is undefine, evaluate;
-          const audienceContext = flags[flag][audience];
+          const audienceContext = cache.flags[flag][audience];
           audienceEvals[audience] = evaluateAudience(audienceContext, userContext)
           // console.log('audience:', audience, 'eval:', evaluateAudience(audienceContext, userContext))
           if (audienceEvals[audience]) {

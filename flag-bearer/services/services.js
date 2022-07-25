@@ -10,13 +10,12 @@ const REDIS_HOST = process.env.REDIS_HOST || 'localhost';
 const cache = new RedisCache(REDIS_PORT, REDIS_HOST); 
 
 let clientManager;
-let subscriber;
 
 eventEmitter.on('cache-filled', () => {
   // client manager manages SDK SSE connections
   clientManager = new ClientsManager(cache.sdkKeys); 
   // subscriber is subscribed to Redis message broker and forwards real-time messages
-  subscriber = new Subscriber(REDIS_PORT, REDIS_HOST, clientManager);
+  const subscriber = new Subscriber(REDIS_PORT, REDIS_HOST, clientManager);
   
 })
 
