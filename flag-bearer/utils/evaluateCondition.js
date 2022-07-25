@@ -72,18 +72,11 @@ const convertAttributeType = (attributeValue, op) => {
 
 // for one attribute
 const evaluateCondition = (userContext, condition) => {
-  console.log('evaluation', userContext, condition);
   const op = condition.operator;
   const attribute = condition.attribute;
   // cast targetValue type based on operator and candidateValue type
   const targetValue = convertAttributeType(condition.vals, op);
   const candidateValue = userContext[attribute];
-  console.log('user context', userContext);
-  console.log('attribute', attribute);
-  console.log('target type:', typeof targetValue);
-  console.log('attribute type:', typeof attribute);
-  console.log('target value', targetValue);
-  console.log('candiateValue', candidateValue);
   let result;
   // if attribute not provided in userContext, always false regardless of negate
   if (!userContext.hasOwnProperty(attribute)) return false;
