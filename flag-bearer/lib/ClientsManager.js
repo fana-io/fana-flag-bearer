@@ -4,24 +4,31 @@ const SEC_TO_RETRY = 7000;
 const SUBSCRIPTION_TYPES = ['server', 'client'];
 
 class ClientsManager {
-  constructor(sdkKeys) {
+  constructor() {
     this.subscriptions = { servers: [], clients: [] }; // tracks open SSE connections & their response objects
     this.responseHeaders = {
       'Content-Type': 'text/event-stream',
       Connection: 'keep-alive',
       'Cache-Control': 'no-cache',
     };
-    this.sdkKeys = sdkKeys; // hashmap of sdkKeys
+    this.sdkKeys;
     this.subscriptionTypes = SUBSCRIPTION_TYPES
     this.retryTimeout = SEC_TO_RETRY
+  }
+
+  addKeys(keys) {
+    this.sdkKeys = keys
   }
 
   stream(req, res) {
     const { sdkType, id } = req.params;
     const sdkKey = req.query.sdkKey;
     const result = this.validateParams(sdkType, sdkKey);
+    console.log('sdkKey from stream: ', sdkKey)
+    console.log('valid  sdk key? ', result)
 
     if (!result.valid) {
+      console.log('error valiating sdkkey');
       return res.status(result.code).send(result.error);
     }
 
@@ -33,7 +40,6 @@ class ClientsManager {
   validateParams(sdkType, sdkKey) {
     const validType = this.subscriptionTypes.includes(sdkType);
     const validKey = this.sdkKeys[sdkKey];
-    console.log('CM validator:', validType, validKey);
 
     if (validType && validKey) return { valid: true };
 
@@ -65,7 +71,7 @@ class ClientsManager {
     res.write(`retry: ${this.retryTimeout}.\n`);
     res.write(`data: Success: subscribed to messages.`);
     res.write('\n\n');
-    console.log(`client ${client.id} connected successfully.`);
+    console.log(`--- client ${client.id} connected successfully. ---`);
 
     // store response obj to be written to later
     client.stream = res;
