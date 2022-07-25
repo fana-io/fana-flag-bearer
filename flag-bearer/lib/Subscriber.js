@@ -42,10 +42,15 @@ class Subscriber {
   }
 
   publish(channel, data) {
-    if (channel === 'flag-toggle-channel') {
-      // all sdk streams get updated when a flag is toggle on or off
-      // TODO: client only needs to { flagkey: bool }
-      
+    if (channel === 'flag-toggle-channel' && data.status) {
+      this.manager.subscriptions.servers.forEach(client => {
+        client.stream.write(`event: ${client.sdkKey}\n`)
+        client.stream.write(`channel: ${channel}\n`)
+        client.stream.write(`data: ${JSON.stringify(data)}\n`)
+        client.stream.write(`\n\n`);
+      })
+    } else if (channel === 'flag-toggle-channel' && !data.status) {
+      // all sdk streams get updated when a flag is toggle off
       for (let sdkType in this.manager.subscriptions) {
         this.manager.subscriptions[sdkType].forEach(client => {
           client.stream.write(`event: ${client.sdkKey}\n`)

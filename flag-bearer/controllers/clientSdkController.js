@@ -2,15 +2,16 @@ const { validationResult } = require('express-validator');
 const { evaluateFlags, validSdkKey, getData } = require('../utils/parseFlagData');
 
 // initializes sdk and returns evaluated flags
-const initializeClientSDK = (req, res) => {
+const initializeClientSDK = async (req, res) => {
   const errors = validationResult(req);
   if (errors.isEmpty()) {
     const sdkKey = req.header('Authorization');
     const userContext = req.body;
     // get data from redis or from manager
-    getData();
+    await getData();
 
     if (!validSdkKey(sdkKey)) {
+      console.log('failing validSdkKey')
       return res.status(400).send({ error: 'Invalid SDK key.' });
     }
 

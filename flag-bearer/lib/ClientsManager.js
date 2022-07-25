@@ -14,6 +14,11 @@ class ClientsManager {
     this.subscriptionTypes = SUBSCRIPTION_TYPES
     this.retryTimeout = SEC_TO_RETRY
   }
+  /*
+  todo:
+  write a function to initialize sdkKeys from redis cache
+  - assume it's static
+  */
 
   stream(req, res) {
     const { sdkType, id } = req.params;
@@ -32,7 +37,7 @@ class ClientsManager {
   validateParams(sdkType, sdkKey) {
     const validType = this.subscriptionTypes.includes(sdkType);
     const validKey = this.sdkKeys.includes(sdkKey);
-    console.log('validators', validType, validKey);
+    console.log('CM validator:', validType, validKey);
 
     if (validType && validKey) return { valid: true };
 

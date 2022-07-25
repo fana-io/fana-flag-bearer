@@ -1,5 +1,4 @@
 const { evaluateCondition } = require('./evaluateCondition')
-// const { allFlagData, testUser } = require('../seed-data')
 // const { flagData } = require('../lib/flagData');
 const { getRuleset } = require('./apiClient');
 const redis = require('redis');
@@ -14,6 +13,7 @@ const redisClient = redis.createClient(
     host: REDIS_HOST,
   }
 );
+
 // connect to redis
 ;(async () => {
 try {
@@ -34,16 +34,26 @@ const getData = async () => {
     console.log('Data set from redis')
   } else {
     console.log('Need to fetch from Manager');
-    const { data } = await getRuleset();
-    sdkKeys = data.sdkKeys;
-    flags = data.flags;
+    try {
+      const data  = await getRuleset();
+      console.log('data from Manager:', data)
+      sdkKeys = data.sdkKeys;
+      flags = data.flags;
+    } catch(err) {
+      console.error(err);
+      console.error("Could fetch data from manager...");
+    }
+
   }
   // returning this for serverSDK
+  console.log('sdkKeys from getData', sdkKeys);
   return { sdkKeys, flags }
 }
 
 const validSdkKey = (sdkKey) => {
-  return sdkKeys[sdkKey];
+  console.log(sdkKeys)
+  // return sdkKeys[sdkKey]; NOTE: this is a temporary fix until the object returned by manager is a hashmap instead of array of sdk keys
+  return sdkKeys.includes(sdkKey);
 }
 
 // evaluate audience conditions based on user attributes
@@ -69,7 +79,6 @@ function evaluateAudience(audienceContext, userContext) {
       // 'ANY' and false, go to next condition
     }
   }
-  // console.log('audience key evaluations', audienceEvals);
   return eval;
 }
 
@@ -108,6 +117,7 @@ function evaluateFlags(userContext) {
     } 
     flagEvals[flag] = eval; 
   };
+  console.log('evaluated flags: ', flagEvals)
   return flagEvals;
 }
 
