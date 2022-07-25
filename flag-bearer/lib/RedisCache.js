@@ -1,5 +1,4 @@
 const redis = require('redis');
-require('dotenv').config();
 const { getRuleset } = require('../utils/apiClient');
 const eventEmitter = require('./EventEmitter');
 
