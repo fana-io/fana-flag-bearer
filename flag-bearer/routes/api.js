@@ -4,8 +4,7 @@ const { validateFlagset, validateClientInit, validateServerInit } = require('../
 const { createFlagset } = require('../controllers/flagsetController');
 const { initializeServerSDK } = require('../controllers/serverSdkController');
 const { initializeClientSDK } = require('../controllers/clientSdkController');
-const { getData } = require('../utils/parseFlagData');
-const {clientManager} = require('../lib/clientManager')
+const {clientManager} = require('../services/services')
 // route to receive webhook from flag manager
 // also sends push event of disabled flags within createFlagset
 router.post('/flagset', validateFlagset, createFlagset);

@@ -10,15 +10,12 @@ class ClientsManager {
       Connection: 'keep-alive',
       'Cache-Control': 'no-cache',
     };
-    this.sdkKeys = sdkKeys; // list of valid sdk keys from Clients Manager
+    this.sdkKeys = sdkKeys; // TODO: is this a list or object? list of valid sdk keys from Clients Manager
+
+    console.log('cm keys', this.sdkKeys)
     this.subscriptionTypes = SUBSCRIPTION_TYPES
     this.retryTimeout = SEC_TO_RETRY
   }
-  /*
-  todo:
-  write a function to initialize sdkKeys from redis cache
-  - assume it's static
-  */
 
   stream(req, res) {
     const { sdkType, id } = req.params;

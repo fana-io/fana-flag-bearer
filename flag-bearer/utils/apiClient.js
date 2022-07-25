@@ -1,4 +1,4 @@
-const MANAGER_URI = 'http://localhost:6000';
+const MANAGER_URI = process.env.MANAGER_URI || 'http://localhost:6000';
 const axios = require('axios');
 
 const getRuleset = async () => {

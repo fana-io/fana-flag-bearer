@@ -1,60 +1,4 @@
 const { evaluateCondition } = require('./evaluateCondition')
-// const { flagData } = require('../lib/flagData');
-const { getRuleset } = require('./apiClient');
-const redis = require('redis');
-require("dotenv").config();
-
-const REDIS_PORT = process.env.REDIS_PORT || 6379;
-const REDIS_HOST = process.env.REDIS_HOST || 'localhost';
-// instantiating a connection for cache
-const redisClient = redis.createClient(
-  {
-    port: REDIS_PORT,
-    host: REDIS_HOST,
-  }
-);
-
-// connect to redis
-;(async () => {
-try {
-  await redisClient.connect();
-  
-  redisClient.on('connect', () => console.log(`Cache redis on port ${REDIS_PORT}`));
-  redisClient.on('error', (err) => console.error('Error: ' + err));
-} catch (err) { console.error(err)}
-})()
-
-// get Data from redis or Manager
-let sdkKeys;
-let flags;
-const getData = async () => {
-  sdkKeys = await redisClient.get('sdkKeys');
-  if (sdkKeys) {
-    flags = await redisClient.get('flags');
-    console.log('Data set from redis')
-  } else {
-    console.log('Need to fetch from Manager');
-    try {
-      const data  = await getRuleset();
-      console.log('data from Manager:', data)
-      sdkKeys = data.sdkKeys;
-      flags = data.flags;
-    } catch(err) {
-      console.error(err);
-      console.error("Could fetch data from manager...");
-    }
-
-  }
-  // returning this for serverSDK
-  console.log('sdkKeys from getData', sdkKeys);
-  return { sdkKeys, flags }
-}
-
-const validSdkKey = (sdkKey) => {
-  console.log(sdkKeys)
-  // return sdkKeys[sdkKey]; NOTE: this is a temporary fix until the object returned by manager is a hashmap instead of array of sdk keys
-  return sdkKeys.includes(sdkKey);
-}
 
 // evaluate audience conditions based on user attributes
 function evaluateAudience(audienceContext, userContext) {
@@ -79,7 +23,6 @@ function evaluateAudience(audienceContext, userContext) {
       // 'ANY' and false, go to next condition
     }
   }
-  // console.log('audience key evaluations', audienceEvals);
   return evaluation;
 }
 
@@ -180,4 +123,4 @@ function evaluateFlags(userContext) {
 // console.log('=====')
 // console.log('beta & canada', evaluateFlags(testUserContext2))
 
-module.exports = { evaluateFlags, validSdkKey, getData }
+module.exports = { evaluateFlags }
