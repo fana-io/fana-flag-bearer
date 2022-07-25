@@ -1,17 +1,21 @@
-import { useHistory, useParams } from 'react-router-dom';
-import { useEffect, useState, useCallback } from 'react';
 import apiClient from '../../lib/apiClient';
 import { attrTypeMapper } from '../../lib/formConstants';
-import DeleteIcon from '@mui/icons-material/Delete';
 import {
   deletedEntityMessageCreator,
   generalErrorMessage,
 } from '../../lib/messages';
-import { Button, Stack, List, Typography, Grid } from '@mui/material';
+import { useHistory, useParams } from 'react-router-dom';
+import { useEffect, useState, useCallback } from 'react';
 import { initializationErrorMessage } from '../../lib/messages';
 import { EntityNotFoundPage } from '../EntityNotFoundPage';
 import { RelatedEntityList } from '../Shared/RelatedEntityList';
-
+import DeleteIcon from '@mui/icons-material/Delete';
+import List from "@mui/material/List";
+import Grid from "@mui/material/Grid";
+import Button from "@mui/material/Button";
+import Typography from "@mui/material/Typography";
+import Stack from "@mui/material/Stack";
+import Divider from '@mui/material/Divider';
 export const Attribute = () => {
   const attrId = useParams().id;
   const [ready, setReady] = useState(false);
@@ -53,7 +57,7 @@ export const Attribute = () => {
     } else {
       if (window.confirm('Are you sure you want to delete this attribute?')) {
         try {
-          await apiClient.deleteAudience(attribute.id);
+          await apiClient.deleteAttribute(attribute.id);
           history.push('/attributes');
           alert(deletedEntityMessageCreator('attribute', attribute.key));
         } catch (e) {
@@ -73,17 +77,17 @@ export const Attribute = () => {
 
   return (
     <Stack spacing={4}>
-      <Grid container>
+      <Grid container spacing={2}>
         <Grid item xs={12}>
           <Typography variant="h3">Attribute Details</Typography>
         </Grid>
 
         <Grid item xs={8}>
-          <Typography variant="caption">Title</Typography>
-          <Typography variant="subtitle1">{attribute.attribute}</Typography>
+          <Typography variant="caption">Key</Typography>
+          <Typography variant="subtitle1">{attribute.key}</Typography>
           <Typography variant="caption">Type</Typography>
           <Typography variant="subtitle1">
-            {attrTypeMapper[attribute.type]}
+            {attrTypeMapper[attribute.attrType]}
           </Typography>
         </Grid>
         <Grid item justifyContent="flex-end">
@@ -91,28 +95,29 @@ export const Attribute = () => {
             variant="outlined"
             onClick={handleDelete}
             startIcon={<DeleteIcon />}
-            color="secondary"
+            color="error"
           >
             Delete attribute
           </Button>
         </Grid>
       </Grid>
+      <Divider variant="middle" />
       {/* Related Audiences */}
       <Stack>
         <Typography variant="h4">Related Audiences</Typography>
         <Typography variant="subtitle2">
           List of audiences that reference this attribute{' '}
         </Typography>
+        <List style={{ width: 350 }}>
+          {attribute.audiences.map((aud) => (
+            <RelatedEntityList
+              key={aud.id}
+              entity={aud}
+              entityName={'audiences'}
+            />
+          ))}
+        </List>
       </Stack>
-      <List style={{ width: 350 }}>
-        {attribute.audiences.map((aud) => (
-          <RelatedEntityList
-            key={aud.id}
-            entity={aud}
-            entityName={'audiences'}
-          />
-        ))}
-      </List>
     </Stack>
   );
 };

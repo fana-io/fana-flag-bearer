@@ -1,6 +1,6 @@
-import { Switch } from "@mui/material";
 import apiClient from "../../lib/apiClient";
 import { generalErrorMessage } from "../../lib/messages";
+import { Switch } from "@mui/material";
 
 export const FlagStatusToggle = ({ flag, refreshFlags, successStateSetter }) => {
   const toggleFlagStatus = async () => {

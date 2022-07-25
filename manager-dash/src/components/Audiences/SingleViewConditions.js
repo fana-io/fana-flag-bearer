@@ -1,3 +1,7 @@
+import { useState, useEffect } from "react"
+import { SingleCondition } from "./SingleCondition"
+import { ConditionBuilder } from "./ConditionBuilder"
+import _ from "lodash"
 import Typography from "@mui/material/Typography"
 import Stack from "@mui/material/Stack"
 import Select from "@mui/material/Select"
@@ -5,11 +9,7 @@ import Box from "@mui/material/Box"
 import MenuItem from "@mui/material/MenuItem"
 import Divider from "@mui/material/Divider"
 import Button from "@mui/material/Button"
-import { SingleCondition } from "./SingleCondition"
-import { ConditionBuilder } from "./ConditionBuilder"
 import List from "@mui/material/List"
-import { useState, useEffect } from "react"
-import _ from "lodash"
 
 export const SingleViewConditions = ({ conditions, combination, pendingChanges, setPendingChanges, submitConditionEdit }) => {
   const [temporaryConditions, setTemporaryConditions] = useState(conditions.slice());
@@ -83,7 +83,7 @@ export const SingleViewConditions = ({ conditions, combination, pendingChanges, 
             </List>
             <Button disabled={!pendingChanges} variant="outlined" onClick={handleSubmit}>Save Conditions</Button>
           </Stack>
-          <Stack>
+          <Stack style={{ width: 350 }}>
           <ConditionBuilder closable={false} handleSaveCondition={addCondition} />
           </Stack>
         </Stack>

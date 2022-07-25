@@ -1,7 +1,6 @@
 const express = require('express');
 const router = express.Router();
 const { validateFlagset, validateClientInit, validateServerInit } = require('../validators/validators');
-const { checkCache } = require('../controllers/cache');
 const { createFlagset } = require('../controllers/flagsetController');
 const { initializeServerSDK } = require('../controllers/serverSdkController');
 const { initializeClientSDK } = require('../controllers/clientSdkController');

@@ -1,10 +1,10 @@
+import { useEffect, useState } from 'react';
 import OutlinedInput from '@mui/material/OutlinedInput';
 import InputLabel from '@mui/material/InputLabel';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import Button from '@mui/material/Button';
-import { useEffect, useState } from 'react';
 
 export const AddAudienceToFlag = ({ addAudience, allAudiences, currentAppliedAudiences }) => {
   const [selectedAudienceKey, setSelectedAudienceKey] = useState('');

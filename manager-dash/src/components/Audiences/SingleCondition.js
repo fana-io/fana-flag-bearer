@@ -1,9 +1,9 @@
+import { operators } from '../../lib/formConstants';
 import Grid from '@mui/material/Grid';
 import ListItem from '@mui/material/ListItem';
 import Paper from '@mui/material/Paper';
 import IconButton from '@mui/material/IconButton';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { operators } from '../../lib/formConstants';
 
 export const SingleCondition = ({condition, handleRemove, idx}) => {
   const operatorString = (condition.negate ? "NOT " : "") + operators[condition.operator];

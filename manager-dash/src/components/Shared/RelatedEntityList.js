@@ -1,17 +1,18 @@
-import { ListItem, ListItemText } from '@mui/material';
-import { Link as RouterLink } from 'react-router-dom';
-import Link from '@mui/material/Link';
+import { Link } from 'react-router-dom';
+import MUILink from '@mui/material/Link';
+import ListItem from '@mui/material/ListItem';
+import ListItemText from '@mui/material/ListItemText';
 
 export const RelatedEntityList = ({ entity, entityName }) => {
   const link = `/${entityName}/` + entity.id;
   return (
     <ListItem divider>
       <ListItemText>
-        <RouterLink to={link} >
-        <Link underline="hover" component={'span'}>
+        <Link to={link} >
+        <MUILink underline="hover" component={'span'}>
           {entity.displayName}
-        </Link>
-          </RouterLink>
+        </MUILink>
+          </Link>
       </ListItemText>
     </ListItem>
   );
