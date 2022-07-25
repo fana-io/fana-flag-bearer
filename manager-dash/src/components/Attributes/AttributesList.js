@@ -35,6 +35,7 @@ export const AttributesList = () => {
     initialize();
   }, [])
 
+
   const searchFilterCriteria = useCallback((searchText) => {
     return (attribute) => {
       return (attribute.attrType.toLowerCase().includes(searchText) ||

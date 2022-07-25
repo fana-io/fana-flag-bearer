@@ -2,14 +2,14 @@ import { ListItem, ListItemText } from '@mui/material';
 import { Link as RouterLink } from 'react-router-dom';
 import Link from '@mui/material/Link';
 
-export const AttributeAudience = ({ audience }) => {
-  const link = '/audiences/' + audience.id;
+export const RelatedEntityList = ({ entity, entityName }) => {
+  const link = `/${entityName}/` + entity.id;
   return (
     <ListItem divider>
       <ListItemText>
         <RouterLink to={link} >
         <Link underline="hover" component={'span'}>
-          {audience.displayName}
+          {entity.displayName}
         </Link>
           </RouterLink>
       </ListItemText>

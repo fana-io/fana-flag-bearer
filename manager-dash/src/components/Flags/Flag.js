@@ -1,23 +1,27 @@
-import { useEffect, useState, useCallback } from "react";
-import { useHistory, useParams } from "react-router-dom"
-import apiClient from "../../lib/apiClient";
-import { FlagAudience } from "./FlagAudience"
-import { FlagStatusToggle } from "./FlagStatusToggle";
+import { useEffect, useState, useCallback } from 'react';
+import { useHistory, useParams } from 'react-router-dom';
+import apiClient from '../../lib/apiClient';
+import { FlagAudience } from './FlagAudience';
+import { FlagStatusToggle } from './FlagStatusToggle';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
-import InputLabel from "@mui/material/InputLabel";
-import Box from "@mui/material/Box";
-import List from "@mui/material/List";
-import { AddAudienceToFlag } from "./AddAudienceToFlag";
-import Divider from "@mui/material/Divider";
-import Button from "@mui/material/Button";
+import InputLabel from '@mui/material/InputLabel';
+import Box from '@mui/material/Box';
+import List from '@mui/material/List';
+import { AddAudienceToFlag } from './AddAudienceToFlag';
+import Divider from '@mui/material/Divider';
+import Button from '@mui/material/Button';
 import _ from 'lodash';
-import { deletedEntityMessageCreator, generalErrorMessage, initializationErrorMessage } from "../../lib/messages";
-import { SuccessAlert } from "../SuccessAlert";
-import { WarningAlert } from "../WarningAlert";
+import {
+  deletedEntityMessageCreator,
+  generalErrorMessage,
+  initializationErrorMessage,
+} from '../../lib/messages';
+import { SuccessAlert } from '../SuccessAlert';
+import { WarningAlert } from '../WarningAlert';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { EntityNotFoundPage } from "../EntityNotFoundPage";
-import { DisplayName } from "../Shared/DisplayName";
+import { EntityNotFoundPage } from '../EntityNotFoundPage';
+import { DisplayName } from '../Shared/DisplayName';
 
 export const Flag = () => {
   const flagId = useParams().id;
@@ -36,79 +40,79 @@ export const Flag = () => {
     setFlagToggled(false);
     setAudiencesUpdated(false);
     setTitleUpdated(false);
-  }
+  };
 
   const removeAudience = (audienceKey) => {
-    const updatedAudiences = temporaryAudiences.filter(a => {
+    const updatedAudiences = temporaryAudiences.filter((a) => {
       if (a.key === audienceKey) {
         return false;
       }
 
       return true;
-    })
+    });
 
     setTemporaryAudiences(updatedAudiences);
-  }
+  };
 
   const addAudience = (audienceKey) => {
-    const addedAudience = allAudiences.find(a => a.key === audienceKey)
+    const addedAudience = allAudiences.find((a) => a.key === audienceKey);
     const updatedAudiences = temporaryAudiences.concat(addedAudience);
     setTemporaryAudiences(updatedAudiences);
-  }
+  };
 
   const submitAudienceEdit = async () => {
     const patchedFlag = {
-      audiences: temporaryAudiences.map(a => a.key)
-    }
+      audiences: temporaryAudiences.map((a) => a.key),
+    };
 
     try {
-      await apiClient.editFlag(flag.id, patchedFlag)
+      await apiClient.editFlag(flag.id, patchedFlag);
       let f = await fetchFlag();
       setTemporaryAudiences(f.audiences);
       closeAllAlerts();
       setAudiencesUpdated(true);
     } catch (e) {
-      alert(generalErrorMessage)
+      alert(generalErrorMessage);
     }
-  }
+  };
 
   const submitDisplayNameEdit = async (newDisplayName) => {
     const patchedFlag = {
       displayName: newDisplayName,
-    }
+    };
 
     try {
       await apiClient.editFlag(flag.id, patchedFlag);
       fetchFlag();
       closeAllAlerts();
       setTitleUpdated(true);
-    } catch(e) {
-      alert(generalErrorMessage)
+    } catch (e) {
+      alert(generalErrorMessage);
     }
-  }
+  };
 
   const handleDelete = async () => {
     if (window.confirm('Are you sure you want to delete this flag?')) {
       try {
         await apiClient.deleteFlag(flag.id);
-        history.push("/flags")
-        alert(deletedEntityMessageCreator('flag', flag.key))
+        history.push('/flags');
+        alert(deletedEntityMessageCreator('flag', flag.key));
       } catch (e) {
         alert(generalErrorMessage);
       }
     }
-  }
+  };
 
   const fetchFlag = useCallback(async () => {
     const f = await apiClient.getFlag(flagId);
     setFlag(f);
     return f;
-  }, [flagId])
+  }, [flagId]);
 
   const fetchAudiences = async () => {
     const a = await apiClient.getAudiences();
     setAllAudiences(a);
-  }
+  };
 
   useEffect(() => {
     const initialize = async () => {
@@ -121,18 +125,18 @@ export const Flag = () => {
         if (e.response.status === 404) {
           setLoadError(true);
         } else {
-          alert(initializationErrorMessage)
+          alert(initializationErrorMessage);
         }
       }
-    }
+    };
     initialize();
-  }, [fetchFlag])
+  }, [fetchFlag]);
 
   useEffect(() => {
     // when temporaryAudiences changes, see if it matches the actual audiences
     if (ready) {
-      const tempKeys = temporaryAudiences.map(a => a.key).sort();
-      const appliedKeys = flag.audiences.map(a => a.key).sort()
+      const tempKeys = temporaryAudiences.map((a) => a.key).sort();
+      const appliedKeys = flag.audiences.map((a) => a.key).sort();
       console.log(tempKeys);
       console.log(appliedKeys);
       if (!_.isEqual(tempKeys, appliedKeys)) {
@@ -141,31 +145,56 @@ export const Flag = () => {
         setPendingChanges(false);
       }
     }
-  }, [temporaryAudiences, ready, flag?.audiences])
+  }, [temporaryAudiences, ready, flag?.audiences]);
 
   if (loadError) {
-    return <EntityNotFoundPage />
+    return <EntityNotFoundPage />;
   }
 
   if (!ready) {
-    return <>Loading...</>
+    return <>Loading...</>;
   }
 
   return (
     <Box container="true" spacing={1}>
-      {titleUpdated && (<SuccessAlert text="Title has been updated." successStateSetter={setTitleUpdated} />)}
-      {audiencesUpdated && (<SuccessAlert text="Targeted audiences have been updated." successStateSetter={setAudiencesUpdated} />)}
-      {flagToggled && (<SuccessAlert text="Flag has been toggled." successStateSetter={setFlagToggled} />)}
-      {pendingChanges && (<WarningAlert text="Changes are not saved until you click on 'Save Audiences'." />)}
+      {titleUpdated && (
+        <SuccessAlert
+          text="Title has been updated."
+          successStateSetter={setTitleUpdated}
+        />
+      )}
+      {audiencesUpdated && (
+        <SuccessAlert
+          text="Targeted audiences have been updated."
+          successStateSetter={setAudiencesUpdated}
+        />
+      )}
+      {flagToggled && (
+        <SuccessAlert
+          text="Flag has been toggled."
+          successStateSetter={setFlagToggled}
+        />
+      )}
+      {pendingChanges && (
+        <WarningAlert text="Changes are not saved until you click on 'Save Audiences'." />
+      )}
       <Stack container="true" spacing={2}>
         <Typography variant="h3">Flag Details</Typography>
         <Stack>
           <Typography variant="caption">Title</Typography>
           <Stack direction="row" justifyContent="space-between">
-          <DisplayName entity={flag} submitDisplayNameEdit={submitDisplayNameEdit} />
-          <Button variant="outlined" onClick={handleDelete} startIcon={<DeleteIcon />} color="error">
-            Delete flag
-          </Button>
+            <DisplayName
+              entity={flag}
+              submitDisplayNameEdit={submitDisplayNameEdit}
+            />
+            <Button
+              variant="outlined"
+              onClick={handleDelete}
+              startIcon={<DeleteIcon />}
+              color="error"
+            >
+              Delete flag
+            </Button>
           </Stack>
         </Stack>
         <Stack>
@@ -174,10 +203,17 @@ export const Flag = () => {
         </Stack>
         <Stack>
           <InputLabel id="flag-toggle-label">Enabled</InputLabel>
-          <FlagStatusToggle successStateSetter={setFlagToggled} flag={flag} labelId="flag-toggle-label" refreshFlags={fetchFlag} />
+          <FlagStatusToggle
+            successStateSetter={setFlagToggled}
+            flag={flag}
+            labelId="flag-toggle-label"
+            refreshFlags={fetchFlag}
+          />
         </Stack>
         <Typography variant="h4">Targeted Audiences</Typography>
-        <Typography variant="body1">This flag will serve to ANY targeted audience</Typography>
+        <Typography variant="body1">
+          This flag will serve to ANY targeted audience
+        </Typography>
         <Stack
           container="true"
           divider={<Divider orientation="vertical" flexItem />}
@@ -186,15 +222,31 @@ export const Flag = () => {
         >
           <Stack>
             <List style={{ width: 350 }}>
-              {temporaryAudiences.map(audience => {
-                return (<FlagAudience key={audience.key} audience={audience} removeAudience={removeAudience} />)
+              {temporaryAudiences.map((audience) => {
+                return (
+                  <FlagAudience
+                    key={audience.key}
+                    audience={audience}
+                    removeAudience={removeAudience}
+                  />
+                );
               })}
             </List>
-            <Button disabled={!pendingChanges} variant="outlined" onClick={submitAudienceEdit}>Save Audiences</Button>
+            <Button
+              disabled={!pendingChanges}
+              variant="outlined"
+              onClick={submitAudienceEdit}
+            >
+              Save Audiences
+            </Button>
           </Stack>
-          <AddAudienceToFlag allAudiences={allAudiences} addAudience={addAudience} currentAppliedAudiences={temporaryAudiences} />
+          <AddAudienceToFlag
+            allAudiences={allAudiences}
+            addAudience={addAudience}
+            currentAppliedAudiences={temporaryAudiences}
+          />
         </Stack>
       </Stack>
     </Box>
-  )
-}
+  );
+};
