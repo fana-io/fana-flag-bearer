@@ -13,7 +13,6 @@ class Subscriber {
     });
     this.init();
     this.manager = manager
-
     this.redis.on('connect', () => console.log(`Subscriber redis on port ${port}`));
   }
 
