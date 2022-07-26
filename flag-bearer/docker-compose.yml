@@ -1,0 +1,42 @@
+version: '3'
+services:
+  redis:
+    image: 'redis'
+    restart: always
+    ports:
+      - 6379:6379
+    hostname: my-redis
+    command: redis-server --requirepass mypassword
+  bearer:
+    image: 'fana-flag-bearer:beta'
+    ports:
+      - 3001:3001
+    depends_on:
+      - redis
+    environment:
+      - REDIS_HOST=my-redis
+      - REDIS_PW=mypassword
+
+    # networks: 
+    #   - fana-network
+#    env_file:
+#      - ./.env
+
+# networks:
+#   fana-network:
+#     external: false
+#     name: fana-network
+
+
+# version: '3'
+# services:
+#   bearer:
+#     image: 'fana-flag-bearer:beta'
+#     ports:
+#       - 3001:3001
+#     depends_on:
+#       - redis
+#   redis:
+#     image: 'redis'
+#     ports:
+#       - 6379:6379
