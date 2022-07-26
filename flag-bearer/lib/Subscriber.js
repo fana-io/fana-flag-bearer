@@ -8,8 +8,11 @@ class Subscriber {
   constructor(port, host, manager) {
     this.redis = redis.createClient({
       name: 'flag-bearer',
-      port,
-      host,
+      socket: {
+        host,
+        port
+      },
+      password: process.env.REDIS_PW
     });
     this.init();
     this.manager = manager
