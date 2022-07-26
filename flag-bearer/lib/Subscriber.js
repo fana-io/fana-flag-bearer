@@ -5,11 +5,12 @@ const redis = require('redis');
 const CHANNELS = process.env.CHANNELS || ['flag-update-channel', 'flag-toggle-channel']
 
 class Subscriber {
-  constructor(port, host, manager) {
+  constructor(port, host, password, manager) {
     this.redis = redis.createClient({
       name: 'flag-bearer',
       port,
       host,
+      password
     });
     this.init();
     this.manager = manager

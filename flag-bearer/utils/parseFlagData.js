@@ -65,8 +65,8 @@ function evaluateFlags(userContext) {
   return flagEvals;
 }
 
-// TEST
-// flags = {
+// // TEST
+// let flags = {
 //   sdkKeys: {
 //     "beta_sdk_0":true,
 //     "de9-6bf1a0c-3":true,
