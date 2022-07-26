@@ -6,9 +6,12 @@ const REDIS_HOST = process.env.REDIS_HOST || 'localhost';
 class Publisher {
   constructor(port, host) {
     this.redis = redis.createClient({
-      name: 'flag-manager',
-      port,
-      host,
+      name: 'flag-bearer',
+      socket: {
+        host,
+        port
+      },
+      password: process.env.REDIS_PW
     });
     this.redis.connect();
   }
