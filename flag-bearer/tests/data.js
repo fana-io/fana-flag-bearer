@@ -1,9 +1,38 @@
-export const data = {
-  "sdkKeys": [
-      "c3e-db3100c-8",
-      "de9-6bf1a0c-3",
-      "fa4-d731f0e-4"
-  ],
+const testUser1 = {
+    userId: 'jjuy',
+    userContext: {
+      state: 'california',
+      beta: true,
+      age: 20,
+      student: false,
+    },
+  };
+  
+  const testUser2 = {
+    userId: 'yrc',
+    userContext: {
+      state: 'california',
+      beta: false,
+      age: 21,
+      student: true,
+    },
+  };
+  
+  const testUser3 = {
+    userId: 'ahsu',
+    userContext: {
+      state: 'washington',
+      age: 50,
+      student: false,
+    },
+  };
+const users = [testUser1, testUser2, testUser3]
+const data = {
+  "sdkKeys": {
+      "c3e-db3100c-8": true,
+      "de9-6bf1a0c-3": true,
+      "fa4-d731f0e-4": true,
+  },
   "flags": {
       "beta-flag": {
           "beta_testers": {
@@ -207,3 +236,5 @@ export const data = {
       },
   }
 }
+
+module.exports = { data, users, testUser1, testUser2, testUser3 }
