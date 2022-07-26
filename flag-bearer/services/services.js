@@ -9,15 +9,16 @@ const REDIS_HOST = process.env.REDIS_HOST || 'localhost';
 
 // cache must populate first
 const cache = new RedisCache(REDIS_PORT, REDIS_HOST); 
-let clientManager;
+
+let clientManager = new ClientsManager();
 
 eventEmitter.on('cache-filled', () => {
   // client manager manages SDK SSE connections
-  clientManager = new ClientsManager(cache.sdkKeys); 
+  clientManager.addKeys(cache.sdkKeys);
+  // clientManager = new ClientsManager(cache.sdkKeys); 
   // subscriber is subscribed to Redis message broker and forwards real-time messages
   const subscriber = new Subscriber(REDIS_PORT, REDIS_HOST, clientManager);
   
 })
-
 
 module.exports = { clientManager, cache, eventEmitter };

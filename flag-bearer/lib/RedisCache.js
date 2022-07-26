@@ -1,5 +1,4 @@
 const redis = require('redis');
-require('dotenv').config();
 const { getRuleset } = require('../utils/apiClient');
 const eventEmitter = require('./EventEmitter');
 
@@ -36,7 +35,7 @@ class RedisCache {
   async refreshData() {
     try {
       let { sdkKeys, flags } = await getRuleset();
-      console.log('data from Manager:', flags);
+      // console.log('data from Manager:', flags);
       this.sdkKeys = sdkKeys;
       this.flags = flags;
 
@@ -60,9 +59,10 @@ class RedisCache {
         console.log('Need to fetch from Manager');
         await this.refreshData();
 
-        // returning this for serverSDK
-        return { sdkKeys: this.sdkKeys, flags: this.flags };
       }
+      // returning this for serverSDK
+      return { sdkKeys: this.sdkKeys, flags: this.flags };
+
     } catch (err) {
       console.error(err);
       console.error('Error connecting to redis');

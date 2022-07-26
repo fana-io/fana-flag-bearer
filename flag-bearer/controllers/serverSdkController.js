@@ -1,12 +1,11 @@
 const { validationResult } = require('express-validator');
-const cache = require('../lib/RedisCache');
+const {cache} = require('../services/services');
 
 const initializeServerSDK = async (req, res) => {
   const errors = validationResult(req);
 
   if (errors.isEmpty()) {
     const sdkKey = req.header('Authorization');
-    // returns { sdkKeys, flags }
     const { flags } = await cache.getData();
 
     if (!cache.validSdkKey(sdkKey)) {
