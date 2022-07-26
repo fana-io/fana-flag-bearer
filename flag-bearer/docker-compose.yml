@@ -17,6 +17,7 @@ services:
       - REDIS_HOST=my-redis
       - REDIS_PW=mypassword
 
+
     # networks: 
     #   - fana-network
 #    env_file:
