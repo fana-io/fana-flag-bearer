@@ -2,7 +2,10 @@ require('dotenv').config();
 const redis = require('redis');
 
 // may need to add more based on types of updates being sent
-const CHANNELS = process.env.CHANNELS || ['flag-update-channel', 'flag-toggle-channel']
+const CHANNELS = process.env.CHANNELS || [
+  'flag-update-channel',
+  'flag-toggle-channel',
+];
 
 class Subscriber {
   constructor(port, host, password, manager) {
@@ -10,14 +13,16 @@ class Subscriber {
       name: 'flag-bearer',
       socket: {
         host,
-        port
+        port,
       },
-      password: process.env.REDIS_PW
+      password: process.env.REDIS_PW,
     });
     this.init();
-    this.manager = manager
+    this.manager = manager;
 
-    this.redis.on('connect', () => console.log(`Redis subscriber on port ${port}`));
+    this.redis.on('connect', () =>
+      console.log(`Redis subscriber on port ${port}`)
+    );
   }
 
   async init() {
@@ -25,8 +30,7 @@ class Subscriber {
 
     try {
       await this.redis.connect();
-      await Promise.all([CHANNELS.map(channel => this.subscribeTo(channel ))])
-
+      await Promise.all([CHANNELS.map((channel) => this.subscribeTo(channel))]);
     } catch (err) {
       console.error('Error: ' + err);
     }
@@ -37,8 +41,8 @@ class Subscriber {
       await this.redis.subscribe(channelName, (message, channel) => {
         console.log(`${channel}: ${message}\n`);
 
-        this.publish(channel, JSON.parse(message))
-    });
+        this.publish(channel, JSON.parse(message));
+      });
     } catch (err) {
       console.error(err);
     }
@@ -47,33 +51,39 @@ class Subscriber {
   publish(channel, data) {
     let status;
     for (let key in data) {
-      status = data[key].status
+      status = data[key].status;
     }
+
     if (channel === 'flag-toggle-channel' && status) {
-      this.manager.subscriptions.servers.forEach(client => {
-        client.stream.write(`event: ${client.sdkKey}\n`)
-        client.stream.write(`channel: ${channel}\n`)
-        client.stream.write(`data: ${JSON.stringify(data)}\n`)
+      console.log('========== status: ', status);
+      console.log('========== should be sending only to servers');
+      this.manager.subscriptions.servers.forEach((client) => {
+        client.stream.write(`event: ${client.sdkKey}\n`);
+        client.stream.write(`channel: ${channel}\n`);
+        client.stream.write(`data: ${JSON.stringify(data)}\n`);
         client.stream.write(`\n\n`);
-      })
+      });
     } else if (channel === 'flag-toggle-channel' && !status) {
+      console.log('========== status: ', status);
+      console.log('========== should be sending to all clients');
       // all sdk streams get updated when a flag is toggle off
       for (let sdkType in this.manager.subscriptions) {
-        this.manager.subscriptions[sdkType].forEach(client => {
-          client.stream.write(`event: ${client.sdkKey}\n`)
-          client.stream.write(`channel: ${channel}\n`)
-          client.stream.write(`data: ${JSON.stringify(data)}\n`)
+        this.manager.subscriptions[sdkType].forEach((client) => {
+          // console.log('=== check client stream: ', client.stream);
+          client.stream.write(`event: ${client.sdkKey}\n`);
+          client.stream.write(`channel: ${channel}\n`);
+          client.stream.write(`data: ${JSON.stringify(data)}\n`);
           client.stream.write(`\n\n`);
-        })
+        });
       }
     } else {
       // only server streams get updates to individual flags
-      this.manager.subscriptions.servers.forEach(client => {
-        client.stream.write(`event: ${client.sdkKey}\n`)
-        client.stream.write(`channel: ${channel}\n`)
-        client.stream.write(`data: ${JSON.stringify(data)}\n`)
+      this.manager.subscriptions.servers.forEach((client) => {
+        client.stream.write(`event: ${client.sdkKey}\n`);
+        client.stream.write(`channel: ${channel}\n`);
+        client.stream.write(`data: ${JSON.stringify(data)}\n`);
         client.stream.write(`\n\n`);
-      })
+      });
     }
   }
 }

@@ -1,6 +1,6 @@
 const MINIMUM_ID_LENGTH = 30;
 // recommended ms to wait in-between failed SSE connection attempts
-const SEC_TO_RETRY = 7000; 
+const SEC_TO_RETRY = 7000;
 const SUBSCRIPTION_TYPES = ['server', 'client'];
 
 class ClientsManager {
@@ -12,20 +12,20 @@ class ClientsManager {
       'Cache-Control': 'no-cache',
     };
     this.sdkKeys;
-    this.subscriptionTypes = SUBSCRIPTION_TYPES
-    this.retryTimeout = SEC_TO_RETRY
+    this.subscriptionTypes = SUBSCRIPTION_TYPES;
+    this.retryTimeout = SEC_TO_RETRY;
   }
 
   addKeys(keys) {
-    this.sdkKeys = keys
+    this.sdkKeys = keys;
   }
 
   stream(req, res) {
     const { sdkType, id } = req.params;
     const sdkKey = req.query.sdkKey;
     const result = this.validateParams(sdkType, sdkKey);
-    console.log('sdkKey from stream: ', sdkKey)
-    console.log('valid  sdk key? ', result)
+    // console.log('sdkKey from stream: ', sdkKey)
+    // console.log('valid  sdk key? ', result)
 
     if (!result.valid) {
       console.log('error valiating sdkkey');

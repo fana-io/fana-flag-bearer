@@ -8,9 +8,9 @@ class RedisCache {
       name: 'flag-bearer-cache',
       socket: {
         host,
-        port
+        port,
       },
-      password: process.env.REDIS_PW
+      password: process.env.REDIS_PW,
     });
     this.init();
     this.sdkKeys;
@@ -28,7 +28,7 @@ class RedisCache {
       await this.refreshData();
       eventEmitter.emit('cache-filled');
     } catch (err) {
-      console.error('Error initializing cache: ' + err);
+      console.error('=== Error initializing cache: ' + err);
     }
   }
   // fetch full flag ruleset from manager
@@ -38,10 +38,9 @@ class RedisCache {
       // console.log('data from Manager:', flags);
       this.sdkKeys = sdkKeys;
       this.flags = flags;
-
     } catch (err) {
       console.error(err);
-      console.error('Could not fetch data from manager...');
+      console.error('=== Could not fetch data from manager...');
     }
   }
   // try reading from cache first
@@ -53,19 +52,17 @@ class RedisCache {
         const { sdkKeys, flags } = JSON.parse(response);
         this.sdkKeys = sdkKeys;
         this.flags = flags;
-        console.log('Got data from redis successfully: ', this.flags);
+        console.log('--- Got data from redis successfully: ', this.flags);
       } else {
         // cache is empty or network connection error
-        console.log('Need to fetch from Manager');
+        console.log('--- Cache is empty. Need to fetch from Manager...');
         await this.refreshData();
-
       }
       // returning this for serverSDK
       return { sdkKeys: this.sdkKeys, flags: this.flags };
-
     } catch (err) {
       console.error(err);
-      console.error('Error connecting to redis');
+      console.error('=== Error connecting to redis === ');
     }
   }
 
