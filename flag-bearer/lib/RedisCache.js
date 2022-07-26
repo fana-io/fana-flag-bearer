@@ -6,9 +6,11 @@ class RedisCache {
   constructor(port, host, password) {
     this.redis = redis.createClient({
       name: 'flag-bearer-cache',
-      port,
-      host,
-      password
+      socket: {
+        host,
+        port
+      },
+      password: process.env.REDIS_PW
     });
     this.init();
     this.sdkKeys;
