@@ -25,9 +25,6 @@ export const Audience = () => {
   const [conditionsUpdated, setConditionsUpdated] = useState(false);
   const [loadError, setLoadError] = useState(false);
 
-  console.log('audience', audience
-  )
-
   const closeAllAlerts = () => {
     setConditionsUpdated(false);
     setTitleUpdated(false);

@@ -1,5 +1,5 @@
 import './App.css';
-import {useMemo, useState} from 'react'
+import { useState} from 'react'
 import { Navigation } from './components/Navigation';
 import { FlagsList } from './components/Flags/FlagsList';
 import { AudiencesList } from './components/Audiences/AudiencesList';
@@ -23,20 +23,16 @@ function App() {
   const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
   const [darkMode, setDarkMode] = useState(prefersDarkMode);
 
-
   const theme = 
-  // useMemo(
-    // () =>
-      createTheme({
-        palette: {
-          mode: darkMode ? 'dark' : 'light',
-          primary: {
-            main: green[500]
-          },
+    createTheme({
+      palette: {
+        mode: darkMode ? 'dark' : 'light',
+        primary: {
+          main: green[500]
         },
-      })
-  //   [darkMode],
-  // );
+      },
+    })
+
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline enableColorScheme/>
