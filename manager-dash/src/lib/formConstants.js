@@ -53,7 +53,6 @@ export const operatorOptionsByType = {
 }
 
 
-// TODO: import dynamic list of attribute types from manager
 export  const attrTypeOptions = [
   {value: "", text:"Select a type"}, 
   {value: "BOOL", text:"Boolean"}, 

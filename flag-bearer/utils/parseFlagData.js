@@ -1,50 +1,5 @@
 const { evaluateCondition } = require('./evaluateCondition')
-// const { allFlagData, testUser } = require('../seed-data')
-// const { flagData } = require('../lib/flagData');
-const { getRuleset } = require('./apiClient');
-const redis = require('redis');
-require("dotenv").config();
-
-const REDIS_PORT = process.env.REDIS_PORT || 6379;
-const REDIS_HOST = process.env.REDIS_HOST || 'localhost';
-// instantiating a connection for cache
-const redisClient = redis.createClient(
-  {
-    port: REDIS_PORT,
-    host: REDIS_HOST,
-  }
-);
-// connect to redis
-;(async () => {
-try {
-  await redisClient.connect();
-  
-  redisClient.on('connect', () => console.log(`Cache redis on port ${REDIS_PORT}`));
-  redisClient.on('error', (err) => console.error('Error: ' + err));
-} catch (err) { console.error(err)}
-})()
-
-// get Data from redis or Manager
-let sdkKeys;
-let flags;
-const getData = async () => {
-  sdkKeys = await redisClient.get('sdkKeys');
-  if (sdkKeys) {
-    flags = await redisClient.get('flags');
-    console.log('Data set from redis')
-  } else {
-    console.log('Need to fetch from Manager');
-    const { data } = await getRuleset();
-    sdkKeys = data.sdkKeys;
-    flags = data.flags;
-  }
-  // returning this for serverSDK
-  return { sdkKeys, flags }
-}
-
-const validSdkKey = (sdkKey) => {
-  return sdkKeys[sdkKey];
-}
+const {cache} = require('../services/services')
 
 // evaluate audience conditions based on user attributes
 function evaluateAudience(audienceContext, userContext) {
@@ -69,7 +24,6 @@ function evaluateAudience(audienceContext, userContext) {
       // 'ANY' and false, go to next condition
     }
   }
-  // console.log('audience key evaluations', audienceEvals);
   return evaluation;
 }
 
@@ -79,9 +33,9 @@ function evaluateFlags(userContext) {
   const audienceEvals = {};
   // const userAudienceEvals = evaluateAudiences(sdkInstance, userContext);
   // Evaluate each flag
-  for (const flag in flags) {
+  for (const flag in cache.flags) {
     let evaluation = false;
-    const { status, ...audiences} = flags[flag]
+    const { status, ...audiences} = cache.flags[flag]
     const audienceKeys = Object.keys(audiences)
     if (status && audienceKeys.length == 0)  {
       // flags without any audience targeting apply to everyone
@@ -95,7 +49,7 @@ function evaluateFlags(userContext) {
           break; // return early as soon as one audience satisfied
         } else if (!audienceEvals.hasOwnProperty(audience)) {
           // if audience eval is undefine, evaluate;
-          const audienceContext = flags[flag][audience];
+          const audienceContext = cache.flags[flag][audience];
           audienceEvals[audience] = evaluateAudience(audienceContext, userContext)
           // console.log('audience:', audience, 'eval:', evaluateAudience(audienceContext, userContext))
           if (audienceEvals[audience]) {
@@ -107,11 +61,12 @@ function evaluateFlags(userContext) {
     } 
     flagEvals[flag] = evaluation; 
   };
+  console.log('evaluated flags: ', flagEvals)
   return flagEvals;
 }
 
-// TEST
-// flags = {
+// // TEST
+// let flags = {
 //   sdkKeys: {
 //     "beta_sdk_0":true,
 //     "de9-6bf1a0c-3":true,
@@ -169,4 +124,4 @@ function evaluateFlags(userContext) {
 // console.log('=====')
 // console.log('beta & canada', evaluateFlags(testUserContext2))
 
-module.exports = { evaluateFlags, validSdkKey, getData }
+module.exports = { evaluateFlags }

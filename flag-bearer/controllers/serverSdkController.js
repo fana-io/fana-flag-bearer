@@ -1,17 +1,14 @@
 const { validationResult } = require('express-validator');
-const { validSdkKey, getData } = require('../utils/parseFlagData');
-const { flagData } = require('../lib/FlagData');
+const {cache} = require('../services/services');
 
-const initializeServerSDK = (req, res) => {
+const initializeServerSDK = async (req, res) => {
   const errors = validationResult(req);
 
   if (errors.isEmpty()) {
-    // const allFlags = flagData.getFlagData();
     const sdkKey = req.header('Authorization');
-    // returns { sdkKeys, flags }
-    const { flags } = getData();
+    const { flags } = await cache.getData();
 
-    if (!validSdkKey(sdkKey)) {
+    if (!cache.validSdkKey(sdkKey)) {
       return res.status(400).send({ error: 'Invalid SDK key.' });
     }
 
@@ -19,8 +16,8 @@ const initializeServerSDK = (req, res) => {
   } else {
     res.status(401).send({ error: 'SDK key not authorized.' });
   }
-}
+};
 
 module.exports = {
-  initializeServerSDK
-}
+  initializeServerSDK,
+};
