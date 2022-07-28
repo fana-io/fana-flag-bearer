@@ -1,5 +1,5 @@
 {
-  "name": "manager-dash",
+  "name": "fana-platform-dashboard",
   "version": "0.1.0",
   "private": true,
   "proxy": "http://localhost:6000",
