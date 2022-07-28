@@ -142,8 +142,6 @@ export const Flag = () => {
     if (ready) {
       const tempKeys = temporaryAudiences.map((a) => a.key).sort();
       const appliedKeys = flag.audiences.map((a) => a.key).sort();
-      console.log(tempKeys);
-      console.log(appliedKeys);
       if (!_.isEqual(tempKeys, appliedKeys)) {
         setPendingChanges(true);
       } else {
