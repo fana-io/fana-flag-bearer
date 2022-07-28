@@ -10,7 +10,10 @@ class ClientsManager {
       'Content-Type': 'text/event-stream',
       Connection: 'keep-alive',
       'Cache-Control': 'no-cache',
+      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Headers": "Origin, X-Requested-With, Content-Type, Accept"
     };
+
     this.sdkKeys;
     this.subscriptionTypes = SUBSCRIPTION_TYPES;
     this.retryTimeout = SEC_TO_RETRY;
