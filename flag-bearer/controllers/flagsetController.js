@@ -1,13 +1,13 @@
 const { validationResult } = require('express-validator');
-const { flagData } = require('../lib/FlagData');
+// const { flagData } = require('../lib/FlagData');
 const { getRuleset } = require('../utils/apiClient')
 
-const getFlagset = async () => {
-  let updatedFlagData = await getRuleset();
-  // to do: get flag data from redis
-  flagData.setFlagData(updatedFlagData);
-  return
-};
+// const getFlagset = async () => {
+//   let updatedFlagData = await getRuleset();
+//   // to do: get flag data from redis
+//   flagData.setFlagData(updatedFlagData);
+//   return
+// };
 
 const createFlagset = (req, res, next) => {
   const errors = validationResult(req);
@@ -23,5 +23,5 @@ const createFlagset = (req, res, next) => {
 
 module.exports = {
   createFlagset,
-  getFlagset,
+  // getFlagset,
 };
