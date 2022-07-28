@@ -10,7 +10,6 @@ class RedisCache {
         host,
         port,
       },
-      password: password,
     });
     this.init();
     this.sdkKeys;

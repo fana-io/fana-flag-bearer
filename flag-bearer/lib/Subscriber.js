@@ -14,7 +14,6 @@ class Subscriber {
         host,
         port,
       },
-      password,
     });
     this.init();
     this.manager = manager;
