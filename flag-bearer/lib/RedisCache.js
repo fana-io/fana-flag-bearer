@@ -3,7 +3,7 @@ const { getRuleset } = require('../utils/apiClient');
 const eventEmitter = require('./EventEmitter');
 
 class RedisCache {
-  constructor(port, host, password) {
+  constructor(port, host) {
     this.redis = redis.createClient({
       name: 'flag-bearer-cache',
       socket: {

@@ -24,4 +24,11 @@ router.get('/stream/:sdkType', (req, res, next) => {
 
 // receives server SDK initialization requests
 router.get(`/connect/serverInit`, validateServerInit, initializeServerSDK);
+
+router.get('/', (req, res) => {
+  return res
+      .status(200)
+      .send({ message: 'Flag bearer healthy!' });
+  
+})
 module.exports = router;

@@ -7,7 +7,7 @@ const CHANNELS = process.env.CHANNELS || [
 ];
 
 class Subscriber {
-  constructor(port, host, password, manager) {
+  constructor(port, host, manager) {
     this.redis = redis.createClient({
       name: 'flag-bearer',
       socket: {
@@ -62,6 +62,10 @@ class Subscriber {
     } else if (channel === 'flag-toggle-channel' && !status) {
       // all sdk streams get updated when a flag is toggle off
       for (let sdkType in this.manager.subscriptions) {
+        if (!this.manager.subscriptions[sdkType].length) {
+          continue
+        }
+
         this.manager.subscriptions[sdkType].forEach((client) => {
           // console.log('=== check client stream: ', client.stream);
           client.stream.write(`event: ${client.sdkKey}\n`);
