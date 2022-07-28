@@ -24,8 +24,6 @@ class ClientsManager {
     const { sdkType, id } = req.params;
     const sdkKey = req.query.sdkKey;
     const result = this.validateParams(sdkType, sdkKey);
-    // console.log('sdkKey from stream: ', sdkKey)
-    // console.log('valid  sdk key? ', result)
 
     if (!result.valid) {
       console.log('error valiating sdkkey');

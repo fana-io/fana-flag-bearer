@@ -16,7 +16,6 @@ let clientManager = new ClientsManager();
 eventEmitter.on('cache-filled', () => {
   // client manager manages SDK SSE connections
   clientManager.addKeys(cache.sdkKeys);
-  // clientManager = new ClientsManager(cache.sdkKeys); 
   // subscriber is subscribed to Redis message broker and forwards real-time messages
   const subscriber = new Subscriber(REDIS_PORT, REDIS_HOST, REDIS_PW, clientManager);
   

@@ -35,12 +35,10 @@ class RedisCache {
   async refreshData() {
     try {
       let { sdkKeys, flags } = await getRuleset();
-      // console.log('data from Manager:', flags);
       this.sdkKeys = sdkKeys;
       this.flags = flags;
     } catch (err) {
-      console.error(err);
-      console.error('=== Could not fetch data from manager...');
+      console.error('--- Could not fetch data from manager...');
     }
   }
   // try reading from cache first

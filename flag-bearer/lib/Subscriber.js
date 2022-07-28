@@ -1,7 +1,6 @@
 require('dotenv').config();
 const redis = require('redis');
 
-// may need to add more based on types of updates being sent
 const CHANNELS = process.env.CHANNELS || [
   'flag-update-channel',
   'flag-toggle-channel',
@@ -55,8 +54,6 @@ class Subscriber {
     }
 
     if (channel === 'flag-toggle-channel' && status) {
-      console.log('========== status: ', status);
-      console.log('========== should be sending only to servers');
       this.manager.subscriptions.servers.forEach((client) => {
         client.stream.write(`event: ${client.sdkKey}\n`);
         client.stream.write(`channel: ${channel}\n`);
@@ -64,8 +61,6 @@ class Subscriber {
         client.stream.write(`\n\n`);
       });
     } else if (channel === 'flag-toggle-channel' && !status) {
-      console.log('========== status: ', status);
-      console.log('========== should be sending to all clients');
       // all sdk streams get updated when a flag is toggle off
       for (let sdkType in this.manager.subscriptions) {
         this.manager.subscriptions[sdkType].forEach((client) => {
