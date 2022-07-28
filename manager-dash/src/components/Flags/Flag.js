@@ -93,13 +93,17 @@ export const Flag = () => {
   };
 
   const handleDelete = async () => {
-    if (window.confirm('Are you sure you want to delete this flag?')) {
-      try {
-        await apiClient.deleteFlag(flag.id);
-        history.push('/flags');
-        alert(deletedEntityMessageCreator('flag', flag.key));
-      } catch (e) {
-        alert(generalErrorMessage);
+    if (flag.status) {
+      alert('You must turn the flag off before deleting it')
+    } else {
+      if (window.confirm('Are you sure you want to delete this flag?')) {
+        try {
+          await apiClient.deleteFlag(flag.id);
+          history.push('/flags');
+          alert(deletedEntityMessageCreator('flag', flag.key));
+        } catch (e) {
+          alert(generalErrorMessage);
+        }
       }
     }
   };
