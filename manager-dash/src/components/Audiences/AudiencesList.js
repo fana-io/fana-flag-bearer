@@ -22,8 +22,6 @@ export const AudiencesList = () => {
     return a;
   }
 
-  console.log('audiences in audlist', audiences)
-
   useEffect(() => {
     const initialize = async () => {
       try {

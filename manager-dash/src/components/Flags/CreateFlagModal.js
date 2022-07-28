@@ -67,7 +67,7 @@ export const CreateFlagModal = ({isOpen, setFormOpen, refreshFlags, successState
     >
     <Fade in={isOpen}>
       <Box sx={smallModalStyle}>
-        <Stack container spacing={2}>
+        <Stack container="true" spacing={2}>
           <Typography variant="h5">Create a new flag</Typography>
           <DisplayNameInput currentVal={displayName} currentValSetter={setDisplayName} />
           <KeyInput currentVal={flagKey} currentValSetter={setFlagKey} />
