@@ -14,7 +14,7 @@ class Subscriber {
         host,
         port,
       },
-      password: process.env.REDIS_PW,
+      password,
     });
     this.init();
     this.manager = manager;

@@ -10,7 +10,7 @@ class RedisCache {
         host,
         port,
       },
-      password: process.env.REDIS_PW,
+      password: password,
     });
     this.init();
     this.sdkKeys;
