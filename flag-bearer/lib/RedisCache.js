@@ -2,13 +2,14 @@ const redis = require('redis');
 const { getRuleset } = require('../utils/apiClient');
 
 class RedisCache {
-  constructor(port, host) {
+  constructor(port, host, password) {
     this.redis = redis.createClient({
       name: 'flag-bearer-cache',
       socket: {
         host,
         port,
       },
+      password
     });
     this.init();
     this.sdkKeys = {};
@@ -25,7 +26,7 @@ class RedisCache {
       console.log('refreshing cache...\n');
       await this.refreshData();
 
-      // BUG
+
     } catch (err) {
       console.error('--- Error connecting to Redis server: ' + err);
     }

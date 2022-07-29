@@ -7,13 +7,14 @@ const CHANNELS = process.env.CHANNELS || [
 ];
 
 class Subscriber {
-  constructor(port, host, manager) {
+  constructor(port, host, manager, password) {
     this.redis = redis.createClient({
       name: 'flag-bearer',
       socket: {
         host,
         port,
       },
+      password
     });
     this.init();
     this.manager = manager;
