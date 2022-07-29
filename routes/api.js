@@ -15,11 +15,12 @@ router.post(
 // SSE connection endpoint
 router.get('/stream/:sdkType', (req, res, next) => {
   const sdkKey = req.query.sdkKey
+  const { sdkType } = req.params;
   
   if (!cache.sdkKeys) {
     return res.status(400).send({ error: 'Flag bearer cannot accept stream connections at this time...try again later.'})
   }
-  if (!cache.validSdkKey(sdkKey)) {
+  if (!cache.validSdkKey(sdkKey, sdkType)) {
     console.log('Cant find sdkKey in cache:', cache.sdkKeys);
     return res.status(400).send({ error: 'Invalid SDK key.' });
   } else {

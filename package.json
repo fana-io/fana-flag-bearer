@@ -10,14 +10,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/2205-6/beta-flag-platform.git"
+    "url": "git+https://github.com/fana-io/fana-flag-bearer.git"
   },
   "author": "Audry Hsu, Yoorhim Choi, Juan Juy, & Rob Gorman",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/2205-6/beta-flag-platform/issues"
+    "url": "https://github.com/fana-io/fana-flag-bearer/issues"
   },
-  "homepage": "https://github.com/2205-6/beta-flag-platform#readme",
+  "homepage": "https://github.com/fana-io/fana-flag-bearer#readme",
   "dependencies": {
     "axios": "^0.27.2",
     "cors": "^2.8.5",

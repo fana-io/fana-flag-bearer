@@ -8,7 +8,7 @@ const initializeServerSDK = async (req, res) => {
     const sdkKey = req.header('Authorization');
     const { flags } = await cache.getData();
 
-    if (!cache.validSdkKey(sdkKey)) {
+    if (!cache.validSdkKey(sdkKey, 'server')) {
       return res.status(400).send({ error: 'Invalid SDK key.' });
     }
 

@@ -11,7 +11,7 @@ const initializeClientSDK = async (req, res) => {
     // get data from redis or from manager
     await cache.getData(); // if cache.sdkKeys is {} or undefined
 
-    if (!cache.validSdkKey(sdkKey)) {
+    if (!cache.validSdkKey(sdkKey, 'client')) {
       console.log('failing validSdkKey');
       return res.status(400).send({ error: 'Invalid SDK key.' });
     }
