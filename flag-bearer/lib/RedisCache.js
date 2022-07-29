@@ -1,6 +1,5 @@
 const redis = require('redis');
 const { getRuleset } = require('../utils/apiClient');
-const eventEmitter = require('./EventEmitter');
 
 class RedisCache {
   constructor(port, host, password) {
@@ -10,11 +9,11 @@ class RedisCache {
         host,
         port,
       },
-      password: process.env.REDIS_PW,
+      password
     });
     this.init();
-    this.sdkKeys;
-    this.flags;
+    this.sdkKeys = {};
+    this.flags = {};
 
     this.redis.on('connect', () => console.log(`Redis cache on port ${port}`));
   }
@@ -26,9 +25,10 @@ class RedisCache {
       await this.redis.connect();
       console.log('refreshing cache...\n');
       await this.refreshData();
-      eventEmitter.emit('cache-filled');
+
+
     } catch (err) {
-      console.error('=== Error initializing cache: ' + err);
+      console.error('--- Error connecting to Redis server: ' + err);
     }
   }
   // fetch full flag ruleset from manager
@@ -37,8 +37,9 @@ class RedisCache {
       let { sdkKeys, flags } = await getRuleset();
       this.sdkKeys = sdkKeys;
       this.flags = flags;
+
     } catch (err) {
-      console.error('--- Could not fetch data from manager...');
+      console.error('--- Could not fetch data from manager...cache still empty');
     }
   }
   // try reading from cache first

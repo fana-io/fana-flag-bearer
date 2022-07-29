@@ -9,8 +9,4 @@ exports.validateFlagset = [
 
 exports.validateClientInit = [
   body().notEmpty(),
-  // header('Authorization').custom((value) => SDK_KEYS.includes(value)) // check if valid sdk key is provided in authorization header
-];
-exports.validateServerInit = [
-  // header('Authorization').notEmpty()
 ];

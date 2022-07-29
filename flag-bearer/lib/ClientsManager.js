@@ -10,42 +10,26 @@ class ClientsManager {
       'Content-Type': 'text/event-stream',
       Connection: 'keep-alive',
       'Cache-Control': 'no-cache',
+      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Headers": "Origin, X-Requested-With, Content-Type, Accept"
     };
-    this.sdkKeys;
+
     this.subscriptionTypes = SUBSCRIPTION_TYPES;
     this.retryTimeout = SEC_TO_RETRY;
   }
 
-  addKeys(keys) {
-    this.sdkKeys = keys;
-  }
-
   stream(req, res) {
     const { sdkType, id } = req.params;
-    const sdkKey = req.query.sdkKey;
-    const result = this.validateParams(sdkType, sdkKey);
-
-    if (!result.valid) {
-      console.log('error valiating sdkkey');
-      return res.status(result.code).send(result.error);
+    const sdkKey = req.query.sdkKey
+    
+    // sdkType is either 'client' or 'server'
+    if (!this.subscriptionTypes.includes(sdkType)) {
+      return res.status(400).send('Invalid subscription topic.');
     }
 
     const client = this.addClient(sdkType, id, sdkKey);
     this.connectClient(client, req, res);
     this.reportOnAllConnections();
-  }
-
-  validateParams(sdkType, sdkKey) {
-    const validType = this.subscriptionTypes.includes(sdkType);
-    const validKey = this.sdkKeys[sdkKey];
-
-    if (validType && validKey) return { valid: true };
-
-    let errorMessage = validKey
-      ? 'Invalid subscription topic.'
-      : 'Invalid sdk key provided.';
-
-    return { valid: false, code: 400, error: errorMessage };
   }
 
   // SSE connections are organized by sdk type
