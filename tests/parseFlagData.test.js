@@ -1,6 +1,6 @@
 // const { evaluateFlags } = require('../utils/parseFlagData');
 const { evaluateCondition } = require('../utils/evaluateCondition');
-const { data, testUser1, testUser2, testUser3 } = require('./data');
+const { data, testUser1, testUser2, testUser3 } = require('./testData');
 // const {cache} = require('../services/services')
 const RedisCache = require('../lib/RedisCache');
 // how to mock evaluateFlags without a cache?
@@ -24,22 +24,22 @@ const cache = {
   sdkKeys: data.sdkKeys,
 };
 
-describe('evaluate beta condition for users', () => {
-  console.log('access to cache', cache);
+// describe('evaluate beta condition for users', () => {
+//   console.log('access to cache', cache);
 
-  test('user with beta true returns true', () => {
-    expect(evaluateCondition(testUser1.userContext, betaCondition)).toEqual(true);
-  });
-  test('user without beta attribute returns false', () => {
-    expect(evaluateCondition(testUser3.userContext, betaCondition)).toEqual(false);
-  });
-  test('user with beta false returns false', () => {
-    expect(evaluateCondition(testUser2.userContext, betaCondition)).toEqual(false);
-  });
-  test('negated beta condition for user with beta true', () => {
-    expect(evaluateCondition(testUser1.userContext, noBetaConditon)).toEqual(false);
-  });
-});
+//   test('user with beta true returns true', () => {
+//     expect(evaluateCondition(testUser1.userContext, betaCondition)).toEqual(true);
+//   });
+//   test('user without beta attribute returns false', () => {
+//     expect(evaluateCondition(testUser3.userContext, betaCondition)).toEqual(false);
+//   });
+//   test('user with beta false returns false', () => {
+//     expect(evaluateCondition(testUser2.userContext, betaCondition)).toEqual(false);
+//   });
+//   test('negated beta condition for user with beta true', () => {
+//     expect(evaluateCondition(testUser1.userContext, noBetaConditon)).toEqual(false);
+//   });
+// });
 
 
 // describe('for a flag toggled off', () => {

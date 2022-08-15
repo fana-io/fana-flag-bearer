@@ -10,16 +10,27 @@ const isEq = (targetVal, candidateVal) => {
   return candidateVal === targetVal;
 };
 
-const isIn = (targetVals, candidateVal) =>
-  targetVals.includes(candidateVal.toLowerCase());
-const isNotIn = (targetVals, candidateVal) =>
-  !targetVals.includes(candidateVal.toLowerCase());
-const strContains = (targetVal, candidateVal) =>
-  candidateVal.toLowerCase().includes(targetVal);
-const strEndsWith = (targetVal, candidateVal) =>
-  candidateVal.toLowerCase().endsWith(targetVal);
-const strStartsWith = (targetVal, candidateVal) =>
-  candidateVal.toLowerCase().startsWith(targetVal);
+const isIn = (targetVals, candidateVal) => {
+  targetVals = targetVals.map(v => v.toLowerCase())
+  return targetVals.includes(candidateVal.toLowerCase());
+}
+const isNotIn = (targetVals, candidateVal) => {
+  targetVals = targetVals.map(v => v.toLowerCase())
+  return !targetVals.includes(candidateVal.toLowerCase());
+}
+const strContains = (targetVal, candidateVal) => {
+  targetVals = targetVals.map(v => v.toLowerCase())
+  return candidateVal.toLowerCase().includes(targetVal);
+  
+}
+const strEndsWith = (targetVal, candidateVal) => {
+  targetVals = targetVals.map(v => v.toLowerCase())
+  return candidateVal.toLowerCase().endsWith(targetVal);
+}
+const strStartsWith = (targetVal, candidateVal) => {
+  targetVals = targetVals.map(v => v.toLowerCase())
+  return candidateVal.toLowerCase().startsWith(targetVal);
+}
 
 const isGreaterThan = (targetVal, candidateVal) => candidateVal > targetVal;
 const isGreaterEqThan = (targetVal, candidateVal) => candidateVal >= targetVal;
@@ -47,8 +58,10 @@ const convertAttributeType = (attributeValue, op) => {
       attributeValue = attributeValue[0];
       // string, do nothing
       // boolean, number convert
-      if (attributeValue === 'true' || attributeValue === 'false') {
-        return Boolean(attributeValue);
+      if (attributeValue === 'true') {
+        return true
+      } else if (attributeValue === 'false') {
+        return false
       } else if (!isNaN(Number(attributeValue))) {
         return Number(attributeValue);
       }
@@ -85,5 +98,5 @@ const evaluateCondition = (userContext, condition) => {
 };
 
 module.exports = {
-  evaluateCondition,
+  evaluateCondition, convertAttributeType
 };
