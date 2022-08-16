@@ -9,7 +9,7 @@ The Flag bearer is one component of the Fana feature flagging platform and shoul
 
 There are two options to get started in a self-hosted environment.
 
-1. Deploy the entire Fana Platform stack using Docker Compose yaml file found here (LINK NEEDED) 
+1. Deploy the entire Fana Platform stack using Docker Compose yaml file found [here](https://github.com/fana-io/fana-deploy).
 
 2. Pull the Docker image from DockerHub and run the container in an existing Docker network with the prerequisite components:
 ```bash
