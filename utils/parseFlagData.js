@@ -31,8 +31,7 @@ function evaluateAudience(audienceContext, userContext) {
 function evaluateFlags(userContext) {
   const flagEvals = {};
   const audienceEvals = {};
-  // const userAudienceEvals = evaluateAudiences(sdkInstance, userContext);
-  // Evaluate each flag
+
   for (const flag in cache.flags) {
     let evaluation = false;
     const { status, ...audiences} = cache.flags[flag]
@@ -46,7 +45,7 @@ function evaluateFlags(userContext) {
       for (const audience of audienceKeys) {
         if (audienceEvals[audience]) {
           evaluation = true;
-          break; // return early as soon as one audience satisfied
+          break;
         } else if (!audienceEvals.hasOwnProperty(audience)) {
           // if audience eval is undefine, evaluate;
           const audienceContext = cache.flags[flag][audience];

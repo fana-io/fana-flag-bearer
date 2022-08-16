@@ -1,9 +1,7 @@
 const {evaluateCondition, convertAttributeType} = require("../utils/evaluateCondition")
 const testData = require('./testData')
 
-/*
-2. evaluateCondition - user context and condiittion 
-*/
+
 let testConditions = testData.testConditions
 
 describe('attribute type converstion Boolean and String values', () => {
@@ -66,59 +64,58 @@ describe('attribute converstion for Number values using', () => {
   })
 
 })
-/*
-- beta is true
-- Not beta
-- off flag for all
-- on flag for all,
-- cali or student
-- cali AND student
-- neither cali nor student
-- userid is in 
-- user id contains "u"
-- age is greater than 
-- age lt eq 20
-*/
-describe.only('testing the evaluation of a single attribute condition against a user context', () => {
-  let users = testData.users
 
-  test('california beta tester non-student is a beta tester', () => {
-    let userContext = users[0]
+describe('testing the evaluation of a single attribute condition against a user context', () => {
+  let jjuy = testData.testUser1.userContext
+  let yrc = testData.testUser2.userContext
+  let ahsu = testData.testUser3.userContext
 
-    expect(evaluateCondition(userContext, testConditions.trueValue))
+  test('beta user evaluates true', () => {
+    expect(evaluateCondition(jjuy, testConditions.trueValue)).toBe(true)
   })
-
+  
   test('user is not a beta tester evalutes false', () => {
+    expect(evaluateCondition(yrc, testConditions.trueValue)).toBe(false)
+  })
+  test('user does not have beta attribute evalutes false', () => {
+    expect(evaluateCondition(ahsu, testConditions.trueValue)).toBe(false)
+  })
+  test('user in washington evalutes for state IN true', () => {
+    expect(evaluateCondition(ahsu, testConditions.isInstring)).toBe(true)
+  })
+  
+  test('new jersey user evalutes to false for west coast states', () => {
+    expect(evaluateCondition(yrc, testConditions.isInstring)).toBe(false)
     
   })
-  test('user is a beta tester evalutes true', () => {
-    
+  test('new jersey user evalutes to false for NOT IN west coast states', () => {
+    let negatedCondition = testConditions.isInstring
+    negatedCondition.negate = true
+    expect(evaluateCondition(yrc, negatedCondition)).toBe(true)
   })
-  test('user in washington evalutes for state IS_IN true', () => {
-    
-  })
-
-  test('georgia user evalutes to false for west coast states', () => {
-    
-  })
-
+  
   test('age 50 evalues to false age 20', () => {
+    expect(evaluateCondition(ahsu, testConditions.equalTo20)).toBe(false)
     
   })
   test('age 50 evalues to true for GT age 20', () => {
+    expect(evaluateCondition(ahsu, testConditions.greaterThan20)).toBe(true)
     
   })
   test('age 20 evalues to true for age 20', () => {
+    expect(evaluateCondition(jjuy, testConditions.equalTo20)).toBe(true)
     
   })
   test('age 20 evalues to true for GT_EQ age 20', () => {
+    expect(evaluateCondition(jjuy, testConditions.equalTo20)).toBe(true)
     
   })
   test('age 19 evalues to true for LT age 20', () => {
+    expect(evaluateCondition(yrc, testConditions.lessThan20)).toBe(true)
     
   })
   test('age 19 evalues to true for LT_EQ age 20', () => {
-    
+    expect(evaluateCondition(yrc, testConditions.lessThan20)).toBe(true)
   })
   
 })

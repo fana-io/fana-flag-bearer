@@ -13,7 +13,7 @@ const testUser1 = {
 const testUser2 = {
   userId: 'yrc',
   userContext: {
-    state: 'georgia',
+    state: 'new jersey',
     beta: false,
     age: 19,
     student: true,
@@ -52,7 +52,7 @@ const testConditions = {
   },
   isInstring: {
     negate: false,
-    operator: 'IS_IN',
+    operator: 'IN',
     attribute: 'state',
     vals: ['california', 'washington', 'oregon'],
   },
@@ -77,6 +77,12 @@ const testConditions = {
   lessThanOrEqualTo20: {
     negate: false,
     operator: 'LT_EQ',
+    attribute: 'age',
+    vals: ['20'],
+  },
+  equalTo20: {
+    negate: false,
+    operator: 'EQ',
     attribute: 'age',
     vals: ['20'],
   },

@@ -5,6 +5,7 @@
 const isEq = (targetVal, candidateVal) => {
   if (typeof candidateVal === 'string') {
     candidateVal = candidateVal.toLowerCase();
+    return candidateVal === targetVal.toLowerCase();
   }
 
   return candidateVal === targetVal;
@@ -90,6 +91,10 @@ const evaluateCondition = (userContext, condition) => {
   // cast targetValue type based on operator and candidateValue type
   const targetValue = convertAttributeType(condition.vals, op);
   const candidateValue = userContext[attribute];
+
+  console.log('candidate val:', candidateValue)
+  console.log('op:', op)
+  console.log('target val:', targetValue)
   let result;
   // if attribute not provided in userContext, always false regardless of negate
   if (!userContext.hasOwnProperty(attribute)) return false;
