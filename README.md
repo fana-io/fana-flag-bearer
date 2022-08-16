@@ -1,6 +1,7 @@
+![Fana logo](assets/fana_logo_color_forwhitebg.png)
 # Fana Flag Bearer
 The Flag Bearer is a reverse proxy responsible for:
-1. serving as an endpoint for SDKs to request flag data upon initialization (see [[#Initializing SDKs with flag data]] for more information)
+1. serving as an endpoint for SDKs to request flag data upon initialization ([see more below](#initializing-SDKs-with-flag-data) for more information)
 2. serving as a streaming endpoint for SDK clients connecting via server-sent events
 3. forwarding real-time updates to SDKs regarding flags and their toggle status
 
@@ -18,8 +19,8 @@ $ docker pull fanaff/fana-flag-bearer
 
 Prerequisites include: 
 - PostgreSQL running on port `5432`
-- Redis Cluster running on port `6379`
-- Manager Platform running on `3000`
+- Redis cluster running on port `6379`
+- Manager Platform running on port `3000`
 
 Currently available SDKs:
 - [NodeJS](https://github.com/fana-io/fana-node-sdk)
